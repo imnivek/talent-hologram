@@ -50,6 +50,15 @@
   .comboR .cv{font-family:Arial;letter-spacing:2px;font-size:15px}
   .comboR .res{background:#fff;border:1px solid #d3ab63;color:var(--goldd);border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-family:Arial;font-weight:800;font-size:14px}
   .comboR small{color:var(--sub);font-size:11px;margin-left:auto}
+  /* 聯合密碼標籤 */
+  .ctags{display:flex;flex-wrap:wrap;gap:7px;margin:5px 0 6px}
+  .ctag{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:1.5px solid #d3ab63;border-radius:11px;padding:5px 12px;min-width:60px}
+  .ctag b{font-family:Arial;font-size:16px;color:var(--goldd);letter-spacing:1.5px;line-height:1.2}
+  .ctag small{font-size:10.5px;color:var(--sub);margin-top:1px}
+  .ctag.key{background:linear-gradient(135deg,#eef6d8,#e3f0c2);border-color:var(--green)}
+  .ctag.key b{color:#6f8f1f}
+  .ctag .who{font-size:11px;color:var(--goldd);font-weight:700}
+  .gdesc{font-size:12px;color:var(--sub);margin:0 0 4px}
   .ana p{font-size:14px;margin:7px 0}
   .ev{display:inline-block;font-size:11px;color:#fff;background:var(--gold);border-radius:6px;padding:1px 8px;margin-right:5px;font-weight:700}
   .two{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.two>div{flex:1;min-width:155px}
@@ -199,6 +208,23 @@ function combo12HTML(t){
     return `<div class="comboG"><div class="comboT">${COMBO_G[g]}</div>${rows}</div>`;
   }).join("");
 }
+const COMBO_DESC={inner:"三角形內，反映你的本質與天賦。IJM 動機、KLN 能量最根本，MNO 主性格最深沈。",
+ y2140:"三角形外，對應 21-40 歲在工作與人際上的時運。",
+ y4160:"三角形外，對應 41-60 歲在事業與發展上的時運。",
+ y60:"三角形外，對應 60 歲後在家庭與財富上的時運。"};
+const getC=lab=>COMBO.find(c=>c.lab===lab);
+/* 聯合密碼標籤：三碼（來源兩數＋結果） */
+function comboTag(c,t,who){
+  const vals=c.src.map(k=>t[k]).concat(t[c.res]).join("·");
+  return `<span class="ctag ${c.lab==='MNO'?'key':''}">${who?`<span class="who">${who}</span>`:""}<b>${vals}</b><small>${c.lab}</small></span>`;
+}
+/* 個人：12 組標籤（分組＋說明） */
+function combo12Tags(t){
+  return ["inner","y2140","y4160","y60"].map(g=>{
+    const tags=COMBO.filter(c=>c.g===g).map(c=>comboTag(c,t)).join("");
+    return `<div class="comboT">${COMBO_G[g]}</div><div class="gdesc">${COMBO_DESC[g]}</div><div class="ctags">${tags}</div>`;
+  }).join("");
+}
 
 function r9(n){while(n>9){n=String(n).split("").reduce((a,b)=>a+ +b,0);}return n;}
 function holo(dateStr){
@@ -263,9 +289,9 @@ function runSolo(){
     <div class="chartwrap">${chartSVG(t)}</div>
     <div class="sect">核心密碼</div>
     <div class="cards">${cc("主性格 O",t.O,true)}${cc("動機 M",t.M)}${cc("能量 N",t.N)}${cc("潛意識",t.sub)}</div>
-    <div class="sect">聯合密碼（12 組）</div>
-    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每個衍生數字都由兩數相加，與來源兩數構成一組聯合密碼（全系統 81 組、你佔 12 組）。三角形內＝本質與天賦，三角形外三層＝各人生階段的時運。</p>
-    ${combo12HTML(t)}
+    <div class="sect">聯合密碼（12 組標籤）</div>
+    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每組聯合密碼是「來源兩數·結果」的三碼組合（綠色 MNO 為主性格組）。全系統 81 組、你佔 12 組。</p>
+    ${combo12Tags(t)}
     <div class="sect">天賦分析</div>
     <div class="ana">
       <p><span class="ev">主性格 ${t.O}</span>你的核心是「${O.a}」。${O.shine}</p>
@@ -292,6 +318,13 @@ function runPair(){
   document.getElementById("p_out").innerHTML=`
     <div class="sect">雙方主性格與聯合密碼</div>
     <div class="two"><div>${phCard(n1,a)}</div><div>${phCard(n2,b)}</div></div>
+    <div class="sect">主性格聯合密碼配對</div>
+    <p class="gdesc">主性格聯合密碼（MNO）由動機 M、能量 N 合成主性格 O，是最核心、最深沈的一組。把雙方的 MNO 放在一起，再看主性格配對組合。</p>
+    <div class="ctags">
+      ${comboTag(getC('MNO'),a,n1)}${comboTag(getC('MNO'),b,n2)}
+      <span class="ctag" style="border-color:#c79a4b"><b>${a.O}-${b.O}</b><small>主性格配對組合</small></span>
+    </div>
+    <p class="gdesc">配對組合 ${a.O}-${b.O}：${P[0]}。${P[1]}</p>
     <div class="sect">聯合密碼對照（配對用）</div>
     ${cmp("主性格組 MNO",a.O,b.O)}${cmp("動機組 IJM",a.M,b.M)}${cmp("能量組 KLN",a.N,b.N)}${cmp("潛意識 OIL",a.sub,b.sub)}
     <div class="sect">各自能展現</div>
@@ -335,9 +368,17 @@ function runTeam(){
   const gN=tot>=6?Math.round(tot/3):2;const sorted=[...ms].sort((a,b)=>a.t.O-b.t.O);const grp=Array.from({length:gN},()=>[]);
   sorted.forEach((m,i)=>grp[i%gN].push(m));
   const grpHtml=grp.map((g,i)=>`<div class="grp"><b>第${i+1}組</b>：${g.map(m=>m.nm+"("+m.t.O+NUM[m.t.O].a+")").join("、")}<br><span style="font-size:12px;color:#a08a6a">混搭不同主性格，角色較互補</span></div>`).join("");
+  const mnoTags=ms.map(m=>comboTag(getC("MNO"),m.t,m.nm)).join("");
+  const teamCombo=ms.map(m=>m.t.O).join("·");
+  const topO=present.slice().sort((x,y)=>spec[y]-spec[x])[0];
+  const teamComboDesc=`團隊主性格組合為 ${teamCombo}，以 ${topO} ${NUM[topO].a} 為主（${spec[topO]} 人）。${NUM[topO].have}；整體適合發揮這項優勢，並留意下方盲點補足。`;
   document.getElementById("t_out").innerHTML=`
     <div class="sect">團隊主性格雷達（${tot}人）</div>
     <div class="radarwrap">${radarSVG(spec,tot)}<div class="pctlist">${pctRows}</div></div>
+    <div class="sect">主性格聯合密碼組合（團隊）</div>
+    <p class="gdesc">每位成員的主性格聯合密碼（MNO）標籤，與全隊主性格的組合。</p>
+    <div class="ctags">${mnoTags}<span class="ctag" style="border-color:#c79a4b"><b>${teamCombo}</b><small>團隊組合</small></span></div>
+    <p class="gdesc">${teamComboDesc}</p>
     <div class="sect">每位成員能展現的部分</div>${members}
     <div class="sect">合作（團隊現有優勢）</div>
     <div class="ana"><p>你們已具備：${haveTxt}。整體適合${present.includes(1)||present.includes(8)?'有人帶頭、':''}${present.includes(4)?'把事落地、':''}${present.includes(3)||present.includes(5)?'對外開拓、':''}${present.includes(2)||present.includes(6)?'凝聚彼此、':''}${present.includes(7)||present.includes(9)?'看清方向':'分工推進'}的合作模式。</p></div>
