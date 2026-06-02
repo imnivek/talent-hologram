@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天賦數全息圖</title>
+<style>
+  :root{--bg1:#fbf3e7;--bg2:#f7e9d6;--ink:#5b4326;--sub:#a08a6a;
+    --gold:#c79a4b;--goldd:#9c7327;--green:#9cbf3f;--card:#fffdf8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;color:var(--ink);
+    background:radial-gradient(circle at 50% 24%,var(--bg1),var(--bg2));min-height:100vh;line-height:1.7}
+  .wrap{max-width:720px;margin:0 auto;padding:18px 14px 70px}
+  header{text-align:center;padding:4px 0}
+  header h1{font-size:22px;letter-spacing:4px;color:var(--goldd)}
+  header p{color:var(--sub);font-size:12.5px;margin-top:2px}
+  .tabs{display:flex;gap:6px;background:#fff;border-radius:14px;padding:5px;margin:14px 0;box-shadow:0 6px 18px rgba(150,110,40,.1)}
+  .tabs button{flex:1;border:0;background:transparent;padding:10px 4px;border-radius:10px;font-size:14px;
+    color:var(--sub);cursor:pointer;font-weight:700;font-family:inherit}
+  .tabs button.on{background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff}
+  .panel{background:var(--card);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 8px 26px rgba(150,110,40,.1)}
+  label{display:block;font-size:13px;color:var(--sub);margin:0 0 6px}
+  input{width:100%;padding:11px 13px;border:1.5px solid #e8d8bf;border-radius:11px;font-size:15px;background:#fffdf8;color:var(--ink);font-family:inherit}
+  input:focus{outline:none;border-color:var(--gold)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
+  .btn{width:100%;margin-top:12px;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--goldd));
+    color:#fff;padding:12px;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:2px;box-shadow:0 6px 16px rgba(160,120,40,.3)}
+  .btn.sec{background:#f3ead7;color:var(--goldd);box-shadow:none;letter-spacing:1px}
+  .hint{font-size:12px;color:var(--sub);margin-top:8px}
+  .chartwrap{display:flex;justify-content:center;background:radial-gradient(circle at 50% 42%,#fdf6ea,#f6e7d0);border-radius:20px;padding:4px}
+  .chart{width:100%;max-width:680px}
+  .sect{font-size:15px;font-weight:800;color:var(--goldd);margin:16px 0 8px;padding-left:9px;border-left:4px solid var(--gold)}
+  .cards{display:flex;flex-wrap:wrap;gap:9px}
+  .cc{flex:1;min-width:108px;background:#faf2e3;border-radius:13px;padding:10px 12px;border:1px solid #efe1c8}
+  .cc .l{font-size:11.5px;color:var(--sub)}.cc .v{font-size:24px;font-weight:800;color:var(--goldd)}
+  .cc.main{background:linear-gradient(135deg,#eef6d8,#e3f0c2);border-color:var(--green)}.cc.main .v{color:#6f8f1f}
+  .cc .a{font-size:12px;font-weight:700}
+  .ana p{font-size:14px;margin:6px 0}
+  .ev{display:inline-block;font-size:11px;color:#fff;background:var(--gold);border-radius:6px;padding:1px 7px;margin-right:6px;font-weight:700}
+  .two{display:flex;gap:10px;flex-wrap:wrap}.two>div{flex:1;min-width:150px}
+  .bigO{text-align:center;background:#faf2e3;border-radius:14px;padding:10px}
+  .bigO .o{font-size:40px;font-weight:800;color:#6f8f1f}.bigO .nm{font-size:13px;color:var(--sub)}
+  .member{display:flex;gap:8px;margin-bottom:8px}.member input{flex:1}
+  .member .del{border:0;background:#f3ead7;color:var(--goldd);border-radius:9px;padding:0 12px;font-size:18px;cursor:pointer}
+  .spec{display:flex;align-items:flex-end;gap:5px;height:90px;margin:8px 0;padding:0 4px}
+  .spec .bar{flex:1;background:linear-gradient(var(--gold),var(--goldd));border-radius:5px 5px 0 0;min-height:3px;position:relative}
+  .spec .bar span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;color:var(--sub)}
+  .spec .bar b{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--goldd)}
+  .grp{background:#faf2e3;border-radius:12px;padding:9px 12px;margin:7px 0;font-size:13.5px}.grp b{color:var(--goldd)}
+  .roleitem{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0;border-bottom:1px dashed #eaddc4}.roleitem b{color:var(--goldd)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}.chip{font-size:12px;background:#f1e6cf;color:var(--goldd);border-radius:20px;padding:3px 10px}.chip.miss{background:#fdeede;color:#b76e00}
+  .note{font-size:12px;color:var(--sub);background:#faf5ea;border-left:3px solid var(--ring);padding:8px 11px;border-radius:8px;margin-top:12px}
+  .foot{text-align:center;font-size:11.5px;color:var(--sub);margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>天 賦 數 全 息 圖</h1><p>用生日畫出天賦結構 · 看懂彼此的合作化學</p></header>
+  <div class="tabs">
+    <button class="on" data-t="solo">個人全息圖</button>
+    <button data-t="pair">兩人配對</button>
+    <button data-t="team">團隊合作</button>
+  </div>
+
+  <section id="solo">
+    <div class="panel">
+      <div class="row">
+        <div><label>暱稱（選填）</label><input id="s_nm" placeholder="例如：小宇"></div>
+        <div><label>西元生日</label><input type="date" id="s_dt" value="1974-07-08"></div>
+      </div>
+      <button class="btn" onclick="runSolo()">繪製全息圖</button>
+    </div>
+    <div class="panel" id="s_out"></div>
+  </section>
+
+  <section id="pair" style="display:none">
+    <div class="panel">
+      <div class="row"><div><label>A 暱稱</label><input id="p_n1" placeholder="夥伴A"></div><div><label>A 生日</label><input type="date" id="p_d1" value="1974-07-08"></div></div>
+      <div class="row" style="margin-top:10px"><div><label>B 暱稱</label><input id="p_n2" placeholder="夥伴B"></div><div><label>B 生日</label><input type="date" id="p_d2" value="1988-03-21"></div></div>
+      <button class="btn" onclick="runPair()">看合作化學反應</button>
+    </div>
+    <div class="panel" id="p_out"></div>
+  </section>
+
+  <section id="team" style="display:none">
+    <div class="panel">
+      <label>團隊成員（3 至 12 人）</label>
+      <div id="t_mem"></div>
+      <button class="btn sec" onclick="addMem()">＋ 新增成員</button>
+      <button class="btn" onclick="runTeam()">分析團隊與分組</button>
+    </div>
+    <div class="panel" id="t_out"></div>
+  </section>
+
+  <div class="foot">本工具為自我探索與人際理解用途，非命定預測。重大決策請尋求專業協助。<br>&copy; 命理大師 · 天賦數全息圖</div>
+</div>
+
+<script>
+/* 1-9 原型（通用自述，非書籍解讀） */
+const A9={
+ 1:{a:"開創者",d:"領導開創、決斷果敢",r:"領導者"},2:{a:"協調者",d:"溝通協調、重視和諧",r:"協調者"},
+ 3:{a:"表達者",d:"創意表達、樂觀社交",r:"創意"},4:{a:"實踐者",d:"務實穩定、組織執行",r:"執行者"},
+ 5:{a:"自由者",d:"應變冒險、多才多藝",r:"開拓者"},6:{a:"照顧者",d:"責任服務、重視品質",r:"支柱"},
+ 7:{a:"探索者",d:"分析洞察、深度思考",r:"智囊"},8:{a:"成就者",d:"目標管理、執行力強",r:"管理者"},
+ 9:{a:"智慧者",d:"願景大局、慈悲理想",r:"願景者"}};
+/* 主性格配對（自有摘要，由生命靈數組合關係整理） */
+const PAIRS={
+"1-1":["兩個強者","互相理解時是彼此強力支持","各自堅持、易衝突","學會妥協分工"],
+"1-2":["領導加協調","1定方向、2維持和諧","1易獨斷、2易壓抑","1納諫、2表達需求"],
+"1-3":["活力與樂趣","開創加創意激發行動","1嫌不務實、3嫌太嚴肅","互相包容節奏"],
+"1-4":["開創對務實","4給1穩固基礎","1嫌4保守、4嫌1冒險","尊重彼此、分工互補"],
+"1-5":["愛自由的行動派","一起探索冒險","都缺穩定承諾","共建責任感"],
+"1-6":["獨立對關懷","6照顧、1帶方向","1嫌干涉、6嫌冷","表達需求、給空間"],
+"1-7":["行動加探究","共追真理知識","7嫌衝動、1嫌內斂","互賞智慧與行動"],
+"1-8":["領導與野心","強力合作夥伴","易權力鬥爭","明確分工（關鍵合夥組合）"],
+"1-9":["開創加智慧","9給視野、1幫落地","理想與行動節奏不同","互相學習支持"],
+"2-2":["溫和穩定","重和諧合作","都缺主見","培養決斷力"],
+"2-3":["和諧又有趣","2幫專注、3帶活力","節奏深度差異","互賞特質"],
+"2-4":["穩定關係","4給安全、2給溫暖","都缺冒險","嘗試新事物"],
+"2-5":["穩定對自由","可互補","2嫌不可靠、5嫌束縛","理解、給空間"],
+"2-6":["愛與支持","都關懷奉獻","都太感性","培養自我關懷"],
+"2-7":["直覺加理性","共探真相","2嫌冷、7嫌情緒化","互相學習"],
+"2-8":["協調加權威","8給方向、2執行","8強勢、2順從","8收斂、2守立場"],
+"2-9":["理解與支持","共同服務他人","都缺行動力","培養執行力"],
+"3-3":["歡聲笑語","都有創意樂趣","都缺紀律","培養責任感"],
+"3-4":["創意加務實","4幫想法落地","創意與規矩拉扯","3發想、4執行"],
+"3-5":["冒險與樂趣","都有活力自由","都缺穩定","共建基礎"],
+"3-6":["愛與藝術","創意加關懷","3嫌情緒、6嫌缺深度","互相理解"],
+"3-7":["有趣對話","表達加探究","3嫌嚴肅、7嫌膚淺","互賞優點"],
+"3-8":["創意加商業","共追成功","3嫌功利、8嫌不務實","互相學習"],
+"3-9":["靈感與夢想","富想像智慧","都缺行動力","培養執行力"],
+"4-4":["穩定可靠","都務實重秩序","都缺彈性","嘗試新事物"],
+"4-5":["穩定對自由","可互補","4嫌不可靠、5嫌保守","理解、給空間"],
+"4-6":["穩定有愛","4給安全、6給情感","偏保守","互賞優點"],
+"4-7":["理性條理","都重邏輯","都缺情感表達","培養情感連結"],
+"4-8":["務實加權威","強大合作夥伴","都重物質","培養精神面（穩健合夥）"],
+"4-9":["務實對智慧","4落地、9給視野","現實理想差異","互相學習"],
+"5-5":["刺激冒險","都追自由變化","都缺穩定","共建基礎"],
+"5-6":["自由對關懷","可互補","5嫌束縛、6嫌不可靠","理解、給空間"],
+"5-7":["有趣對話","冒險加探究","5嫌嚴肅、7嫌膚淺","互賞優點"],
+"5-8":["自由對權威","可互補","5嫌控制、8嫌缺責任","理解、給空間"],
+"5-9":["樂趣探索","富想像冒險","都缺務實","培養執行力"],
+"6-6":["愛與支持","都關懷奉獻","都太感性","培養自我關懷"],
+"6-7":["情感對理性","可互補","6嫌冷、7嫌情緒化","互相學習"],
+"6-8":["關懷加權威","8給方向、6給情感","8強勢、6順從","8收斂、6守立場"],
+"6-9":["理解支持","共同服務","都缺行動力","培養執行力"],
+"7-7":["理性深度","都重探究","都缺情感表達","培養情感連結"],
+"7-8":["探究加權威","8給方向、7給分析","8強勢、7內斂","8收斂、7表達"],
+"7-9":["深度追求","智慧靈性共探","都缺行動力","培養執行力"],
+"8-8":["競爭挑戰","都有領導野心","易競爭重物質","明確分工"],
+"8-9":["權威加智慧","8執行、9遠見","8嫌不務實、9嫌功利","互相學習"],
+"9-9":["靈感夢想","富想像智慧","都缺務實","培養執行力"]};
+
+function r9(n){while(n>9){n=String(n).split("").reduce((a,b)=>a+ +b,0);}return n;}
+function holo(dateStr){
+  const[y,m,d]=dateStr.split("-");const yy=String(y).slice(-4);
+  const s=String(d).padStart(2,"0")+String(m).padStart(2,"0")+yy;
+  const g=s.split("").map(Number);const[A,B,C,D,E,F,G,H]=g;
+  const I=r9(A+B),J=r9(C+D),K=r9(E+F),L=r9(G+H);
+  const M=r9(I+J),N=r9(K+L),O=r9(M+N);
+  const P=r9(M+O),Q=r9(N+O),R=r9(P+Q);
+  const W=r9(J+M),X=r9(I+M),S=r9(X+W);
+  const V=r9(K+N),U=r9(L+N),T=r9(V+U);
+  return{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,
+    sub:r9(O+I+L),inn:r9(N+O+Q),out:r9(M+O+P),dir:r9(S+R+T),digits:s};
+}
+function pk(a,b){return Math.min(a,b)+"-"+Math.max(a,b);}
+
+/* ===== 全息圖 SVG（三層同心圓，標籤定位修正） ===== */
+function chartSVG(t){
+  const W=800,H=820,cx=400,cy=400,rIn=240,rOut=312;
+  let s="";
+  s+=`<circle cx="${cx}" cy="${cy}" r="${rOut}" fill="none" stroke="#e3c79a" stroke-width="1.4"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="${rIn}" fill="none" stroke="#e8d2ab" stroke-width="1.2"/>`;
+  const star=(x,y,r,c)=>`<path d="M${x} ${y-r} L${x+r*.22} ${y-r*.22} L${x+r} ${y} L${x+r*.22} ${y+r*.22} L${x} ${y+r} L${x-r*.22} ${y+r*.22} L${x-r} ${y} L${x-r*.22} ${y-r*.22} Z" fill="${c||'#cda86f'}" opacity=".7"/>`;
+  s+=star(120,118,20)+star(690,118,26)+star(140,148,9);
+  const T=(x,y,txt,fs,col,ls)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs||18}" fill="${col||'#8a6d3b'}" letter-spacing="${ls||0}">${txt}</text>`;
+  // 「全」字水印
+  s+=`<text x="${cx}" y="452" text-anchor="middle" font-size="300" font-weight="900" style="fill:#bf9a5e;opacity:.10">全</text>`;
+  // ── 外圈（社會我層）：圓外 ──
+  s+=T(cx,52,"事業·發展",21,"#7d5f30",3);
+  s+=T(46,372,"工作",20,"#7d5f30")+T(58,400,"·人際",20,"#7d5f30");
+  s+=T(760,372,"家庭",20,"#7d5f30")+T(748,400,"·財富",20,"#7d5f30");
+  s+=T(cx,772,"社會我",19,"#7d5f30",3);
+  // ── 中圈（自我層）：兩圓之間 ──
+  s+=T(cx,118,"41-60",16,"#a98a55");
+  s+=T(122,394,"21",14,"#a98a55")+T(122,410,"—",11,"#a98a55")+T(122,426,"40",14,"#a98a55");
+  s+=T(680,394,"61",14,"#a98a55")+T(680,412,"—",11,"#a98a55");
+  s+=T(296,690,"模式",16,"#9a7b48")+T(cx,694,"自我",18,"#7d5f30",2)+T(504,690,"行為",16,"#9a7b48");
+  // ── 內圈（本我層）：貼著「全」字 ──
+  s+=T(298,366,"動機",17,"#8a6d3b")+T(502,366,"能量",17,"#8a6d3b");
+  s+=T(270,452,"人格",16,"#8a6d3b")+T(530,452,"天賦",16,"#8a6d3b");
+  s+=T(324,602,"感受",15,"#9a7b48")+T(cx,602,"本我",18,"#7d5f30",1)+T(476,602,"期望",15,"#9a7b48");
+  // 連線骨架
+  const pos={R:[cx,212],Q:[cx-46,256],P:[cx+46,256],O:[cx,302],
+    S:[178,286],X:[230,286],Wn:[270,286],V:[530,286],U:[570,286],Tn:[622,286],
+    M:[cx-46,360],N:[cx+46,360],I:[cx-86,432],J:[cx-32,432],K:[cx+32,432],L:[cx+86,432]};
+  const ln=(a,b)=>`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#d9bd8e" stroke-width="1.4" opacity=".7"/>`;
+  s+=ln(pos.I,pos.M)+ln(pos.J,pos.M)+ln(pos.K,pos.N)+ln(pos.L,pos.N)+ln(pos.M,pos.O)+ln(pos.N,pos.O);
+  s+=ln(pos.M,pos.P)+ln(pos.O,pos.P)+ln(pos.N,pos.Q)+ln(pos.O,pos.Q)+ln(pos.P,pos.R)+ln(pos.Q,pos.R);
+  const circ=(x,y,val,k)=>{
+    let r=21,fill="#fffdf8",tc="#8a6d3b",fs=19;
+    if(k==="o"){r=24;fill="url(#gr)";tc="#fff";fs=22;}
+    if(k==="ext"){r=18;fs=16;}
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${k==='o'?'none':'#d3ab63'}" stroke-width="1.6"/>
+      <text x="${x}" y="${y+(k==='o'?5:6)}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${tc}" font-family="Arial,sans-serif">${val}</text>`;
+  };
+  const eq=(x,y)=>`<text x="${x}" y="${y+6}" text-anchor="middle" font-size="20" fill="#b59257">=</text>`;
+  s+=circ(...pos.R,t.R,"ext")+circ(...pos.Q,t.Q,"ext")+circ(...pos.P,t.P,"ext");
+  s+=circ(...pos.S,t.S,"ext")+eq(204,pos.S[1])+circ(...pos.X,t.X,"ext")+circ(...pos.Wn,t.W,"ext");
+  s+=circ(...pos.V,t.V,"ext")+circ(...pos.U,t.U,"ext")+eq(596,pos.U[1])+circ(...pos.Tn,t.T,"ext");
+  s+=star(cx,272,8,"#d98c4a")+circ(...pos.O,t.O,"o")+T(cx,340,"主性格",13,"#7d5f30",1);
+  s+=circ(...pos.M,t.M)+circ(...pos.N,t.N);
+  s+=circ(...pos.I,t.I)+circ(...pos.J,t.J)+circ(...pos.K,t.K)+circ(...pos.L,t.L);
+  const dg=t.digits.split("");const bx=[cx-100,cx-72,cx-44,cx-16,cx+24,cx+52,cx+80,cx+108];
+  for(let i=0;i<8;i++)s+=T(bx[i],490,dg[i],22,"#7d5f30");
+  s+=T(cx-86,512,"日期",12,"#a98a55")+T(cx-30,512,"月份",12,"#a98a55")+T(cx+66,512,"年份",12,"#a98a55");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient></defs>${s}</svg>`;
+}
+
+function cc(l,v,main){return `<div class="cc ${main?'main':''}"><div class="l">${l}</div><div class="v">${v}</div><div class="a">${(A9[v]||{}).a||""}</div></div>`;}
+
+/* ===== 個人 ===== */
+function runSolo(){
+  const dt=document.getElementById("s_dt").value;if(!dt)return;
+  const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);
+  const aO=A9[t.O],aM=A9[t.M],aN=A9[t.N],aS=A9[t.sub];
+  document.getElementById("s_out").innerHTML=`
+    ${nm?`<div style="text-align:center;color:#7d5f30;margin-bottom:4px">${nm} 的全息圖</div>`:""}
+    <div class="chartwrap">${chartSVG(t)}</div>
+    <div class="sect">核心密碼</div>
+    <div class="cards">${cc("主性格 O",t.O,true)}${cc("動機 M",t.M)}${cc("能量 N",t.N)}${cc("潛意識",t.sub)}</div>
+    <div class="sect">天賦分析</div>
+    <div class="ana">
+      <p><span class="ev">主性格 ${t.O}</span>核心是「${aO.a}」，${aO.d}。主宰約 60% 的行為模式。</p>
+      <p><span class="ev">動機 ${t.M}</span>做事的起心動念偏向「${aM.a}」的方向：${aM.d}。</p>
+      <p><span class="ev">能量 ${t.N}</span>展現的能量偏向「${aN.a}」：${aN.d}。</p>
+      <p><span class="ev">潛意識 ${t.sub}</span>潛在驅力帶有「${aS.a}」色彩，影響不自覺的舉動。</p>
+      <p><span class="ev">三我</span>由內而外：本我（內圈，真實渴望）、自我（中圈，21-60 歲展現）、社會我（外圈，事業/人際/家庭的對外角色）。</p>
+    </div>
+    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。各號碼的完整解讀文案將以自有／授權內容呈現，這裡先以通用原型示意。</div>`;
+}
+
+/* ===== 兩人配對 ===== */
+function runPair(){
+  const d1=document.getElementById("p_d1").value,d2=document.getElementById("p_d2").value;if(!d1||!d2)return;
+  const n1=document.getElementById("p_n1").value.trim()||"A",n2=document.getElementById("p_n2").value.trim()||"B";
+  const a=holo(d1),b=holo(d2);const P=PAIRS[pk(a.O,b.O)];
+  // 互補：一方動機/能量補另一方
+  let score=60;if(a.M!==b.M)score+=6;if(a.N!==b.N)score+=6;if(a.O!==b.O)score+=8;else score+=4;score=Math.min(94,score);
+  document.getElementById("p_out").innerHTML=`
+    <div class="two">
+      <div class="bigO"><div class="o">${a.O}</div><div class="nm">${n1}·${A9[a.O].a}</div><div style="font-size:12px;color:#a08a6a">動機${a.M}·能量${a.N}</div></div>
+      <div class="bigO"><div class="o">${b.O}</div><div class="nm">${n2}·${A9[b.O].a}</div><div style="font-size:12px;color:#a08a6a">動機${b.M}·能量${b.N}</div></div>
+    </div>
+    <div class="sect">合作化學：${P[0]}</div>
+    <div class="ana">
+      <p><span class="ev">互補</span>${P[1]}。</p>
+      <p><span class="ev">摩擦</span>${P[2]}。</p>
+      <p><span class="ev">建議</span>${P[3]}。</p>
+      <p><span class="ev">分工</span>${n1} 適合當${A9[a.O].r}，${n2} 適合當${A9[b.O].r}。</p>
+      <p><span class="ev">指數</span>合作化學 ${score}/100（透明公式：基礎 60＋主性格/動機/能量差異互補加分，非命定評斷）。</p>
+    </div>
+    <div class="note">以雙方主性格 O 為主軸比對（動機 M、能量 N 為輔），用於找合作夥伴前先了解彼此天賦與摩擦。</div>`;
+}
+
+/* ===== 團隊 ===== */
+let mc=0;
+function addMem(nm,dt){
+  if(document.querySelectorAll("#t_mem .member").length>=12)return;mc++;
+  const div=document.createElement("div");div.className="member";
+  div.innerHTML=`<input placeholder="成員${mc} 暱稱" value="${nm||''}"><input type="date" value="${dt||''}"><button class="del" onclick="this.parentNode.remove()">&times;</button>`;
+  document.getElementById("t_mem").appendChild(div);
+}
+function runTeam(){
+  const rows=[...document.querySelectorAll("#t_mem .member")];
+  const ms=rows.map((r,i)=>{const nm=r.children[0].value.trim()||("成員"+(i+1));const dt=r.children[1].value;return dt?{nm,t:holo(dt)}:null;}).filter(Boolean);
+  if(ms.length<3){document.getElementById("t_out").innerHTML='<div class="hint">請至少輸入 3 位成員的生日。</div>';return;}
+  const spec={};for(let i=1;i<=9;i++)spec[i]=0;ms.forEach(m=>spec[m.t.O]++);
+  const max=Math.max(1,...Object.values(spec));
+  const gaps=Object.keys(spec).filter(k=>spec[k]===0).map(Number);
+  const present=Object.keys(spec).filter(k=>spec[k]>0).map(Number);
+  const bars=Object.keys(spec).map(k=>`<div class="bar" style="height:${spec[k]/max*100}%"><b>${spec[k]||""}</b><span>${k}</span></div>`).join("");
+  const roles=ms.map(m=>`<div class="roleitem"><span>${m.nm}</span><b>${m.t.O} ${A9[m.t.O].a}（${A9[m.t.O].r}）</b></div>`).join("");
+  const gN=ms.length>=6?Math.round(ms.length/3):2;
+  const sorted=[...ms].sort((a,b)=>a.t.O-b.t.O);const grp=Array.from({length:gN},()=>[]);
+  sorted.forEach((m,i)=>grp[i%gN].push(m));
+  const grpHtml=grp.map((g,i)=>`<div class="grp"><b>第${i+1}組</b>：${g.map(m=>m.nm+"("+m.t.O+A9[m.t.O].a+")").join("、")}</div>`).join("");
+  document.getElementById("t_out").innerHTML=`
+    <div class="sect">團隊主性格光譜（${ms.length}人）</div>
+    <div class="spec">${bars}</div>
+    <div class="sect">角色分佈</div>${roles}
+    <div class="sect">共同盲點（團隊缺的角色）</div>
+    <div class="chips">${gaps.length?gaps.map(n=>`<span class="chip miss">${n} ${A9[n].a}（${A9[n].r}）</span>`).join(""):'<span class="chip">角色涵蓋完整</span>'}</div>
+    <div class="sect">互補分組建議</div>${grpHtml}
+    <div class="note">以每位成員的主性格 O 統計光譜與角色，分組讓各組角色盡量多元互補，可直接用於團建分組。</div>`;
+}
+
+/* tabs */
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+  ["solo","pair","team"].forEach(t=>document.getElementById(t).style.display=t===b.dataset.t?"block":"none");
+});
+runSolo();
+addMem("阿丞","1974-07-08");addMem("小雅","1991-02-14");addMem("Ken","1988-07-30");addMem("Mia","1993-12-05");
+</script>
+</body>
+</html>
