@@ -42,6 +42,14 @@
   .code .nm{font-size:13.5px;font-weight:800;color:var(--goldd)}
   .code .nm small{font-weight:400;color:var(--sub);font-size:11px}
   .code .ds{font-size:13px;color:var(--ink);margin-top:1px}
+  /* 12 組聯合密碼 */
+  .comboG{background:#faf2e3;border:1px solid #efe1c8;border-radius:12px;padding:9px 12px;margin-bottom:8px}
+  .comboT{font-size:12.5px;font-weight:800;color:var(--goldd);margin-bottom:5px}
+  .comboR{font-size:14px;padding:3px 0;display:flex;align-items:center;gap:8px}
+  .comboR .lb{width:46px;color:var(--goldd);font-family:Arial;font-weight:800}
+  .comboR .cv{font-family:Arial;letter-spacing:2px;font-size:15px}
+  .comboR .res{background:#fff;border:1px solid #d3ab63;color:var(--goldd);border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-family:Arial;font-weight:800;font-size:14px}
+  .comboR small{color:var(--sub);font-size:11px;margin-left:auto}
   .ana p{font-size:14px;margin:7px 0}
   .ev{display:inline-block;font-size:11px;color:#fff;background:var(--gold);border-radius:6px;padding:1px 8px;margin-right:5px;font-weight:700}
   .two{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.two>div{flex:1;min-width:155px}
@@ -164,6 +172,34 @@ const CODEDEF=[
  {k:"inn",nm:"對內性格",f:"N+O+Q",d:"只有親近的人才看得到的你"},
  {k:"dir",nm:"外在動向",f:"S+R+T",d:"你對外追求的方向與價值觀"}];
 
+/* 12 組聯合密碼：每個衍生數字由兩數相加，與來源兩數構成一組（扣除直接來自生日的 I/J/K/L） */
+const COMBO=[
+ {g:"inner",lab:"IJM",src:["I","J"],res:"M",note:"動機組·最根本"},
+ {g:"inner",lab:"KLN",src:["K","L"],res:"N",note:"能量組·最根本"},
+ {g:"inner",lab:"MNO",src:["M","N"],res:"O",note:"主性格組·最深沈"},
+ {g:"y2140",lab:"IMX",src:["I","M"],res:"X"},
+ {g:"y2140",lab:"JMW",src:["J","M"],res:"W"},
+ {g:"y2140",lab:"XWS",src:["X","W"],res:"S"},
+ {g:"y4160",lab:"MOP",src:["M","O"],res:"P"},
+ {g:"y4160",lab:"NOQ",src:["N","O"],res:"Q"},
+ {g:"y4160",lab:"PQR",src:["P","Q"],res:"R"},
+ {g:"y60",lab:"KNV",src:["K","N"],res:"V"},
+ {g:"y60",lab:"LNU",src:["L","N"],res:"U"},
+ {g:"y60",lab:"VUT",src:["V","U"],res:"T"}];
+const COMBO_G={inner:"三角形內 · 本質與天賦",
+ y2140:"三角形外 · 時運 21-40 歲（工作·人際）",
+ y4160:"三角形外 · 時運 41-60 歲（事業·發展）",
+ y60:"三角形外 · 時運 60 歲後（家庭·財富）"};
+function combo12HTML(t){
+  return ["inner","y2140","y4160","y60"].map(g=>{
+    const rows=COMBO.filter(c=>c.g===g).map(c=>{
+      const sv=c.src.map(k=>t[k]).join("·");
+      return `<div class="comboR"><span class="lb">${c.lab}</span><span class="cv">${sv}</span>＝<span class="res">${t[c.res]}</span>${c.note?`<small>${c.note}</small>`:""}</div>`;
+    }).join("");
+    return `<div class="comboG"><div class="comboT">${COMBO_G[g]}</div>${rows}</div>`;
+  }).join("");
+}
+
 function r9(n){while(n>9){n=String(n).split("").reduce((a,b)=>a+ +b,0);}return n;}
 function holo(dateStr){
   const[y,m,d]=dateStr.split("-");const yy=String(y).slice(-4);
@@ -225,8 +261,11 @@ function runSolo(){
   document.getElementById("s_out").innerHTML=`
     ${nm?`<div style="text-align:center;color:#7d5f30;margin-bottom:4px">${nm} 的全息圖</div>`:""}
     <div class="chartwrap">${chartSVG(t)}</div>
-    <div class="sect">聯合密碼（逐項說明）</div>
-    ${codesHTML(t)}
+    <div class="sect">核心密碼</div>
+    <div class="cards">${cc("主性格 O",t.O,true)}${cc("動機 M",t.M)}${cc("能量 N",t.N)}${cc("潛意識",t.sub)}</div>
+    <div class="sect">聯合密碼（12 組）</div>
+    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每個衍生數字都由兩數相加，與來源兩數構成一組聯合密碼（全系統 81 組、你佔 12 組）。三角形內＝本質與天賦，三角形外三層＝各人生階段的時運。</p>
+    ${combo12HTML(t)}
     <div class="sect">天賦分析</div>
     <div class="ana">
       <p><span class="ev">主性格 ${t.O}</span>你的核心是「${O.a}」。${O.shine}</p>
@@ -239,7 +278,7 @@ function runSolo(){
 
 /* ===== 兩人配對 ===== */
 function phCard(nm,t){
-  const codes=[["主性格",t.O],["動機",t.M],["能量",t.N],["潛意識",t.sub],["對外",t.out]];
+  const codes=[["主性格組 MNO",t.O],["動機組 IJM",t.M],["能量組 KLN",t.N],["潛意識 OIL",t.sub],["對外 MOP",t.out]];
   return `<div class="ph"><div class="o">${t.O}</div><div class="nm">${nm}·${NUM[t.O].a}</div>
     ${codes.map(c=>`<div class="cd"><span>${c[0]}</span><b>${c[1]} ${NUM[c[1]].a}</b></div>`).join("")}</div>`;
 }
@@ -254,7 +293,7 @@ function runPair(){
     <div class="sect">雙方主性格與聯合密碼</div>
     <div class="two"><div>${phCard(n1,a)}</div><div>${phCard(n2,b)}</div></div>
     <div class="sect">聯合密碼對照（配對用）</div>
-    ${cmp("動機",a.M,b.M)}${cmp("能量",a.N,b.N)}${cmp("潛意識",a.sub,b.sub)}${cmp("對外性格",a.out,b.out)}
+    ${cmp("主性格組 MNO",a.O,b.O)}${cmp("動機組 IJM",a.M,b.M)}${cmp("能量組 KLN",a.N,b.N)}${cmp("潛意識 OIL",a.sub,b.sub)}
     <div class="sect">各自能展現</div>
     <div class="ana"><p><span class="ev">${n1} ${a.O}</span>${A.shine}</p><p><span class="ev">${n2} ${b.O}</span>${B.shine}</p></div>
     <div class="sect">合作（具體情境）</div>
