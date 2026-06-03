@@ -731,7 +731,7 @@ function addMem(nm,dt){if(document.querySelectorAll("#t_mem .member").length>=12
   const div=document.createElement("div");div.className="member";
   div.innerHTML=`<input class="mnm" placeholder="成員${mc} 暱稱" value="${nm||''}">
     <div class="mb bday">
-      <input class="bf by mby" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="${y}">
+      <input class="bf by mby" type="number" inputmode="numeric" placeholder="西元年" min="1900" max="2026" value="${y}">
       <input class="bf mbm" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="${m}">
       <input class="bf mbd" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="${d}">
     </div>
@@ -782,7 +782,7 @@ function runTeam(){
 
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");["solo","pair","team"].forEach(t=>document.getElementById(t).style.display=t===b.dataset.t?"block":"none");});
 runSolo();
-addMem("阿丞","1974-07-08");addMem("小雅","1991-02-14");addMem("Ken","1988-07-30");addMem("Mia","1993-12-05");
+addMem();addMem();addMem();
 </script>
 </body>
 </html>
