@@ -20,9 +20,27 @@
   .tabs button.on{background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff;box-shadow:0 4px 12px rgba(160,120,40,.3)}
   .panel{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 28px rgba(150,110,40,.1)}
   label{display:block;font-size:12.5px;color:var(--sub);margin:0 0 6px;font-weight:600}
-  input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fffdf8;color:var(--ink);font-family:inherit;transition:.15s}
+  input{width:100%;min-width:0;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fffdf8;color:var(--ink);font-family:inherit;transition:.15s}
   input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,154,75,.15)}
-  .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
+  input[type=number]{-moz-appearance:textfield}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1 1 140px;min-width:0}
+  /* 生日填寫欄 */
+  .bday{display:flex;gap:8px}
+  .bf{flex:1;min-width:0;text-align:center}
+  .bf.by{flex:1.7}
+  .bhint{font-size:11.5px;color:var(--sub);margin-top:6px}
+  /* 流年區塊 */
+  .fyr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .fbtn{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--goldd);width:40px;height:44px;border-radius:11px;font-size:21px;cursor:pointer;line-height:1}
+  .fyr input{flex:1;min-width:74px;text-align:center}
+  .fyl{color:var(--sub);font-size:13px}
+  .fgo{flex:0 0 auto;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff;padding:0 18px;height:44px;border-radius:12px;font-size:14px;font-weight:800;letter-spacing:2px}
+  .fhero{display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#fbf1dd,#f5e6cb);border-radius:14px;padding:13px 15px;margin:11px 0 4px;border:1px solid #ecd6a8}
+  .fnum{flex:0 0 auto;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#e7b86a,#c98a3c);color:#fff;font-size:29px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial;box-shadow:0 5px 13px rgba(160,120,40,.3)}
+  .fa{font-size:16px;font-weight:800;color:var(--goldd)}
+  .fa .wux{display:inline-block;font-size:11.5px;color:#8a6d2e;background:#fff;border:1px solid #e3c79a;border-radius:20px;padding:1px 9px;margin-left:7px;font-weight:700}
+  .fe{font-size:13px;color:var(--ink2);margin-top:4px;line-height:1.6}
   .btn{width:100%;margin-top:14px;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--goldd));
     color:#fff;padding:13px;border-radius:13px;font-size:15px;font-weight:800;letter-spacing:3px;box-shadow:0 6px 16px rgba(160,120,40,.3);transition:.15s}
   .btn:active{transform:translateY(1px)}
@@ -96,7 +114,9 @@
   .pct .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--greend));border-radius:6px}
   .pct .n{width:90px;color:var(--ink)}.pct .p{width:62px;text-align:right;color:var(--goldd);font-weight:700;font-size:12px}
   /* 成員輸入 */
-  .member{display:flex;gap:8px;margin-bottom:8px}.member input{flex:1}
+  .member{display:flex;gap:7px;flex-wrap:wrap;align-items:center;background:#faf4e8;border:1px solid #efe1c8;border-radius:13px;padding:9px 10px;margin-bottom:8px}
+  .member .mnm{flex:1 1 100%}
+  .member .mb{flex:1;display:flex;gap:6px;min-width:0}
   .member .del{border:0;background:#f3ead7;color:var(--goldd);border-radius:10px;padding:0 13px;font-size:18px;cursor:pointer}
   .grp{background:#faf4e8;border-radius:13px;padding:11px 13px;margin:8px 0;font-size:13.5px;border:1px solid #ecdcbf}.grp b{color:var(--goldd)}
   .grp .gm{font-size:12px;color:var(--sub);margin-top:3px}
@@ -132,7 +152,15 @@
 
   <section id="solo">
     <div class="panel">
-      <div class="row"><div><label>暱稱（選填）</label><input id="s_nm" placeholder="例如：小宇"></div><div><label>西元生日</label><input type="date" id="s_dt" value="1974-07-08"></div></div>
+      <div><label>暱稱（選填）</label><input id="s_nm" placeholder="例如：小宇"></div>
+      <div style="margin-top:11px"><label>西元生日（直接輸入）</label>
+        <div class="bday">
+          <input id="s_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
+          <input id="s_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="1">
+          <input id="s_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="1">
+        </div>
+        <div class="bhint">例：西元 2000 年 1 月 1 日，就輸入 2000、1、1</div>
+      </div>
       <button class="btn" onclick="runSolo()">繪製全息圖</button>
     </div>
     <div class="panel" id="s_out"></div>
@@ -140,8 +168,20 @@
 
   <section id="pair" style="display:none">
     <div class="panel">
-      <div class="row"><div><label>A 暱稱</label><input id="p_n1" placeholder="夥伴A"></div><div><label>A 生日</label><input type="date" id="p_d1" value="1974-07-08"></div></div>
-      <div class="row" style="margin-top:10px"><div><label>B 暱稱</label><input id="p_n2" placeholder="夥伴B"></div><div><label>B 生日</label><input type="date" id="p_d2" value="1988-03-21"></div></div>
+      <div><label>A 暱稱</label><input id="p_n1" placeholder="夥伴A"></div>
+      <div style="margin-top:10px"><label>A 西元生日</label>
+        <div class="bday">
+          <input id="p1_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
+          <input id="p1_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="1">
+          <input id="p1_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="1">
+        </div></div>
+      <div style="margin-top:12px"><label>B 暱稱</label><input id="p_n2" placeholder="夥伴B"></div>
+      <div style="margin-top:10px"><label>B 西元生日</label>
+        <div class="bday">
+          <input id="p2_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
+          <input id="p2_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="8">
+          <input id="p2_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="8">
+        </div></div>
       <button class="btn" onclick="runPair()">看合作化學反應</button>
     </div>
     <div class="panel" id="p_out"></div>
@@ -576,9 +616,43 @@ function codesHTML(t){
 }
 function cc(l,v,main){return `<div class="cc ${main?'main':''}"><div class="l">${l}</div><div class="v">${v}</div><div class="a">${(NUM[v]||{}).a||""}</div></div>`;}
 
+/* 讀取三欄生日（年/月/日），回傳 YYYY-MM-DD 或 null */
+function readBday(p){
+  const y=parseInt(document.getElementById(p+"y").value,10);
+  const m=parseInt(document.getElementById(p+"m").value,10);
+  const d=parseInt(document.getElementById(p+"d").value,10);
+  if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900||y>2100)return null;
+  return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+}
+/* 流年：固定生日的月日，把年份換成查詢年重新排盤 */
+function fortuneUI(){
+  return `<div class="fyr">
+    <button class="fbtn" onclick="fyStep(-1)" title="前一年">‹</button>
+    <input id="f_year" type="number" inputmode="numeric" min="1900" max="2100" value="2026" onchange="runFortune()">
+    <span class="fyl">年</span>
+    <button class="fbtn" onclick="fyStep(1)" title="後一年">›</button>
+    <button class="fgo" onclick="runFortune()">查流年</button>
+  </div>
+  <div id="fortune_out"></div>`;
+}
+function fyStep(d){const el=document.getElementById("f_year");el.value=(parseInt(el.value,10)||2026)+d;runFortune();}
+function runFortune(){
+  const bd=readBday("s_"),box=document.getElementById("fortune_out");if(!box)return;
+  if(!bd){box.innerHTML='<div class="hint">請先在上方填寫完整生日。</div>';return;}
+  const yr=parseInt(document.getElementById("f_year").value,10);if(!yr){box.innerHTML='<div class="hint">請輸入要查詢的西元年份。</div>';return;}
+  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=NUM[ft.O],L=LORE[ft.O];
+  box.innerHTML=`
+    <div class="fhero"><div class="fnum">${ft.O}</div><div><div class="fa">${yr} 年流年 · ${O.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">${O.ess}</div></div></div>
+    <div class="trait"><span class="tg pos">今年發揮</span><span class="tt">${O.shine}</span></div>
+    <div class="trait"><span class="tg les">今年提醒</span><span class="tt">${O.advice}</span></div>
+    <div style="margin:9px 0 2px"><span class="ssub">${yr} 年流年主性格聯合密碼（點看完整解讀）</span></div>
+    <div class="ctags">${comboTag(getC("MNO"),ft,yr+"年")}</div>
+    <p class="gdesc">流年算法：保留你的生日月日，把年份換成 ${yr} 年重新排盤，得出該年的主性格能量。資料依《生命密碼全息圖》解讀指南。</p>`;
+}
+
 /* ===== 個人 ===== */
 function runSolo(){
-  const dt=document.getElementById("s_dt").value;if(!dt)return;
+  const dt=readBday("s_");if(!dt){document.getElementById("s_out").innerHTML='<div class="hint">請填寫完整的西元生日（年、月、日）。</div>';return;}
   const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];const L=LORE[t.O];
   const hero=`<div class="hero"><div class="num">${t.O}</div><div class="ht"><div><span class="arch">${O.a}</span><span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="ess">坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</div></div></div>`;
   const traits=`<div style="margin-top:13px">
@@ -596,12 +670,14 @@ function runSolo(){
     ${block("主性格",hero+traits,`${t.O}　${O.a}`)}
     ${block("三我 · 你的三層自我",threeSelf(t),"由內而外 · 點標籤看每組解讀")}
     ${block("天賦與合作",coop)}
+    ${block("流年運勢",fortuneUI(),"查看某一年的能量")}
     <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
+  runFortune();
 }
 
 /* ===== 兩人配對 ===== */
 function runPair(){
-  const d1=document.getElementById("p_d1").value,d2=document.getElementById("p_d2").value;if(!d1||!d2)return;
+  const d1=readBday("p1_"),d2=readBday("p2_");if(!d1||!d2){document.getElementById("p_out").innerHTML='<div class="hint">請填寫雙方完整的西元生日（年、月、日）。</div>';return;}
   const n1=document.getElementById("p_n1").value.trim()||"A",n2=document.getElementById("p_n2").value.trim()||"B";
   const a=holo(d1),b=holo(d2);const A=NUM[a.O],B=NUM[b.O];
   const P=PAIRS[pk(a.O,b.O)]||["合作組合","彼此能帶來不同視角","相處上需要磨合","保持溝通與分工"];
@@ -632,8 +708,15 @@ function runPair(){
 /* ===== 團隊 ===== */
 let mc=0;
 function addMem(nm,dt){if(document.querySelectorAll("#t_mem .member").length>=12)return;mc++;
+  let y="",m="",d="";if(dt){const p=dt.split("-");y=+p[0];m=+p[1];d=+p[2];}
   const div=document.createElement("div");div.className="member";
-  div.innerHTML=`<input placeholder="成員${mc} 暱稱" value="${nm||''}"><input type="date" value="${dt||''}"><button class="del" onclick="this.parentNode.remove()">&times;</button>`;
+  div.innerHTML=`<input class="mnm" placeholder="成員${mc} 暱稱" value="${nm||''}">
+    <div class="mb bday">
+      <input class="bf by mby" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="${y}">
+      <input class="bf mbm" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="${m}">
+      <input class="bf mbd" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="${d}">
+    </div>
+    <button class="del" onclick="this.parentNode.remove()" title="刪除">&times;</button>`;
   document.getElementById("t_mem").appendChild(div);}
 function radarSVG(spec,total){
   const size=270,cx=135,cy=135,R=92,N=9,max=Math.max(1,...Object.values(spec));
@@ -647,8 +730,11 @@ function radarSVG(spec,total){
 }
 function runTeam(){
   const rows=[...document.querySelectorAll("#t_mem .member")];
-  const ms=rows.map((r,i)=>{const nm=r.children[0].value.trim()||("成員"+(i+1));const dt=r.children[1].value;return dt?{nm,t:holo(dt)}:null;}).filter(Boolean);
-  if(ms.length<3){document.getElementById("t_out").innerHTML='<div class="hint">請至少輸入 3 位成員的生日。</div>';return;}
+  const ms=rows.map((r,i)=>{const nm=(r.querySelector(".mnm").value.trim())||("成員"+(i+1));
+    const y=+r.querySelector(".mby").value,m=+r.querySelector(".mbm").value,d=+r.querySelector(".mbd").value;
+    if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900)return null;
+    return {nm,t:holo(y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"))};}).filter(Boolean);
+  if(ms.length<3){document.getElementById("t_out").innerHTML='<div class="hint">請至少輸入 3 位成員的完整生日（年、月、日）。</div>';return;}
   const tot=ms.length;const spec={};for(let i=1;i<=9;i++)spec[i]=0;ms.forEach(m=>spec[m.t.O]++);
   const present=Object.keys(spec).filter(k=>spec[k]>0).map(Number);
   const gaps=Object.keys(spec).filter(k=>spec[k]===0).map(Number);
