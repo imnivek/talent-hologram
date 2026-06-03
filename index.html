@@ -493,7 +493,9 @@ function showCode(el){
   const desc=CODE81[code]||"這組在此全息圖中含 0（出生年帶整千），暫無對應的標準解讀。";
   document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
   el.classList.add("sel");
-  highlightChart(letters);
+  const H=window.__HNODES||{};
+  const matchMain=letters.length===3&&letters.every((Lk,i)=>H[Lk]&&String(H[Lk].v)===c[i]);
+  if(matchMain)highlightChart(letters);else clearHighlight();
   const sh=document.getElementById("cdsheet");
   sh.innerHTML=`<div class="cdhead"><span class="cdn">${c.join("·")}</span><span class="cdlab">${name}</span><button class="cdx" onclick="hideCode()">×</button></div>
     ${t?`<div class="cdmini">${miniChart(t,letters)}</div><div class="cdminitip">橙色為這組組成的三個數字在全息圖中的位置</div>`:""}
@@ -576,7 +578,7 @@ function holo(dateStr){
 function pk(a,b){return Math.min(a,b)+"-"+Math.max(a,b);}
 
 /* ===== 全息圖 SVG（三層同心圓） ===== */
-function chartSVG(t){
+function chartSVG(t,main){main=main!==false;
   const W=800,H=820,cx=400,cy=400,rIn=146,rOut=265;let s="";
   s+=`<circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#f3e7cf" stroke="#cdab6f" stroke-width="1.6"/>`;
   s+=`<circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#fdf8ee" stroke="#d6b87f" stroke-width="1.5"/>`;
@@ -602,11 +604,13 @@ function chartSVG(t){
   const dg=t.digits.split("");const bx=[cx-100,cx-72,cx-44,cx-16,cx+24,cx+52,cx+80,cx+108];
   for(let i=0;i<8;i++)s+=T(bx[i],490,dg[i],22,"#7d5f30");
   s+=T(cx-86,512,"日期",12,"#a98a55")+T(cx-30,512,"月份",12,"#a98a55")+T(cx+66,512,"年份",12,"#a98a55");
-  /* 儲存節點座標供點擊高亮使用 */
-  const L2P={I:pos.I,J:pos.J,K:pos.K,L:pos.L,M:pos.M,N:pos.N,O:pos.O,P:pos.P,Q:pos.Q,R:pos.R,S:pos.S,T:pos.Tn,U:pos.U,V:pos.V,W:pos.Wn,X:pos.X};
-  const RAD={O:24};window.__HNODES={};
-  for(const kk in L2P){window.__HNODES[kk]={x:L2P[kk][0],y:L2P[kk][1],r:RAD[kk]||(["M","N","I","J","K","L"].includes(kk)?21:18),v:t[kk]};}
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient><radialGradient id="hlgr"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}<g id="hl"></g></svg>`;
+  /* 只有主圖（本命）儲存節點座標並提供高亮層；流年圖等副圖不覆寫 */
+  if(main){
+    const L2P={I:pos.I,J:pos.J,K:pos.K,L:pos.L,M:pos.M,N:pos.N,O:pos.O,P:pos.P,Q:pos.Q,R:pos.R,S:pos.S,T:pos.Tn,U:pos.U,V:pos.V,W:pos.Wn,X:pos.X};
+    const RAD={O:24};window.__HNODES={};
+    for(const kk in L2P){window.__HNODES[kk]={x:L2P[kk][0],y:L2P[kk][1],r:RAD[kk]||(["M","N","I","J","K","L"].includes(kk)?21:18),v:t[kk]};}
+  }
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient><radialGradient id="hlgr"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}${main?'<g id="hl"></g>':''}</svg>`;
 }
 
 /* 聯合密碼列表 HTML */
@@ -626,63 +630,7 @@ function readBday(p){
   if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900||y>2100)return null;
   return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
 }
-/* 流年 1-9 分面向解讀（依通用生命靈數流年慣例，框架為能量與方向提醒，非命定預測） */
-const FLOW={
- 1:{theme:"開創與起步，九年循環的新起點",
-    career:"適合啟動新專案、換跑道或主動爭取機會，今年種下的種子會影響往後幾年。",
-    money:"宜投資自己與新方向，財務上打基礎、布局，而非追求速成。",
-    love:"單身者有新邂逅的能量；關係中適合主動表達、帶頭經營。",
-    body:"衝勁足、能量旺，注意別硬撐，記得安排休息。",
-    advice:"想清楚要的方向就大膽起步，今年的選擇格外關鍵。"},
- 2:{theme:"耕耘與關係，放慢醞釀的一年",
-    career:"成果未必馬上顯現，重在合作、累積與細節，耐心經營人脈。",
-    money:"財務宜守穩、分散風險，避免躁進的大筆投入。",
-    love:"關係容易升溫，適合深化承諾與溝通，重視傾聽與包容。",
-    body:"情緒較敏感，好好照顧心情與睡眠。",
-    advice:"別急著要結果，把基礎與關係顧好，耐心是今年的關鍵。"},
- 3:{theme:"表達與創意，活力社交的一年",
-    career:"適合行銷、簡報、創作與對外曝光，靈感與人氣都旺。",
-    money:"進帳機會多，但也容易衝動消費，留意預算。",
-    love:"社交活躍、桃花旺；說話別太衝，避免口舌誤會。",
-    body:"行程易過滿、情緒起伏大，記得收斂與休息。",
-    advice:"把靈感挑一兩個落地完成，別只停在嘴上，凡事三思而後言。"},
- 4:{theme:"扎根與築基，踏實努力的一年",
-    career:"適合建立制度、把事做扎實、累積實力，回報來自堅持。",
-    money:"宜穩健理財、儲蓄、整頓財務結構，避免投機。",
-    love:"關係講求穩定與責任，用實際行動經營勝過甜言蜜語。",
-    body:"工作量偏大，特別要顧好作息與身體保養。",
-    advice:"按部就班把基礎打牢，今年的努力是未來的地基。"},
- 5:{theme:"變動與自由，機會與冒險的一年",
-    career:"變化與機會都多，適合嘗試、轉換、拓展新管道。",
-    money:"收入起伏較大，保留彈性，別把雞蛋放在同一個籃子裡。",
-    love:"新鮮感與變動強，單身桃花旺；關係中需要空間與溝通。",
-    body:"容易奔波忙亂，注意別過度消耗、飲食不規律。",
-    advice:"擁抱變化，但守住一個核心目標，自由要配上自律。"},
- 6:{theme:"責任與愛，家庭與關係的一年",
-    career:"適合承擔更多責任、照顧團隊與品質，服務帶來回報。",
-    money:"花費較多在家庭與他人，宜量力而為、別過度承擔。",
-    love:"感情與家庭是今年重心，適合承諾、同居、成家。",
-    body:"容易為他人操心而忽略自己，記得先把自己照顧好。",
-    advice:"愛要包容也要設界線，別把所有責任都往身上扛。"},
- 7:{theme:"內省與沉澱，學習與休養的一年",
-    career:"適合進修、研究、規劃與沉澱，不必急著對外衝刺。",
-    money:"宜保守、檢視與整理，不適合高風險投資。",
-    love:"需要獨處與內在空間，關係重質不重量、重深度溝通。",
-    body:"身心需要休息，適合靜心、運動、調養。",
-    advice:"向內探索、補充自己，今年的沉潛是為了下一波蓄力。"},
- 8:{theme:"收穫與成就，事業財務的高峰年",
-    career:"努力容易開花結果，適合衝事業、談合作、爭取位置。",
-    money:"財務能量最強的一年，適合理財布局，但須正當踏實。",
-    love:"忙於事業易忽略關係，記得分時間給重要的人。",
-    body:"壓力與野心較大，當心過勞，留意身心平衡。",
-    advice:"展現實力、把握收成，守住誠信與德行才走得長遠。"},
- 9:{theme:"完成與放下，整理與利他的一年",
-    career:"適合收尾、結案、斷捨離，清掉不適合的，為新循環騰出空間。",
-    money:"宜結清舊帳、整理財務，不適合開啟大筆新投資。",
-    love:"關係面臨整理與沉澱，放下不適合的，珍惜該留的。",
-    body:"情緒易感傷與疲憊，給自己療癒與放鬆的時間。",
-    advice:"學會放手與割捨，完成一個循環，才能輕鬆迎接新的開始。"}};
-/* 流年：固定生日的月日，把年份換成查詢年重新排盤 */
+/* 流年圖：固定生日的月日，把年份換成查詢年，重排整張全息圖 */
 function fortuneUI(){
   return `<div class="fyr">
     <button class="fbtn" onclick="fyStep(-1)" title="前一年">‹</button>
@@ -696,16 +644,20 @@ function fortuneUI(){
 function fyStep(d){const el=document.getElementById("f_year");el.value=(parseInt(el.value,10)||2026)+d;runFortune();}
 function runFortune(){
   const bd=readBday("s_"),box=document.getElementById("fortune_out");if(!box)return;
-  if(!bd){box.innerHTML='<div class="hint">填好上方生日後，這裡會顯示你的流年運勢。</div>';return;}
+  if(!bd){box.innerHTML='<div class="hint">填好上方生日後，這裡會排出你的流年圖。</div>';return;}
   const yr=parseInt(document.getElementById("f_year").value,10);if(!yr){box.innerHTML='<div class="hint">請輸入要查詢的西元年份。</div>';return;}
-  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=ft.O,N=NUM[O],L=LORE[O],F=FLOW[O];
-  const rows=[["job","事業發展",F.career],["money","財務理財",F.money],["love","感情人際",F.love],["body","身心健康",F.body],["les","今年建議",F.advice]];
+  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=ft.O,N=NUM[O],L=LORE[O];
   box.innerHTML=`
-    <div class="fhero"><div class="fnum">${O}</div><div><div class="fa">${yr} 年流年 · ${N.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">年度主題：${F.theme}</div></div></div>
-    ${rows.map(r=>`<div class="trait"><span class="tg ${r[0]}">${r[1]}</span><span class="tt">${r[2]}</span></div>`).join("")}
-    <div style="margin:11px 0 2px"><span class="ssub">${yr} 年流年主性格聯合密碼（點看數字組成與解讀）</span></div>
-    <div class="ctags">${comboTag(getC("MNO"),ft,yr+"年")}</div>
-    <p class="gdesc">流年算法：把生日的月、日加上 ${yr} 年重新排盤得出流年主性格（與生命靈數流年數一致），流年以九年為一循環。本區為能量與方向的提醒，非命定預測。</p>`;
+    <div class="fhero"><div class="fnum">${O}</div><div><div class="fa">${yr} 年流年主性格 · ${N.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">用生日的月日加上 ${yr} 年重新排出的「流年圖」，主性格代表今年的核心能量。</div></div></div>
+    <div class="trait"><span class="tg pos">今年能量</span><span class="tt">${N.shine}</span></div>
+    <div class="trait"><span class="tg gold">起心動念</span><span class="tt">今年的動機偏向「${NUM[ft.M].a}」（動機數 ${ft.M}）。</span></div>
+    <div class="trait"><span class="tg gold">行動能量</span><span class="tt">今年的能量偏向「${NUM[ft.N].a}」（能量數 ${ft.N}）。</span></div>
+    <div class="trait"><span class="tg les">今年功課</span><span class="tt">${L.lesson}</span></div>
+    <div style="margin:12px 0 4px"><span class="ssub">${yr} 年流年圖（綠色為流年主性格）</span></div>
+    <div class="chartwrap">${chartSVG(ft,false)}</div>
+    <div style="margin:12px 0 2px"><span class="ssub">${yr} 年流年聯合密碼（點任一標籤看數字組成與解讀）</span></div>
+    ${threeSelf(ft)}
+    <p class="gdesc">流年圖算法：保留生日的月、日，把年份換成 ${yr} 年，依本命全息圖同樣步驟重新排盤（天賦優勢心理學流年圖法，不同於生命靈數只看一個流年數）。本區為能量與方向的提醒，非命定預測。流年的起算期間以影片教學為準，目前以西元年為單位。</p>`;
 }
 
 /* ===== 個人 ===== */
@@ -728,7 +680,7 @@ function runSolo(){
     ${block("主性格",hero+traits,`${t.O}　${O.a}`)}
     ${block("三我 · 你的三層自我",threeSelf(t),"由內而外 · 點標籤看每組解讀")}
     ${block("天賦與合作",coop)}
-    ${block("流年運勢",fortuneUI(),"查看某一年的能量")}
+    ${block("流年圖",fortuneUI(),"查看某一年的流年全息圖")}
     <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
   runFortune();
 }
