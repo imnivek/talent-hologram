@@ -631,10 +631,13 @@ function readBday(p){
   return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
 }
 /* 流年圖：固定生日的月日，把年份換成查詢年，重排整張全息圖 */
+/* 流年期間每年 10/1 到隔年 9/30，10 月起即換下一個流年 */
+function curFlowYear(){const d=new Date();let y=d.getFullYear();if(d.getMonth()+1>=10)y+=1;return y;}
 function fortuneUI(){
+  const cy=curFlowYear();
   return `<div class="fyr">
     <button class="fbtn" onclick="fyStep(-1)" title="前一年">‹</button>
-    <input id="f_year" type="number" inputmode="numeric" min="1900" max="2100" value="2026" onchange="runFortune()">
+    <input id="f_year" type="number" inputmode="numeric" min="1900" max="2100" value="${cy}" onchange="runFortune()">
     <span class="fyl">年</span>
     <button class="fbtn" onclick="fyStep(1)" title="後一年">›</button>
     <button class="fgo" onclick="runFortune()">查流年</button>
@@ -646,18 +649,24 @@ function runFortune(){
   const bd=readBday("s_"),box=document.getElementById("fortune_out");if(!box)return;
   if(!bd){box.innerHTML='<div class="hint">填好上方生日後，這裡會排出你的流年圖。</div>';return;}
   const yr=parseInt(document.getElementById("f_year").value,10);if(!yr){box.innerHTML='<div class="hint">請輸入要查詢的西元年份。</div>';return;}
-  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=ft.O,N=NUM[O],L=LORE[O];
+  const[,mm,dd]=bd.split("-");
+  const nat=holo(bd),ft=holo(yr+"-"+mm+"-"+dd);const O=ft.O,N=NUM[O],L=LORE[O];
+  /* 借力補位：流年內圈出現、但本命內圈沒有的數字 */
+  const natSet=new Set([nat.I,nat.J,nat.K,nat.L,nat.M,nat.N,nat.O]);
+  const borrow=[...new Set([ft.I,ft.J,ft.K,ft.L,ft.M,ft.N,ft.O])].filter(n=>!natSet.has(n)).sort((a,b)=>a-b);
+  const borrowTxt=borrow.length?(borrow.map(n=>n+" "+NUM[n].a).join("、")+"（本命較少見，今年流年帶來，可借這股力量補位）"):"今年流年的能量你本命大多已有，是把既有優勢再發揮的一年。";
   box.innerHTML=`
-    <div class="fhero"><div class="fnum">${O}</div><div><div class="fa">${yr} 年流年主性格 · ${N.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">用生日的月日加上 ${yr} 年重新排出的「流年圖」，主性格代表今年的核心能量。</div></div></div>
+    <div class="fhero"><div class="fnum">${O}</div><div><div class="fa">${yr} 年流年主性格 · ${N.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">流年圖＝生日的月日加上 ${yr} 年重排，頂端主性格就是「今年的你」。</div></div></div>
     <div class="trait"><span class="tg pos">今年能量</span><span class="tt">${N.shine}</span></div>
-    <div class="trait"><span class="tg gold">起心動念</span><span class="tt">今年的動機偏向「${NUM[ft.M].a}」（動機數 ${ft.M}）。</span></div>
-    <div class="trait"><span class="tg gold">行動能量</span><span class="tt">今年的能量偏向「${NUM[ft.N].a}」（能量數 ${ft.N}）。</span></div>
     <div class="trait"><span class="tg les">今年功課</span><span class="tt">${L.lesson}</span></div>
+    <div class="trait"><span class="tg gold">借力補位</span><span class="tt">${borrowTxt}</span></div>
     <div style="margin:12px 0 4px"><span class="ssub">${yr} 年流年圖（綠色為流年主性格）</span></div>
     <div class="chartwrap">${chartSVG(ft,false)}</div>
-    <div style="margin:12px 0 2px"><span class="ssub">${yr} 年流年聯合密碼（點任一標籤看數字組成與解讀）</span></div>
-    ${threeSelf(ft)}
-    <p class="gdesc">流年圖算法：保留生日的月、日，把年份換成 ${yr} 年，依本命全息圖同樣步驟重新排盤（天賦優勢心理學流年圖法，不同於生命靈數只看一個流年數）。本區為能量與方向的提醒，非命定預測。流年的起算期間以影片教學為準，目前以西元年為單位。</p>`;
+    <div style="margin:12px 0 4px"><span class="ssub">流年圖三大關鍵（點標籤看數字組成與解讀）</span></div>
+    <div class="layer l1"><div class="lh"><b>能力</b><span class="lr">左側 · 你帶來的，不隨年變</span></div><div class="lm">由你的生日月日而來，是你一輩子的本錢。</div><div class="ctags">${comboTag(getC("IJM"),ft,"能力")}</div></div>
+    <div class="layer l3"><div class="lh"><b>大環境</b><span class="lr">右側 · 全體共享，逐年改變</span></div><div class="lm">由年份算出，${yr} 年大環境是 ${ft.K}·${ft.L}·${ft.N}，每個人都一樣。</div><div class="ctags">${comboTag(getC("KLN"),ft,"大環境")}</div></div>
+    <div class="layer l2"><div class="lh"><b>流年主性格</b><span class="lr">頂端 · 今年的你</span></div><div class="lm">能力與大環境合成，代表今年的核心狀態。</div><div class="ctags">${comboTag(getC("MNO"),ft,"今年的你")}</div></div>
+    <p class="gdesc">流年期間：每年 10 月 1 日到隔年 9 月 30 日，以西元年數字計算（10 月起換流年）。流年三用途：借力補位（借用本命缺少的數字能量）、超前部署（流年主性格逐年推進，可提前規劃）、萬物循環（順著九年循環，該播種時播種、該收成時收成）。本區為能量與方向提醒，非命定預測。</p>`;
 }
 
 /* ===== 個人 ===== */
