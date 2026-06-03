@@ -5,98 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>天賦數全息圖</title>
 <style>
-  :root{--bg1:#fbf3e7;--bg2:#f7e9d6;--ink:#5b4326;--sub:#a08a6a;
-    --gold:#c79a4b;--goldd:#9c7327;--green:#9cbf3f;--card:#fffdf8;}
+  :root{--bg1:#fbf3e7;--bg2:#f3e6d0;--ink:#4f3a1f;--ink2:#6b5230;--sub:#a08a6a;
+    --gold:#c79a4b;--goldd:#9c7327;--green:#8fb22f;--greend:#6f8f1f;
+    --card:#fffdf8;--line:#ecdcbf;--hl:#d9663d;--l1:#d98c4a;--l2:#8fb22f;--l3:#c0a062;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;color:var(--ink);
-    background:radial-gradient(circle at 50% 24%,var(--bg1),var(--bg2));min-height:100vh;line-height:1.75}
-  .wrap{max-width:720px;margin:0 auto;padding:18px 14px 70px}
-  header{text-align:center;padding:4px 0}
-  header h1{font-size:22px;letter-spacing:4px;color:var(--goldd)}
-  header p{color:var(--sub);font-size:12.5px;margin-top:2px}
-  .tabs{display:flex;gap:6px;background:#fff;border-radius:14px;padding:5px;margin:14px 0;box-shadow:0 6px 18px rgba(150,110,40,.1)}
-  .tabs button{flex:1;border:0;background:transparent;padding:10px 4px;border-radius:10px;font-size:14px;color:var(--sub);cursor:pointer;font-weight:700;font-family:inherit}
-  .tabs button.on{background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff}
-  .panel{background:var(--card);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 8px 26px rgba(150,110,40,.1)}
-  label{display:block;font-size:13px;color:var(--sub);margin:0 0 6px}
-  input{width:100%;padding:11px 13px;border:1.5px solid #e8d8bf;border-radius:11px;font-size:15px;background:#fffdf8;color:var(--ink);font-family:inherit}
-  input:focus{outline:none;border-color:var(--gold)}
+  body{font-family:"Noto Serif TC","Songti TC","PingFang TC","Microsoft JhengHei",serif;color:var(--ink);
+    background:radial-gradient(circle at 50% 16%,var(--bg1),var(--bg2) 78%);min-height:100vh;line-height:1.7;-webkit-text-size-adjust:100%}
+  .wrap{max-width:680px;margin:0 auto;padding:16px 14px 96px}
+  header{text-align:center;padding:6px 0 2px}
+  header h1{font-size:23px;letter-spacing:7px;color:var(--goldd);font-weight:800}
+  header p{color:var(--sub);font-size:12px;margin-top:4px;letter-spacing:1px}
+  .tabs{display:flex;gap:5px;background:#fff;border-radius:16px;padding:5px;margin:14px 0;box-shadow:0 6px 20px rgba(150,110,40,.12)}
+  .tabs button{flex:1;border:0;background:transparent;padding:11px 4px;border-radius:12px;font-size:14px;color:var(--sub);cursor:pointer;font-weight:700;font-family:inherit;transition:.2s}
+  .tabs button.on{background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff;box-shadow:0 4px 12px rgba(160,120,40,.3)}
+  .panel{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 28px rgba(150,110,40,.1)}
+  label{display:block;font-size:12.5px;color:var(--sub);margin:0 0 6px;font-weight:600}
+  input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fffdf8;color:var(--ink);font-family:inherit;transition:.15s}
+  input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,154,75,.15)}
   .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
-  .btn{width:100%;margin-top:12px;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--goldd));
-    color:#fff;padding:12px;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:2px;box-shadow:0 6px 16px rgba(160,120,40,.3)}
-  .btn.sec{background:#f3ead7;color:var(--goldd);box-shadow:none;letter-spacing:1px}
-  .hint{font-size:12px;color:var(--sub);margin-top:8px}
-  .chartwrap{display:flex;justify-content:center;background:radial-gradient(circle at 50% 42%,#fdf6ea,#f6e7d0);border-radius:20px;padding:4px}
-  .chart{width:100%;max-width:680px}
-  .sect{font-size:15px;font-weight:800;color:var(--goldd);margin:16px 0 8px;padding-left:9px;border-left:4px solid var(--gold)}
-  .cards{display:flex;flex-wrap:wrap;gap:9px}
-  .cc{flex:1;min-width:104px;background:#faf2e3;border-radius:13px;padding:10px 12px;border:1px solid #efe1c8}
-  .cc .l{font-size:11.5px;color:var(--sub)}.cc .v{font-size:24px;font-weight:800;color:var(--goldd)}
-  .cc.main{background:linear-gradient(135deg,#eef6d8,#e3f0c2);border-color:var(--green)}.cc.main .v{color:#6f8f1f}
-  .cc .a{font-size:12px;font-weight:700}
-  /* 聯合密碼列表 */
-  .code{display:flex;gap:10px;align-items:flex-start;background:#faf2e3;border-radius:12px;padding:10px 12px;margin-bottom:7px;border:1px solid #efe1c8}
-  .code .num{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid #d3ab63;color:var(--goldd);font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;font-family:Arial}
-  .code.key .num{background:linear-gradient(135deg,#b6d65a,#8fb22f);color:#fff;border:none}
-  .code .txt{flex:1}
-  .code .nm{font-size:13.5px;font-weight:800;color:var(--goldd)}
-  .code .nm small{font-weight:400;color:var(--sub);font-size:11px}
-  .code .ds{font-size:13px;color:var(--ink);margin-top:1px}
-  /* 12 組聯合密碼 */
-  .comboG{background:#faf2e3;border:1px solid #efe1c8;border-radius:12px;padding:9px 12px;margin-bottom:8px}
-  .comboT{font-size:12.5px;font-weight:800;color:var(--goldd);margin-bottom:5px}
-  .comboR{font-size:14px;padding:3px 0;display:flex;align-items:center;gap:8px}
-  .comboR .lb{width:46px;color:var(--goldd);font-family:Arial;font-weight:800}
-  .comboR .cv{font-family:Arial;letter-spacing:2px;font-size:15px}
-  .comboR .res{background:#fff;border:1px solid #d3ab63;color:var(--goldd);border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-family:Arial;font-weight:800;font-size:14px}
-  .comboR small{color:var(--sub);font-size:11px;margin-left:auto}
+  .btn{width:100%;margin-top:14px;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--goldd));
+    color:#fff;padding:13px;border-radius:13px;font-size:15px;font-weight:800;letter-spacing:3px;box-shadow:0 6px 16px rgba(160,120,40,.3);transition:.15s}
+  .btn:active{transform:translateY(1px)}
+  .btn.sec{background:#f3ead7;color:var(--goldd);box-shadow:none;letter-spacing:1px;margin-top:8px}
+  .hint{font-size:12.5px;color:var(--sub);margin-top:8px;text-align:center}
+  /* 主圖 */
+  .chartwrap{display:flex;justify-content:center;background:radial-gradient(circle at 50% 40%,#fdf7ec,#f4e6cf);border-radius:22px;padding:6px;box-shadow:inset 0 2px 14px rgba(150,110,40,.08)}
+  .chart{width:100%;max-width:660px}
+  .tip{font-size:11.5px;color:var(--sub);text-align:center;margin:7px 0 0}
+  /* 區塊卡片：明確區隔 */
+  .block{background:var(--card);border-radius:18px;padding:15px 16px;margin:13px 0;box-shadow:0 5px 18px rgba(150,110,40,.08);border:1px solid #f1e7d3}
+  .sect{font-size:16px;font-weight:800;color:var(--goldd);display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
+  .sect::before{content:"";width:5px;height:17px;background:linear-gradient(var(--gold),var(--goldd));border-radius:3px;flex:0 0 auto;align-self:center}
+  .ssub{font-size:11.5px;font-weight:500;color:var(--sub);letter-spacing:0}
+  /* 主性格 hero */
+  .hero{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#eef6d8,#e0eebb);border-radius:16px;padding:15px 17px;border:1.5px solid #cfe08f}
+  .hero .num{flex:0 0 auto;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#b6d65a,#7fa028);color:#fff;font-size:38px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial;box-shadow:0 6px 16px rgba(120,150,40,.35)}
+  .hero .ht{flex:1}
+  .hero .ht .arch{font-size:20px;font-weight:800;color:var(--greend)}
+  .hero .ht .wux{display:inline-block;font-size:12px;color:#5e7d18;background:#fff;border:1px solid #cfe08f;border-radius:20px;padding:1px 10px;margin-left:7px;font-weight:700}
+  .hero .ht .ess{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.6}
+  /* 特質列：主次分明 */
+  .trait{display:flex;gap:10px;margin:10px 0;font-size:14px;line-height:1.65}
+  .trait .tg{flex:0 0 auto;font-size:11.5px;font-weight:800;color:#fff;border-radius:8px;padding:3px 10px;height:fit-content;letter-spacing:1px;white-space:nowrap}
+  .tg.pos{background:#7fa028}.tg.sh{background:#c98a3c}.tg.les{background:#a877c0}.tg.gold{background:var(--gold)}
+  .trait .tt{color:var(--ink)}
+  /* 三我層 */
+  .layer{border-radius:15px;padding:13px 14px;margin:10px 0;border-left:5px solid var(--l1);background:#faf4e8}
+  .layer.l2{border-color:var(--l2);background:#f4f8e6}.layer.l3{border-color:var(--l3)}
+  .layer .lh{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+  .layer .lh b{font-size:16px;color:var(--goldd);font-weight:800}
+  .layer.l2 .lh b{color:var(--greend)}
+  .layer .lh .lr{font-size:11.5px;color:var(--sub)}
+  .layer .lm{font-size:12.5px;color:var(--ink2);margin-bottom:9px;line-height:1.6}
   /* 聯合密碼標籤 */
-  .ctags{display:flex;flex-wrap:wrap;gap:7px;margin:5px 0 6px}
-  .ctag{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:1.5px solid #d3ab63;border-radius:11px;padding:5px 12px;min-width:60px}
-  .ctag b{font-family:Arial;font-size:16px;color:var(--goldd);letter-spacing:1.5px;line-height:1.2}
-  .ctag small{font-size:10.5px;color:var(--sub);margin-top:1px}
-  .ctag.key{background:linear-gradient(135deg,#eef6d8,#e3f0c2);border-color:var(--green)}
-  .ctag.key b{color:#6f8f1f}
-  .ctag .who{font-size:11px;color:var(--goldd);font-weight:700}
-  .gdesc{font-size:12px;color:var(--sub);margin:0 0 4px}
-  .ana p{font-size:14px;margin:7px 0}
-  .ev{display:inline-block;font-size:11px;color:#fff;background:var(--gold);border-radius:6px;padding:1px 8px;margin-right:5px;font-weight:700}
-  .two{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}.two>div{flex:1;min-width:155px}
-  .ph{background:#faf2e3;border-radius:14px;padding:12px;border:1px solid #efe1c8}
-  .ph .o{font-size:34px;font-weight:800;color:#6f8f1f;text-align:center;line-height:1.1}
-  .ph .nm{font-size:13px;color:var(--goldd);text-align:center;font-weight:700;margin-bottom:6px}
-  .ph .cd{font-size:12px;color:var(--ink);display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed #eaddc4}
-  .ph .cd b{color:var(--goldd)}
-  .member{display:flex;gap:8px;margin-bottom:8px}.member input{flex:1}
-  .member .del{border:0;background:#f3ead7;color:var(--goldd);border-radius:9px;padding:0 12px;font-size:18px;cursor:pointer}
-  .radarwrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .radar{width:270px;max-width:84vw}
-  .pctlist{flex:1;min-width:190px}
-  .pct{display:flex;align-items:center;gap:8px;font-size:13px;margin:3px 0}
-  .pct .bar{flex:1;height:9px;background:#efe1c8;border-radius:6px;overflow:hidden}
-  .pct .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--goldd))}
-  .pct .n{width:96px;color:var(--ink)}.pct .p{width:54px;text-align:right;color:var(--goldd);font-weight:700}
-  .mrow{font-size:14px;margin:7px 0;padding-bottom:7px;border-bottom:1px dashed #eaddc4}
+  .ctags{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}
+  .ctag{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:1.5px solid #dcc28d;border-radius:13px;padding:7px 14px;min-width:64px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s}
+  .ctag:hover{box-shadow:0 4px 13px rgba(160,120,40,.2);transform:translateY(-1px)}
+  .ctag:active{transform:scale(.96)}
+  .ctag .ctn{font-size:11.5px;color:var(--goldd);font-weight:700;line-height:1.1}
+  .ctag b{font-family:Arial;font-size:18px;color:var(--ink);letter-spacing:2px;line-height:1.15;font-weight:800}
+  .ctag .cts{font-size:10px;color:var(--sub);line-height:1.1}
+  .ctag.key{background:linear-gradient(135deg,#eef6d8,#dcecb4);border-color:var(--green)}
+  .ctag.key .ctn{color:var(--greend)}.ctag.key b{color:var(--greend)}
+  .ctag.sel{border-color:var(--hl);box-shadow:0 0 0 3px rgba(217,102,61,.2)}
+  /* 通用文字 */
+  .ana p{font-size:14px;margin:8px 0;line-height:1.7}
+  .ev{display:inline-block;font-size:11px;color:#fff;background:var(--gold);border-radius:7px;padding:1px 9px;margin-right:6px;font-weight:700;letter-spacing:.5px}
+  .gdesc{font-size:12.5px;color:var(--sub);margin:2px 0 8px;line-height:1.6}
+  .mrow{font-size:13.5px;margin:8px 0;padding-bottom:8px;border-bottom:1px dashed var(--line);line-height:1.65}
+  .mrow:last-child{border-bottom:0;padding-bottom:0}
   .mrow b{color:var(--goldd)}
-  .grp{background:#faf2e3;border-radius:12px;padding:9px 12px;margin:7px 0;font-size:13.5px}.grp b{color:var(--goldd)}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}.chip{font-size:12px;background:#f1e6cf;color:var(--goldd);border-radius:20px;padding:3px 10px}.chip.miss{background:#fdeede;color:#b76e00}
-  .note{font-size:12px;color:var(--sub);background:#faf5ea;border-left:3px solid #d9b98a;padding:8px 11px;border-radius:8px;margin-top:12px}
-  .foot{text-align:center;font-size:11.5px;color:var(--sub);margin-top:20px}
-  /* 聯合密碼可點 ＋ 底部解讀面板 */
-  .ctag{cursor:pointer;transition:transform .1s,box-shadow .1s}
-  .ctag:active{transform:scale(.95)}
-  .ctag:hover{box-shadow:0 3px 10px rgba(160,120,40,.22)}
-  #cdsheet{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;background:var(--card);
-    border-top:2px solid var(--gold);border-radius:18px 18px 0 0;box-shadow:0 -8px 30px rgba(150,110,40,.22);
-    padding:14px 18px 24px;transform:translateY(125%);transition:transform .26s;z-index:50}
+  /* 角色標籤：主性格＋五行 */
+  .badges{display:flex;flex-wrap:wrap;gap:10px}
+  .sbadge{flex:1;min-width:140px;display:flex;align-items:center;gap:11px;background:#faf4e8;border:1px solid #ecdcbf;border-radius:15px;padding:11px 13px}
+  .sbadge .sn{flex:0 0 auto;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#b6d65a,#7fa028);color:#fff;font-size:25px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial;box-shadow:0 4px 11px rgba(120,150,40,.3)}
+  .sbadge .si .nm{font-size:14px;font-weight:800;color:var(--ink)}
+  .sbadge .si .ar{font-size:12.5px;color:var(--greend);font-weight:700}
+  .sbadge .si .wx{font-size:11px;color:var(--sub);margin-top:1px}
+  .sbadge .si .wx em{font-style:normal;color:#5e7d18;background:#fff;border:1px solid #cfe08f;border-radius:10px;padding:0 8px;font-weight:700;margin-left:2px}
+  /* 分數 */
+  .score{display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#fbf1dd,#f6e8cd);border-radius:14px;padding:12px 15px;margin:8px 0 0}
+  .score .sv{font-size:32px;font-weight:800;color:var(--goldd);font-family:Arial;line-height:1}
+  .score .sl{font-size:12px;color:var(--ink2);line-height:1.55}
+  /* 雷達 */
+  .radarwrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .radar{width:262px;max-width:84vw}
+  .pctlist{flex:1;min-width:185px}
+  .pct{display:flex;align-items:center;gap:8px;font-size:13px;margin:5px 0}
+  .pct .bar{flex:1;height:10px;background:#efe1c8;border-radius:6px;overflow:hidden}
+  .pct .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--greend));border-radius:6px}
+  .pct .n{width:90px;color:var(--ink)}.pct .p{width:62px;text-align:right;color:var(--goldd);font-weight:700;font-size:12px}
+  /* 成員輸入 */
+  .member{display:flex;gap:8px;margin-bottom:8px}.member input{flex:1}
+  .member .del{border:0;background:#f3ead7;color:var(--goldd);border-radius:10px;padding:0 13px;font-size:18px;cursor:pointer}
+  .grp{background:#faf4e8;border-radius:13px;padding:11px 13px;margin:8px 0;font-size:13.5px;border:1px solid #ecdcbf}.grp b{color:var(--goldd)}
+  .grp .gm{font-size:12px;color:var(--sub);margin-top:3px}
+  .note{font-size:12px;color:var(--sub);background:#faf5ea;border-left:3px solid #d9b98a;padding:9px 12px;border-radius:9px;margin-top:14px;line-height:1.6}
+  .foot{text-align:center;font-size:11.5px;color:var(--sub);margin-top:22px;line-height:1.7}
+  /* 底部解讀面板 */
+  #cdmask{position:fixed;inset:0;background:rgba(60,40,15,.28);opacity:0;pointer-events:none;transition:.25s;z-index:55}
+  #cdmask.on{opacity:1;pointer-events:auto}
+  #cdsheet{position:fixed;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;background:var(--card);
+    border-top:3px solid var(--hl);border-radius:22px 22px 0 0;box-shadow:0 -10px 36px rgba(120,70,30,.26);
+    padding:16px 18px 28px;transform:translateY(135%);transition:transform .28s cubic-bezier(.2,.8,.25,1);z-index:60}
   #cdsheet.on{transform:translateY(0)}
-  .cdhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-  .cdhead b{font-family:Arial;font-size:23px;color:var(--goldd);letter-spacing:3px}
-  .cdlab{font-size:12px;color:var(--goldd);background:#f1e6cf;border-radius:20px;padding:2px 11px;font-weight:700}
-  .cdx{margin-left:auto;border:0;background:#f3ead7;color:var(--goldd);width:32px;height:32px;border-radius:50%;font-size:19px;cursor:pointer;line-height:1}
-  .cdstruct{font-size:13px;color:var(--goldd);font-weight:700;margin-bottom:7px}
-  .cdbody{font-size:14.5px;color:var(--ink);line-height:1.75}
-  .cdwux{font-size:11.5px;color:var(--sub);margin-top:10px;border-top:1px dashed #eaddc4;padding-top:7px}
+  .cdhead{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .cdhead .cdn{font-family:Arial;font-size:26px;color:var(--hl);letter-spacing:4px;font-weight:800}
+  .cdlab{font-size:12px;color:#fff;background:var(--hl);border-radius:20px;padding:2px 12px;font-weight:700}
+  .cdx{margin-left:auto;border:0;background:#f3ead7;color:var(--goldd);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1}
+  .cdstruct{font-size:13.5px;color:var(--goldd);font-weight:700;margin-bottom:9px;background:#faf4e8;border-radius:10px;padding:8px 12px}
+  .cdbody{font-size:15px;color:var(--ink);line-height:1.8}
+  .cdwux{font-size:11.5px;color:var(--sub);margin-top:11px;border-top:1px dashed var(--line);padding-top:8px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -136,6 +155,7 @@
 
   <div class="foot">本工具為自我探索與人際理解用途，非命定預測。重大決策請尋求專業協助。<br>&copy; 命理大師 · 天賦數全息圖</div>
 </div>
+<div id="cdmask" onclick="hideCode()"></div>
 <div id="cdsheet"></div>
 
 <script>
@@ -403,32 +423,79 @@ const getC=lab=>COMBO.find(c=>c.lab===lab);
 /* 取得某組聯合密碼的三碼字串（來源兩數＋結果），用以查 81 組解讀 */
 function codeOf(c,t){return String(t[c.src[0]])+t[c.src[1]]+t[c.res];}
 function codeDesc(c,t){return CODE81[codeOf(c,t)]||"";}
-/* 聯合密碼標籤：三碼（來源兩數＋結果），可點開看完整解讀 */
-function comboTag(c,t,who){
+/* 聯合密碼中文名（個人頁只保留 6 組） */
+const CODE_NAME={IJM:"動機",KLN:"能量",MNO:"主性格",XWS:"青年運",PQR:"中年運",VUT:"晚年運",
+ IMX:"工作",JMW:"人際",MOP:"事業",NOQ:"發展",KNV:"家庭",LNU:"財富"};
+/* 聯合密碼標籤：三個數字為主視覺，可點開看完整解讀並在主圖圈出 */
+function comboTag(c,t,who,sub){
   const code=codeOf(c,t);
-  const vals=c.src.map(k=>t[k]).concat(t[c.res]).join("·");
+  const letters=[c.src[0],c.src[1],c.res];
+  const vals=letters.map(k=>t[k]).join("·");
+  const cname=CODE_NAME[c.lab]||c.lab;
+  const top=who||cname;
+  const subtxt=(sub!==undefined)?sub:(who?cname:"");
   const safe=(CODE81[code]||"").replace(/"/g,"");
-  return `<span class="ctag ${c.lab==='MNO'?'key':''}" data-code="${code}" data-lab="${c.lab}" data-who="${who||''}" onclick="showCode(this)" title="點看完整解讀：${safe}">${who?`<span class="who">${who}</span>`:""}<b>${vals}</b><small>${c.lab}</small></span>`;
+  const name=who?(who+"·"+cname):cname;
+  return `<span class="ctag ${c.lab==='MNO'?'key':''}" data-code="${code}" data-letters="${letters.join(',')}" data-name="${name}" onclick="showCode(this)" title="點看完整解讀：${safe}"><span class="ctn">${top}</span><b>${vals}</b>${subtxt?`<span class="cts">${subtxt}</span>`:""}</span>`;
 }
-/* 點標籤彈出底部解讀面板 */
+/* 點標籤：在主圖圈出三個數字並變色，彈出底部解讀面板 */
 function showCode(el){
-  const code=el.dataset.code,lab=el.dataset.lab,who=el.dataset.who||"";
-  const c=code.split("");
-  const desc=CODE81[code]||"此組合的詳細解讀待補。";
+  const code=el.dataset.code,name=el.dataset.name||"";
+  const letters=(el.dataset.letters||"").split(",").filter(Boolean);
+  const c=code.split("");const an=k=>NUM[k]?NUM[k].a:"特殊";
+  const desc=CODE81[code]||"這組在此全息圖中含 0（出生年帶整千），暫無對應的標準解讀。";
+  document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
+  el.classList.add("sel");
+  highlightChart(letters);
   const sh=document.getElementById("cdsheet");
-  sh.innerHTML=`<div class="cdhead"><b>${c.join("·")}</b><span class="cdlab">${lab}${who?"·"+who:""}</span><button class="cdx" onclick="hideCode()">×</button></div>
-    <div class="cdstruct">${c[0]}（${NUM[c[0]].a}）＋ ${c[1]}（${NUM[c[1]].a}）＝ ${c[2]}（${NUM[c[2]].a}）</div>
+  sh.innerHTML=`<div class="cdhead"><span class="cdn">${c.join("·")}</span><span class="cdlab">${name}</span><button class="cdx" onclick="hideCode()">×</button></div>
+    <div class="cdstruct">${c[0]}（${an(c[0])}）＋ ${c[1]}（${an(c[1])}）＝ ${c[2]}（${an(c[2])}）</div>
     <div class="cdbody">${desc}</div>
-    <div class="cdwux">尾數 ${c[2]}（${NUM[c[2]].a}）是這組的核心導向，決定最終行為的主性格特徵。資料依《生命密碼全息圖》解讀指南。</div>`;
+    <div class="cdwux">尾數 ${c[2]} 是這組的核心導向，決定最終行為的主性格特徵。資料依《生命密碼全息圖》解讀指南。</div>`;
+  document.getElementById("cdmask").classList.add("on");
   sh.classList.add("on");
 }
-function hideCode(){document.getElementById("cdsheet").classList.remove("on");}
-/* 個人：12 組標籤（分組＋說明） */
-function combo12Tags(t){
-  return ["inner","y2140","y4160","y60"].map(g=>{
-    const tags=COMBO.filter(c=>c.g===g).map(c=>comboTag(c,t)).join("");
-    return `<div class="comboT">${COMBO_G[g]}</div><div class="gdesc">${COMBO_DESC[g]}</div><div class="ctags">${tags}</div>`;
-  }).join("");
+function hideCode(){
+  document.getElementById("cdsheet").classList.remove("on");
+  document.getElementById("cdmask").classList.remove("on");
+  document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
+  clearHighlight();
+}
+/* 在主圖把組成的數字用大圈包圍並變色 */
+function highlightChart(letters){
+  const hl=document.getElementById("hl");if(!hl||!window.__HNODES)return;
+  const pts=letters.map(k=>window.__HNODES[k]).filter(Boolean);
+  if(!pts.length){hl.innerHTML="";return;}
+  const cx=pts.reduce((a,p)=>a+p.x,0)/pts.length,cy=pts.reduce((a,p)=>a+p.y,0)/pts.length;
+  let R=0;pts.forEach(p=>{const d=Math.hypot(p.x-cx,p.y-cy)+p.r;if(d>R)R=d;});R+=14;
+  let g=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(217,102,61,.08)" stroke="#d9663d" stroke-width="3" stroke-dasharray="7 5"><animate attributeName="r" from="${R+18}" to="${R}" dur="0.4s" fill="freeze"/><animate attributeName="opacity" from="0" to="1" dur="0.3s" fill="freeze"/></circle>`;
+  pts.forEach(p=>{g+=`<circle cx="${p.x}" cy="${p.y}" r="${p.r}" fill="url(#hlgr)" stroke="#fff" stroke-width="2.5"/><text x="${p.x}" y="${p.y+(p.r>22?6:5)}" text-anchor="middle" font-size="${p.r>22?22:18}" font-weight="800" fill="#fff" font-family="Arial">${p.v}</text>`;});
+  hl.innerHTML=g;
+}
+function clearHighlight(){const hl=document.getElementById("hl");if(hl)hl.innerHTML="";}
+/* 區塊卡片：標題＋內容，明確區隔 */
+function block(title,body,sub){return `<div class="block"><div class="sect">${title}${sub?`<span class="ssub">${sub}</span>`:""}</div>${body}</div>`;}
+/* 角色標籤：主性格數字＋原型＋五行（配對與團隊用） */
+function soulBadge(name,t){const O=NUM[t.O],L=LORE[t.O];
+  return `<div class="sbadge"><div class="sn">${t.O}</div><div class="si"><div class="nm">${name}</div><div class="ar">${O.a}</div><div class="wx">五行<em>${WUXNAME[L.w]}</em></div></div></div>`;}
+/* 個人：三我三層，只保留 IJM KLN MNO XWS PQR VUT 六組 */
+function threeSelf(t){
+  return `
+  <div class="layer l1">
+    <div class="lh"><b>本我</b><span class="lr">內圈 · 原始驅力</span></div>
+    <div class="lm">你最底層的起心動念與行動能量，平常不一定說出口，卻是一切的源頭。</div>
+    <div class="ctags">${comboTag(getC("IJM"),t)}${comboTag(getC("KLN"),t)}</div>
+  </div>
+  <div class="layer l2">
+    <div class="lh"><b>自我</b><span class="lr">中圈 · 真實的你</span></div>
+    <div class="lm">動機與能量整合成的核心性格，主宰約六成行為，是別人最常感受到的你。</div>
+    <div class="ctags">${comboTag(getC("MNO"),t)}</div>
+  </div>
+  <div class="layer l3">
+    <div class="lh"><b>社會我</b><span class="lr">外圈 · 對外際遇</span></div>
+    <div class="lm">在不同人生階段對外展現的樣子與際遇，是社會看見的你。</div>
+    <div class="ctags">${comboTag(getC("XWS"),t,undefined,"21-40歲")}${comboTag(getC("PQR"),t,undefined,"41-60歲")}${comboTag(getC("VUT"),t,undefined,"60歲後")}</div>
+  </div>`;
 }
 
 function r9(n){while(n>9){n=String(n).split("").reduce((a,b)=>a+ +b,0);}return n;}
@@ -463,17 +530,21 @@ function chartSVG(t){
   const pos={R:[cx,212],Q:[cx-46,256],P:[cx+46,256],O:[cx,302],S:[178,286],X:[230,286],Wn:[270,286],V:[530,286],U:[570,286],Tn:[622,286],M:[cx-46,360],N:[cx+46,360],I:[cx-86,432],J:[cx-32,432],K:[cx+32,432],L:[cx+86,432]};
   const ln=(a,b)=>`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#d9bd8e" stroke-width="1.4" opacity=".7"/>`;
   s+=ln(pos.I,pos.M)+ln(pos.J,pos.M)+ln(pos.K,pos.N)+ln(pos.L,pos.N)+ln(pos.M,pos.O)+ln(pos.N,pos.O)+ln(pos.M,pos.P)+ln(pos.O,pos.P)+ln(pos.N,pos.Q)+ln(pos.O,pos.Q)+ln(pos.P,pos.R)+ln(pos.Q,pos.R);
-  const circ=(x,y,val,k)=>{let r=21,fill="#fffdf8",tc="#8a6d3b",fs=19;if(k==="o"){r=24;fill="url(#gr)";tc="#fff";fs=22;}if(k==="ext"){r=18;fs=16;}return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${k==='o'?'none':'#d3ab63'}" stroke-width="1.6"/><text x="${x}" y="${y+(k==='o'?5:6)}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${tc}" font-family="Arial,sans-serif">${val}</text>`;};
+  const circ=(x,y,val,k,id)=>{let r=21,fill="#fffdf8",tc="#8a6d3b",fs=19;if(k==="o"){r=24;fill="url(#gr)";tc="#fff";fs=22;}if(k==="ext"){r=18;fs=16;}return `<circle id="hc-${id}" cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${k==='o'?'none':'#d3ab63'}" stroke-width="1.6"/><text x="${x}" y="${y+(k==='o'?5:6)}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${tc}" font-family="Arial,sans-serif">${val}</text>`;};
   const eq=(x,y)=>`<text x="${x}" y="${y+6}" text-anchor="middle" font-size="20" fill="#b59257">=</text>`;
-  s+=circ(...pos.R,t.R,"ext")+circ(...pos.Q,t.Q,"ext")+circ(...pos.P,t.P,"ext");
-  s+=circ(...pos.S,t.S,"ext")+eq(204,pos.S[1])+circ(...pos.X,t.X,"ext")+circ(...pos.Wn,t.W,"ext");
-  s+=circ(...pos.V,t.V,"ext")+circ(...pos.U,t.U,"ext")+eq(596,pos.U[1])+circ(...pos.Tn,t.T,"ext");
-  s+=star(cx,272,8,"#d98c4a")+circ(...pos.O,t.O,"o")+T(cx,340,"主性格",13,"#7d5f30",1);
-  s+=circ(...pos.M,t.M)+circ(...pos.N,t.N)+circ(...pos.I,t.I)+circ(...pos.J,t.J)+circ(...pos.K,t.K)+circ(...pos.L,t.L);
+  s+=circ(...pos.R,t.R,"ext","R")+circ(...pos.Q,t.Q,"ext","Q")+circ(...pos.P,t.P,"ext","P");
+  s+=circ(...pos.S,t.S,"ext","S")+eq(204,pos.S[1])+circ(...pos.X,t.X,"ext","X")+circ(...pos.Wn,t.W,"ext","W");
+  s+=circ(...pos.V,t.V,"ext","V")+circ(...pos.U,t.U,"ext","U")+eq(596,pos.U[1])+circ(...pos.Tn,t.T,"ext","T");
+  s+=star(cx,272,8,"#d98c4a")+circ(...pos.O,t.O,"o","O")+T(cx,340,"主性格",13,"#7d5f30",1);
+  s+=circ(...pos.M,t.M,"","M")+circ(...pos.N,t.N,"","N")+circ(...pos.I,t.I,"","I")+circ(...pos.J,t.J,"","J")+circ(...pos.K,t.K,"","K")+circ(...pos.L,t.L,"","L");
   const dg=t.digits.split("");const bx=[cx-100,cx-72,cx-44,cx-16,cx+24,cx+52,cx+80,cx+108];
   for(let i=0;i<8;i++)s+=T(bx[i],490,dg[i],22,"#7d5f30");
   s+=T(cx-86,512,"日期",12,"#a98a55")+T(cx-30,512,"月份",12,"#a98a55")+T(cx+66,512,"年份",12,"#a98a55");
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient></defs>${s}</svg>`;
+  /* 儲存節點座標供點擊高亮使用 */
+  const L2P={I:pos.I,J:pos.J,K:pos.K,L:pos.L,M:pos.M,N:pos.N,O:pos.O,P:pos.P,Q:pos.Q,R:pos.R,S:pos.S,T:pos.Tn,U:pos.U,V:pos.V,W:pos.Wn,X:pos.X};
+  const RAD={O:24};window.__HNODES={};
+  for(const kk in L2P){window.__HNODES[kk]={x:L2P[kk][0],y:L2P[kk][1],r:RAD[kk]||(["M","N","I","J","K","L"].includes(kk)?21:18),v:t[kk]};}
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient><radialGradient id="hlgr"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}<g id="hl"></g></svg>`;
 }
 
 /* 聯合密碼列表 HTML */
@@ -489,41 +560,26 @@ function cc(l,v,main){return `<div class="cc ${main?'main':''}"><div class="l">$
 function runSolo(){
   const dt=document.getElementById("s_dt").value;if(!dt)return;
   const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];const L=LORE[t.O];
+  const hero=`<div class="hero"><div class="num">${t.O}</div><div class="ht"><div><span class="arch">${O.a}</span><span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="ess">坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</div></div></div>`;
+  const traits=`<div style="margin-top:13px">
+    <div class="trait"><span class="tg pos">正面天賦</span><span class="tt">${L.pos}</span></div>
+    <div class="trait"><span class="tg sh">負面陰影</span><span class="tt">${L.shadow}</span></div>
+    <div class="trait"><span class="tg les">人生功課</span><span class="tt">${L.lesson}</span></div></div>`;
+  const coop=`<div class="ana">
+    <div class="trait"><span class="tg gold">日常展現</span><span class="tt">${O.shine}</span></div>
+    <div class="trait"><span class="tg gold">合作角色</span><span class="tt">${O.collab}</span></div>
+    <div class="trait"><span class="tg gold">提醒</span><span class="tt">${O.advice}</span></div></div>`;
   document.getElementById("s_out").innerHTML=`
-    ${nm?`<div style="text-align:center;color:#7d5f30;margin-bottom:4px">${nm} 的全息圖</div>`:""}
+    ${nm?`<div style="text-align:center;color:var(--goldd);font-weight:700;margin:2px 0 8px;letter-spacing:1px">${nm} 的全息圖</div>`:""}
     <div class="chartwrap">${chartSVG(t)}</div>
-    <div class="sect">核心密碼</div>
-    <div class="cards">${cc("主性格 O",t.O,true)}${cc("動機 M",t.M)}${cc("能量 N",t.N)}${cc("潛意識",t.sub)}</div>
-    <div class="sect">主性格坐鎮碼深度特質</div>
-    <div class="ana">
-      <p><span class="ev">主性格 ${t.O} ${O.a}</span>五行屬${WUXNAME[L.w]}。坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</p>
-      <p><span class="ev">正面天賦</span>${L.pos}</p>
-      <p><span class="ev">負面陰影</span>${L.shadow}</p>
-      <p><span class="ev">人生功課</span>${L.lesson}</p>
-    </div>
-    <div class="sect">主性格聯合密碼 ${codeOf(getC('MNO'),t)}</div>
-    <p class="gdesc">由動機 M、能量 N 合成主性格 O，是你最核心、最深沈的一組（綠色標籤，可點看完整解讀）。</p>
-    <div class="ctags">${comboTag(getC('MNO'),t)}</div>
-    <p class="gdesc">${codeDesc(getC('MNO'),t)}</p>
-    <div class="sect">聯合密碼（12 組標籤）</div>
-    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每組是「來源兩數·結果」的三碼組合（綠色 MNO 為主性格組）。全系統 81 組、你佔 12 組。<b style="color:#9c7327">點任一標籤可看完整解讀。</b></p>
-    ${combo12Tags(t)}
-    <div class="sect">天賦與合作</div>
-    <div class="ana">
-      <p><span class="ev">日常展現</span>${O.shine}</p>
-      <p><span class="ev">合作角色</span>${O.collab}</p>
-      <p><span class="ev">提醒</span>${O.advice}</p>
-      <p><span class="ev">三我</span>由內而外：本我（內圈·真實渴望）→ 自我（中圈·21-60歲對外展現）→ 社會我（外圈·事業/人際/家庭的角色）。</p>
-    </div>
-    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與 81 組聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
+    <p class="tip">點下方任一聯合密碼標籤，主圖會圈出組成的三個數字</p>
+    ${block("主性格",hero+traits,`${t.O}　${O.a}`)}
+    ${block("三我 · 你的三層自我",threeSelf(t),"由內而外 · 點標籤看每組解讀")}
+    ${block("天賦與合作",coop)}
+    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
 }
 
 /* ===== 兩人配對 ===== */
-function phCard(nm,t){
-  const codes=[["主性格組 MNO",t.O],["動機組 IJM",t.M],["能量組 KLN",t.N],["潛意識 OIL",t.sub],["對外 MOP",t.out]];
-  return `<div class="ph"><div class="o">${t.O}</div><div class="nm">${nm}·${NUM[t.O].a}</div>
-    ${codes.map(c=>`<div class="cd"><span>${c[0]}</span><b>${c[1]} ${NUM[c[1]].a}</b></div>`).join("")}</div>`;
-}
 function runPair(){
   const d1=document.getElementById("p_d1").value,d2=document.getElementById("p_d2").value;if(!d1||!d2)return;
   const n1=document.getElementById("p_n1").value.trim()||"A",n2=document.getElementById("p_n2").value.trim()||"B";
@@ -531,36 +587,26 @@ function runPair(){
   const P=PAIRS[pk(a.O,b.O)]||["合作組合","彼此能帶來不同視角","相處上需要磨合","保持溝通與分工"];
   const rel=wuxRel(a.O,b.O);
   let sc=60;if(a.M!==b.M)sc+=6;if(a.N!==b.N)sc+=6;sc+=(a.O!==b.O?8:4);sc=Math.min(94,sc);
-  // 聯合密碼對照
-  const cmp=(lab,x,y)=>{const same=x===y;return `<div class="mrow"><b>${lab}</b>：${n1} ${x}（${NUM[x].a}）／ ${n2} ${y}（${NUM[y].a}）${same?'　→ 出發點一致，容易同頻':'　→ 取向不同，可互補但需溝通'}</div>`;};
+  const badges=`<div class="badges">${soulBadge(n1,a)}${soulBadge(n2,b)}</div>`;
+  const mnoBody=`<p class="gdesc">主性格聯合密碼（綠色）由動機與能量合成核心性格，是最深沈的一組。點標籤看完整解讀。</p>
+    <div class="ctags">${comboTag(getC('MNO'),a,n1)}${comboTag(getC('MNO'),b,n2)}</div>
+    <div class="mrow"><b>${n1}（${codeOf(getC('MNO'),a)}）</b>${codeDesc(getC('MNO'),a)}</div>
+    <div class="mrow"><b>${n2}（${codeOf(getC('MNO'),b)}）</b>${codeDesc(getC('MNO'),b)}</div>
+    <div class="mrow"><b>配對組合</b>${P[0]}。${P[1]}。摩擦：${P[2]}（建議：${P[3]}）</div>
+    <div class="mrow"><b>五行${rel.t}</b>${rel.d}</div>`;
+  const shine=`<div class="ana"><div class="trait"><span class="tg pos">${n1}</span><span class="tt">${A.shine}</span></div><div class="trait"><span class="tg pos">${n2}</span><span class="tt">${B.shine}</span></div></div>`;
+  const coop=`<div class="ana"><p>由 ${n1} 擔任${A.r}，${A.collab.replace(/。$/,'')}；${n2} 擔任${B.r}，${B.collab.replace(/。$/,'')}。${a.O===b.O?'兩人同為'+A.a+'，默契高但容易在同一處卡關，需有人退一步補位。':'一個負責'+A.ess.split('、')[0]+'、一個負責'+B.ess.split('、')[0]+'，正好把對方沒顧到的補起來。'}</p></div>`;
+  const lessons=`<div class="ana"><div class="trait"><span class="tg les">${n1} 功課</span><span class="tt">${LORE[a.O].lesson}</span></div><div class="trait"><span class="tg les">${n2} 功課</span><span class="tt">${LORE[b.O].lesson}</span></div></div>`;
+  const adv=`<div class="ana"><div class="trait"><span class="tg gold">給 ${n1}</span><span class="tt">${A.advice}</span></div><div class="trait"><span class="tg gold">給 ${n2}</span><span class="tt">${B.advice}</span></div></div>
+    <div class="score"><div class="sv">${sc}</div><div class="sl"><b style="color:var(--goldd)">合作化學 / 100</b><br>透明公式：基礎 60 ＋ 主性格、動機、能量差異互補加分，非命定評斷。</div></div>`;
   document.getElementById("p_out").innerHTML=`
-    <div class="sect">雙方主性格與聯合密碼</div>
-    <div class="two"><div>${phCard(n1,a)}</div><div>${phCard(n2,b)}</div></div>
-    <div class="sect">主性格聯合密碼配對</div>
-    <p class="gdesc">主性格聯合密碼（MNO）由動機 M、能量 N 合成主性格 O，是最核心、最深沈的一組（綠色標籤可點看完整解讀）。把雙方的 MNO 放在一起，再看主性格配對組合。</p>
-    <div class="ctags">
-      ${comboTag(getC('MNO'),a,n1)}${comboTag(getC('MNO'),b,n2)}
-      <span class="ctag" style="border-color:#c79a4b"><b>${a.O}-${b.O}</b><small>主性格配對組合</small></span>
-    </div>
-    <div class="mrow"><b>${n1}　${codeOf(getC('MNO'),a)}</b>　${codeDesc(getC('MNO'),a)}</div>
-    <div class="mrow"><b>${n2}　${codeOf(getC('MNO'),b)}</b>　${codeDesc(getC('MNO'),b)}</div>
-    <p class="gdesc">配對組合 ${a.O}-${b.O}：${P[0]}。${P[1]}</p>
-    <div class="mrow"><b>五行 ${rel.t}</b>　${rel.d}</div>
-    <div class="sect">聯合密碼對照（配對用）</div>
-    ${cmp("主性格組 MNO",a.O,b.O)}${cmp("動機組 IJM",a.M,b.M)}${cmp("能量組 KLN",a.N,b.N)}${cmp("潛意識 OIL",a.sub,b.sub)}
-    <div class="sect">各自能展現</div>
-    <div class="ana"><p><span class="ev">${n1} ${a.O}</span>${A.shine}</p><p><span class="ev">${n2} ${b.O}</span>${B.shine}</p></div>
-    <div class="sect">雙方主性格功課（相處要點）</div>
-    <div class="ana">
-      <p><span class="ev">${n1} ${a.O} ${A.a}</span>陰影：${LORE[a.O].shadow}　功課：${LORE[a.O].lesson}</p>
-      <p><span class="ev">${n2} ${b.O} ${B.a}</span>陰影：${LORE[b.O].shadow}　功課：${LORE[b.O].lesson}</p>
-    </div>
-    <div class="sect">合作（具體情境）</div>
-    <div class="ana"><p>由 ${n1} 擔任${A.r}，${A.collab.replace(/。$/,'')}；${n2} 擔任${B.r}，${B.collab.replace(/。$/,'')}。${a.O===b.O?'兩人同為'+A.a+'，默契高但容易在同一處卡關，需有人退一步補位。':'一個負責'+A.ess.split('、')[0]+'、一個負責'+B.ess.split('、')[0]+'，正好把對方沒顧到的補起來。'}</p></div>
-    <div class="sect">建議（具體）</div>
-    <div class="ana"><p><span class="ev">給 ${n1}</span>${A.advice}</p><p><span class="ev">給 ${n2}</span>${B.advice}</p>
-      <p><span class="ev">合作化學 ${sc}/100</span>透明公式：基礎 60＋主性格/動機/能量差異互補加分，非命定評斷。</p></div>
-    <div class="note">以雙方主性格與聯合密碼（動機·能量·潛意識·對外）對照，用於找合作夥伴前先了解彼此天賦、互補與摩擦。</div>`;
+    ${block("雙方主性格",badges,n1+" × "+n2)}
+    ${block("主性格聯合密碼配對",mnoBody,"點標籤看解讀")}
+    ${block("各自能展現",shine)}
+    ${block("合作情境",coop)}
+    ${block("相處要點（雙方功課）",lessons)}
+    ${block("給彼此的建議",adv)}
+    <div class="note">以雙方主性格與聯合密碼對照，幫助找合作夥伴前先了解彼此天賦、互補與摩擦。</div>`;
 }
 
 /* ===== 團隊 ===== */
@@ -588,29 +634,24 @@ function runTeam(){
   const gaps=Object.keys(spec).filter(k=>spec[k]===0).map(Number);
   const pctRows=present.sort((a,b)=>spec[b]-spec[a]).map(n=>{const p=Math.round(spec[n]/tot*100);
     return `<div class="pct"><span class="n">${n} ${NUM[n].a}</span><span class="bar"><i style="width:${p}%"></i></span><span class="p">${spec[n]}人 ${p}%</span></div>`;}).join("");
-  const members=ms.map(m=>{const k=codeOf(getC("MNO"),m.t);return `<div class="mrow"><b>${m.nm}　${m.t.O} ${NUM[m.t.O].a}（${NUM[m.t.O].r}）·五行${WUXNAME[LORE[m.t.O].w]}</b><br>${NUM[m.t.O].shine}<br><span style="font-size:12.5px;color:#9c7327">主性格密碼 ${k}：</span><span style="font-size:12.5px;color:#a08a6a">${CODE81[k]||""}</span></div>`;}).join("");
+  const badges=`<div class="badges">${ms.map(m=>soulBadge(m.nm,m.t)).join("")}</div>`;
+  const memberReads=ms.map(m=>{const k=codeOf(getC("MNO"),m.t);return `<div class="mrow"><b>${m.nm}（${m.t.O} ${NUM[m.t.O].a}）</b>${NUM[m.t.O].shine}<br><span style="color:var(--goldd);font-size:12.5px">主性格密碼 ${k}：</span><span style="font-size:12.5px;color:var(--sub)">${CODE81[k]||"含 0，暫無標準解讀"}</span></div>`;}).join("");
   const haveTxt=present.map(n=>NUM[n].have).join("、");
   const gapTxt=gaps.length?gaps.map(n=>"・"+NUM[n].gap).join("<br>"):"角色涵蓋完整，沒有明顯缺口。";
   const gN=tot>=6?Math.round(tot/3):2;const sorted=[...ms].sort((a,b)=>a.t.O-b.t.O);const grp=Array.from({length:gN},()=>[]);
   sorted.forEach((m,i)=>grp[i%gN].push(m));
-  const grpHtml=grp.map((g,i)=>`<div class="grp"><b>第${i+1}組</b>：${g.map(m=>m.nm+"("+m.t.O+NUM[m.t.O].a+")").join("、")}<br><span style="font-size:12px;color:#a08a6a">混搭不同主性格，角色較互補</span></div>`).join("");
-  const mnoTags=ms.map(m=>comboTag(getC("MNO"),m.t,m.nm)).join("");
+  const grpHtml=grp.map((g,i)=>`<div class="grp"><b>第${i+1}組</b>　${g.map(m=>m.nm+"（"+m.t.O+" "+NUM[m.t.O].a+"）").join("、")}<div class="gm">混搭不同主性格，角色較互補</div></div>`).join("");
+  const mnoTags=`<div class="ctags">${ms.map(m=>comboTag(getC("MNO"),m.t,m.nm)).join("")}</div>`;
   const teamCombo=ms.map(m=>m.t.O).join("·");
   const topO=present.slice().sort((x,y)=>spec[y]-spec[x])[0];
-  const teamComboDesc=`團隊主性格組合為 ${teamCombo}，以 ${topO} ${NUM[topO].a} 為主（${spec[topO]} 人）。${NUM[topO].have}；整體適合發揮這項優勢，並留意下方盲點補足。`;
+  const coopTxt=`你們已具備：${haveTxt}。整體適合${present.includes(1)||present.includes(8)?'有人帶頭、':''}${present.includes(4)?'把事落地、':''}${present.includes(3)||present.includes(5)?'對外開拓、':''}${present.includes(2)||present.includes(6)?'凝聚彼此、':''}${present.includes(7)||present.includes(9)?'看清方向':'分工推進'}的合作模式。`;
   document.getElementById("t_out").innerHTML=`
-    <div class="sect">團隊主性格雷達（${tot}人）</div>
-    <div class="radarwrap">${radarSVG(spec,tot)}<div class="pctlist">${pctRows}</div></div>
-    <div class="sect">主性格聯合密碼組合（團隊）</div>
-    <p class="gdesc">每位成員的主性格聯合密碼（MNO）標籤，與全隊主性格的組合。點任一成員標籤可看該組完整解讀。</p>
-    <div class="ctags">${mnoTags}<span class="ctag" style="border-color:#c79a4b"><b>${teamCombo}</b><small>團隊組合</small></span></div>
-    <p class="gdesc">${teamComboDesc}</p>
-    <div class="sect">每位成員能展現的部分</div>${members}
-    <div class="sect">合作（團隊現有優勢）</div>
-    <div class="ana"><p>你們已具備：${haveTxt}。整體適合${present.includes(1)||present.includes(8)?'有人帶頭、':''}${present.includes(4)?'把事落地、':''}${present.includes(3)||present.includes(5)?'對外開拓、':''}${present.includes(2)||present.includes(6)?'凝聚彼此、':''}${present.includes(7)||present.includes(9)?'看清方向':'分工推進'}的合作模式。</p></div>
-    <div class="sect">建議（補強盲點）</div>
-    <div class="ana"><p>${gapTxt}</p></div>
-    <div class="sect">互補分組建議</div>${grpHtml}
+    ${block("團隊主性格雷達",`<div class="radarwrap">${radarSVG(spec,tot)}<div class="pctlist">${pctRows}</div></div>`,tot+" 人")}
+    ${block("成員主性格（含五行）",badges)}
+    ${block("主性格聯合密碼",mnoTags+`<p class="gdesc">點任一成員標籤看該組完整解讀。團隊主性格組合 ${teamCombo}，以 ${topO} ${NUM[topO].a} 為主（${spec[topO]} 人），整體適合發揮這項優勢，並留意盲點補足。</p>`+memberReads,"每位成員 ＋ 全隊")}
+    ${block("合作現有優勢",`<div class="ana"><p>${coopTxt}</p></div>`)}
+    ${block("補強盲點",`<div class="ana"><p>${gapTxt}</p></div>`)}
+    ${block("互補分組建議",grpHtml)}
     <div class="note">雷達圖呈現團隊主性格分佈與占比；分組讓各組主性格盡量多元，可直接用於團建。</div>`;
 }
 
