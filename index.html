@@ -66,6 +66,8 @@
   .trait{display:flex;gap:10px;margin:10px 0;font-size:14px;line-height:1.65}
   .trait .tg{flex:0 0 auto;font-size:11.5px;font-weight:800;color:#fff;border-radius:8px;padding:3px 10px;height:fit-content;letter-spacing:1px;white-space:nowrap}
   .tg.pos{background:#7fa028}.tg.sh{background:#c98a3c}.tg.les{background:#a877c0}.tg.gold{background:var(--gold)}
+  .tg.job{background:#5a7ea3}.tg.money{background:#bf911d}.tg.love{background:#c45b7c}.tg.body{background:#5a9a4e}
+  .empty{text-align:center;color:var(--sub);font-size:13.5px;padding:30px 16px;line-height:1.8}
   .trait .tt{color:var(--ink)}
   /* 三我層 */
   .layer{border-radius:15px;padding:13px 14px;margin:10px 0;border-left:5px solid var(--l1);background:#faf4e8}
@@ -155,11 +157,11 @@
       <div><label>暱稱（選填）</label><input id="s_nm" placeholder="例如：小宇"></div>
       <div style="margin-top:11px"><label>西元生日（直接輸入）</label>
         <div class="bday">
-          <input id="s_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
-          <input id="s_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="1">
-          <input id="s_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="1">
+          <input id="s_y" class="bf by" type="number" inputmode="numeric" placeholder="西元年 如2000" min="1900" max="2026">
+          <input id="s_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12">
+          <input id="s_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31">
         </div>
-        <div class="bhint">例：西元 2000 年 1 月 1 日，就輸入 2000、1、1</div>
+        <div class="bhint">直接點欄位輸入數字，例如 2000、1、1（灰字僅為範例提示）</div>
       </div>
       <button class="btn" onclick="runSolo()">繪製全息圖</button>
     </div>
@@ -171,16 +173,16 @@
       <div><label>A 暱稱</label><input id="p_n1" placeholder="夥伴A"></div>
       <div style="margin-top:10px"><label>A 西元生日</label>
         <div class="bday">
-          <input id="p1_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
-          <input id="p1_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="1">
-          <input id="p1_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="1">
+          <input id="p1_y" class="bf by" type="number" inputmode="numeric" placeholder="西元年 如2000" min="1900" max="2026">
+          <input id="p1_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12">
+          <input id="p1_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31">
         </div></div>
       <div style="margin-top:12px"><label>B 暱稱</label><input id="p_n2" placeholder="夥伴B"></div>
       <div style="margin-top:10px"><label>B 西元生日</label>
         <div class="bday">
-          <input id="p2_y" class="bf by" type="number" inputmode="numeric" placeholder="年" min="1900" max="2026" value="2000">
-          <input id="p2_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12" value="8">
-          <input id="p2_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31" value="8">
+          <input id="p2_y" class="bf by" type="number" inputmode="numeric" placeholder="西元年 如2000" min="1900" max="2026">
+          <input id="p2_m" class="bf" type="number" inputmode="numeric" placeholder="月" min="1" max="12">
+          <input id="p2_d" class="bf" type="number" inputmode="numeric" placeholder="日" min="1" max="31">
         </div></div>
       <button class="btn" onclick="runPair()">看合作化學反應</button>
     </div>
@@ -624,6 +626,62 @@ function readBday(p){
   if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900||y>2100)return null;
   return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
 }
+/* 流年 1-9 分面向解讀（依通用生命靈數流年慣例，框架為能量與方向提醒，非命定預測） */
+const FLOW={
+ 1:{theme:"開創與起步，九年循環的新起點",
+    career:"適合啟動新專案、換跑道或主動爭取機會，今年種下的種子會影響往後幾年。",
+    money:"宜投資自己與新方向，財務上打基礎、布局，而非追求速成。",
+    love:"單身者有新邂逅的能量；關係中適合主動表達、帶頭經營。",
+    body:"衝勁足、能量旺，注意別硬撐，記得安排休息。",
+    advice:"想清楚要的方向就大膽起步，今年的選擇格外關鍵。"},
+ 2:{theme:"耕耘與關係，放慢醞釀的一年",
+    career:"成果未必馬上顯現，重在合作、累積與細節，耐心經營人脈。",
+    money:"財務宜守穩、分散風險，避免躁進的大筆投入。",
+    love:"關係容易升溫，適合深化承諾與溝通，重視傾聽與包容。",
+    body:"情緒較敏感，好好照顧心情與睡眠。",
+    advice:"別急著要結果，把基礎與關係顧好，耐心是今年的關鍵。"},
+ 3:{theme:"表達與創意，活力社交的一年",
+    career:"適合行銷、簡報、創作與對外曝光，靈感與人氣都旺。",
+    money:"進帳機會多，但也容易衝動消費，留意預算。",
+    love:"社交活躍、桃花旺；說話別太衝，避免口舌誤會。",
+    body:"行程易過滿、情緒起伏大，記得收斂與休息。",
+    advice:"把靈感挑一兩個落地完成，別只停在嘴上，凡事三思而後言。"},
+ 4:{theme:"扎根與築基，踏實努力的一年",
+    career:"適合建立制度、把事做扎實、累積實力，回報來自堅持。",
+    money:"宜穩健理財、儲蓄、整頓財務結構，避免投機。",
+    love:"關係講求穩定與責任，用實際行動經營勝過甜言蜜語。",
+    body:"工作量偏大，特別要顧好作息與身體保養。",
+    advice:"按部就班把基礎打牢，今年的努力是未來的地基。"},
+ 5:{theme:"變動與自由，機會與冒險的一年",
+    career:"變化與機會都多，適合嘗試、轉換、拓展新管道。",
+    money:"收入起伏較大，保留彈性，別把雞蛋放在同一個籃子裡。",
+    love:"新鮮感與變動強，單身桃花旺；關係中需要空間與溝通。",
+    body:"容易奔波忙亂，注意別過度消耗、飲食不規律。",
+    advice:"擁抱變化，但守住一個核心目標，自由要配上自律。"},
+ 6:{theme:"責任與愛，家庭與關係的一年",
+    career:"適合承擔更多責任、照顧團隊與品質，服務帶來回報。",
+    money:"花費較多在家庭與他人，宜量力而為、別過度承擔。",
+    love:"感情與家庭是今年重心，適合承諾、同居、成家。",
+    body:"容易為他人操心而忽略自己，記得先把自己照顧好。",
+    advice:"愛要包容也要設界線，別把所有責任都往身上扛。"},
+ 7:{theme:"內省與沉澱，學習與休養的一年",
+    career:"適合進修、研究、規劃與沉澱，不必急著對外衝刺。",
+    money:"宜保守、檢視與整理，不適合高風險投資。",
+    love:"需要獨處與內在空間，關係重質不重量、重深度溝通。",
+    body:"身心需要休息，適合靜心、運動、調養。",
+    advice:"向內探索、補充自己，今年的沉潛是為了下一波蓄力。"},
+ 8:{theme:"收穫與成就，事業財務的高峰年",
+    career:"努力容易開花結果，適合衝事業、談合作、爭取位置。",
+    money:"財務能量最強的一年，適合理財布局，但須正當踏實。",
+    love:"忙於事業易忽略關係，記得分時間給重要的人。",
+    body:"壓力與野心較大，當心過勞，留意身心平衡。",
+    advice:"展現實力、把握收成，守住誠信與德行才走得長遠。"},
+ 9:{theme:"完成與放下，整理與利他的一年",
+    career:"適合收尾、結案、斷捨離，清掉不適合的，為新循環騰出空間。",
+    money:"宜結清舊帳、整理財務，不適合開啟大筆新投資。",
+    love:"關係面臨整理與沉澱，放下不適合的，珍惜該留的。",
+    body:"情緒易感傷與疲憊，給自己療癒與放鬆的時間。",
+    advice:"學會放手與割捨，完成一個循環，才能輕鬆迎接新的開始。"}};
 /* 流年：固定生日的月日，把年份換成查詢年重新排盤 */
 function fortuneUI(){
   return `<div class="fyr">
@@ -638,21 +696,21 @@ function fortuneUI(){
 function fyStep(d){const el=document.getElementById("f_year");el.value=(parseInt(el.value,10)||2026)+d;runFortune();}
 function runFortune(){
   const bd=readBday("s_"),box=document.getElementById("fortune_out");if(!box)return;
-  if(!bd){box.innerHTML='<div class="hint">請先在上方填寫完整生日。</div>';return;}
+  if(!bd){box.innerHTML='<div class="hint">填好上方生日後，這裡會顯示你的流年運勢。</div>';return;}
   const yr=parseInt(document.getElementById("f_year").value,10);if(!yr){box.innerHTML='<div class="hint">請輸入要查詢的西元年份。</div>';return;}
-  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=NUM[ft.O],L=LORE[ft.O];
+  const[,mm,dd]=bd.split("-");const ft=holo(yr+"-"+mm+"-"+dd);const O=ft.O,N=NUM[O],L=LORE[O],F=FLOW[O];
+  const rows=[["job","事業發展",F.career],["money","財務理財",F.money],["love","感情人際",F.love],["body","身心健康",F.body],["les","今年建議",F.advice]];
   box.innerHTML=`
-    <div class="fhero"><div class="fnum">${ft.O}</div><div><div class="fa">${yr} 年流年 · ${O.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">${O.ess}</div></div></div>
-    <div class="trait"><span class="tg pos">今年發揮</span><span class="tt">${O.shine}</span></div>
-    <div class="trait"><span class="tg les">今年提醒</span><span class="tt">${O.advice}</span></div>
-    <div style="margin:9px 0 2px"><span class="ssub">${yr} 年流年主性格聯合密碼（點看完整解讀）</span></div>
+    <div class="fhero"><div class="fnum">${O}</div><div><div class="fa">${yr} 年流年 · ${N.a}<span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="fe">年度主題：${F.theme}</div></div></div>
+    ${rows.map(r=>`<div class="trait"><span class="tg ${r[0]}">${r[1]}</span><span class="tt">${r[2]}</span></div>`).join("")}
+    <div style="margin:11px 0 2px"><span class="ssub">${yr} 年流年主性格聯合密碼（點看數字組成與解讀）</span></div>
     <div class="ctags">${comboTag(getC("MNO"),ft,yr+"年")}</div>
-    <p class="gdesc">流年算法：保留你的生日月日，把年份換成 ${yr} 年重新排盤，得出該年的主性格能量。資料依《生命密碼全息圖》解讀指南。</p>`;
+    <p class="gdesc">流年算法：把生日的月、日加上 ${yr} 年重新排盤得出流年主性格（與生命靈數流年數一致），流年以九年為一循環。本區為能量與方向的提醒，非命定預測。</p>`;
 }
 
 /* ===== 個人 ===== */
 function runSolo(){
-  const dt=readBday("s_");if(!dt){document.getElementById("s_out").innerHTML='<div class="hint">請填寫完整的西元生日（年、月、日）。</div>';return;}
+  const dt=readBday("s_");if(!dt){document.getElementById("s_out").innerHTML='<div class="empty">在上方輸入你的西元生日（年、月、日），按「繪製全息圖」，即可看見你的天賦結構與流年運勢。</div>';return;}
   const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];const L=LORE[t.O];
   const hero=`<div class="hero"><div class="num">${t.O}</div><div class="ht"><div><span class="arch">${O.a}</span><span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="ess">坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</div></div></div>`;
   const traits=`<div style="margin-top:13px">
