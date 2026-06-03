@@ -113,6 +113,9 @@
   .cdhead .cdn{font-family:Arial;font-size:26px;color:var(--hl);letter-spacing:4px;font-weight:800}
   .cdlab{font-size:12px;color:#fff;background:var(--hl);border-radius:20px;padding:2px 12px;font-weight:700}
   .cdx{margin-left:auto;border:0;background:#f3ead7;color:var(--goldd);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1}
+  .cdmini{display:flex;justify-content:center;background:radial-gradient(circle at 50% 46%,#fdf7ec,#f4e6cf);border-radius:14px;padding:6px 4px 2px;margin:2px 0 4px}
+  .minichart{width:100%;max-width:300px}
+  .cdminitip{font-size:11px;color:var(--sub);text-align:center;margin:0 0 9px}
   .cdstruct{font-size:13.5px;color:var(--goldd);font-weight:700;margin-bottom:9px;background:#faf4e8;border-radius:10px;padding:8px 12px}
   .cdbody{font-size:15px;color:var(--ink);line-height:1.8}
   .cdwux{font-size:11.5px;color:var(--sub);margin-top:11px;border-top:1px dashed var(--line);padding-top:8px;line-height:1.6}
@@ -398,7 +401,7 @@ const COMBO=[
  {g:"y2140",lab:"XWS",src:["X","W"],res:"S"},
  {g:"y4160",lab:"MOP",src:["M","O"],res:"P"},
  {g:"y4160",lab:"NOQ",src:["N","O"],res:"Q"},
- {g:"y4160",lab:"PQR",src:["P","Q"],res:"R"},
+ {g:"y4160",lab:"QPR",src:["Q","P"],res:"R"},
  {g:"y60",lab:"KNV",src:["K","N"],res:"V"},
  {g:"y60",lab:"LNU",src:["L","N"],res:"U"},
  {g:"y60",lab:"VUT",src:["V","U"],res:"T"}];
@@ -424,7 +427,7 @@ const getC=lab=>COMBO.find(c=>c.lab===lab);
 function codeOf(c,t){return String(t[c.src[0]])+t[c.src[1]]+t[c.res];}
 function codeDesc(c,t){return CODE81[codeOf(c,t)]||"";}
 /* 聯合密碼中文名（個人頁只保留 6 組） */
-const CODE_NAME={IJM:"動機",KLN:"能量",MNO:"主性格",XWS:"青年運",PQR:"中年運",VUT:"晚年運",
+const CODE_NAME={IJM:"動機",KLN:"能量",MNO:"主性格",XWS:"青年運",QPR:"中年運",VUT:"晚年運",
  IMX:"工作",JMW:"人際",MOP:"事業",NOQ:"發展",KNV:"家庭",LNU:"財富"};
 /* 聯合密碼標籤：三個數字為主視覺，可點開看完整解讀並在主圖圈出 */
 function comboTag(c,t,who,sub){
@@ -436,12 +439,14 @@ function comboTag(c,t,who,sub){
   const subtxt=(sub!==undefined)?sub:(who?cname:"");
   const safe=(CODE81[code]||"").replace(/"/g,"");
   const name=who?(who+"·"+cname):cname;
-  return `<span class="ctag ${c.lab==='MNO'?'key':''}" data-code="${code}" data-letters="${letters.join(',')}" data-name="${name}" onclick="showCode(this)" title="點看完整解讀：${safe}"><span class="ctn">${top}</span><b>${vals}</b>${subtxt?`<span class="cts">${subtxt}</span>`:""}</span>`;
+  const ti=(window.__TAGT=window.__TAGT||[]).push(t)-1;
+  return `<span class="ctag ${c.lab==='MNO'?'key':''}" data-code="${code}" data-letters="${letters.join(',')}" data-name="${name}" data-ti="${ti}" onclick="showCode(this)" title="點看完整解讀：${safe}"><span class="ctn">${top}</span><b>${vals}</b>${subtxt?`<span class="cts">${subtxt}</span>`:""}</span>`;
 }
 /* 點標籤：在主圖圈出三個數字並變色，彈出底部解讀面板 */
 function showCode(el){
   const code=el.dataset.code,name=el.dataset.name||"";
   const letters=(el.dataset.letters||"").split(",").filter(Boolean);
+  const t=(window.__TAGT||[])[+el.dataset.ti];
   const c=code.split("");const an=k=>NUM[k]?NUM[k].a:"特殊";
   const desc=CODE81[code]||"這組在此全息圖中含 0（出生年帶整千），暫無對應的標準解讀。";
   document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
@@ -449,6 +454,7 @@ function showCode(el){
   highlightChart(letters);
   const sh=document.getElementById("cdsheet");
   sh.innerHTML=`<div class="cdhead"><span class="cdn">${c.join("·")}</span><span class="cdlab">${name}</span><button class="cdx" onclick="hideCode()">×</button></div>
+    ${t?`<div class="cdmini">${miniChart(t,letters)}</div><div class="cdminitip">橙色為這組組成的三個數字在全息圖中的位置</div>`:""}
     <div class="cdstruct">${c[0]}（${an(c[0])}）＋ ${c[1]}（${an(c[1])}）＝ ${c[2]}（${an(c[2])}）</div>
     <div class="cdbody">${desc}</div>
     <div class="cdwux">尾數 ${c[2]} 是這組的核心導向，決定最終行為的主性格特徵。資料依《生命密碼全息圖》解讀指南。</div>`;
@@ -473,12 +479,26 @@ function highlightChart(letters){
   hl.innerHTML=g;
 }
 function clearHighlight(){const hl=document.getElementById("hl");if(hl)hl.innerHTML="";}
+/* 縮圖用節點座標（同主圖）＋連線，供解讀面板即時呈現是哪三個數字組成 */
+const POS={R:[400,212],Q:[354,256],P:[446,256],O:[400,302],S:[178,286],X:[230,286],W:[270,286],V:[530,286],U:[570,286],T:[622,286],M:[354,360],N:[446,360],I:[314,432],J:[368,432],K:[432,432],L:[486,432]};
+const MINI_LINES=[["I","M"],["J","M"],["K","N"],["L","N"],["M","O"],["N","O"],["M","P"],["O","P"],["N","Q"],["O","Q"],["P","R"],["Q","R"],["X","S"],["W","S"],["I","X"],["M","X"],["J","W"],["M","W"],["K","V"],["N","V"],["L","U"],["N","U"],["V","T"],["U","T"]];
+function miniChart(t,letters){
+  const set=new Set(letters);let s="";
+  MINI_LINES.forEach(([a,b])=>{s+=`<line x1="${POS[a][0]}" y1="${POS[a][1]}" x2="${POS[b][0]}" y2="${POS[b][1]}" stroke="#e3cda0" stroke-width="1.3"/>`;});
+  for(const k in POS){const[x,y]=POS[k];const hot=set.has(k);
+    s+=`<circle cx="${x}" cy="${y}" r="${hot?18:13}" fill="${hot?'url(#mhl)':'#fffdf8'}" stroke="${hot?'#fff':'#d3ab63'}" stroke-width="${hot?2.5:1.3}"/><text x="${x}" y="${y+(hot?6:5)}" text-anchor="middle" font-size="${hot?17:13}" font-weight="800" fill="${hot?'#fff':'#9c7327'}" font-family="Arial">${t[k]}</text>`;}
+  const pts=letters.map(k=>POS[k]).filter(Boolean);
+  if(pts.length){const ccx=pts.reduce((a,p)=>a+p[0],0)/pts.length,ccy=pts.reduce((a,p)=>a+p[1],0)/pts.length;
+    let R=0;pts.forEach(p=>{const d=Math.hypot(p[0]-ccx,p[1]-ccy)+18;if(d>R)R=d;});R+=9;
+    s=`<circle cx="${ccx}" cy="${ccy}" r="${R}" fill="rgba(217,102,61,.06)" stroke="#d9663d" stroke-width="2.5" stroke-dasharray="6 4"/>`+s;}
+  return `<svg viewBox="150 190 500 270" class="minichart"><defs><radialGradient id="mhl"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}</svg>`;
+}
 /* 區塊卡片：標題＋內容，明確區隔 */
 function block(title,body,sub){return `<div class="block"><div class="sect">${title}${sub?`<span class="ssub">${sub}</span>`:""}</div>${body}</div>`;}
 /* 角色標籤：主性格數字＋原型＋五行（配對與團隊用） */
 function soulBadge(name,t){const O=NUM[t.O],L=LORE[t.O];
   return `<div class="sbadge"><div class="sn">${t.O}</div><div class="si"><div class="nm">${name}</div><div class="ar">${O.a}</div><div class="wx">五行<em>${WUXNAME[L.w]}</em></div></div></div>`;}
-/* 個人：三我三層，只保留 IJM KLN MNO XWS PQR VUT 六組 */
+/* 個人：三我三層，只保留 IJM KLN MNO XWS QPR VUT 六組 */
 function threeSelf(t){
   return `
   <div class="layer l1">
@@ -494,7 +514,7 @@ function threeSelf(t){
   <div class="layer l3">
     <div class="lh"><b>社會我</b><span class="lr">外圈 · 對外際遇</span></div>
     <div class="lm">在不同人生階段對外展現的樣子與際遇，是社會看見的你。</div>
-    <div class="ctags">${comboTag(getC("XWS"),t,undefined,"21-40歲")}${comboTag(getC("PQR"),t,undefined,"41-60歲")}${comboTag(getC("VUT"),t,undefined,"60歲後")}</div>
+    <div class="ctags">${comboTag(getC("XWS"),t,undefined,"21-40歲")}${comboTag(getC("QPR"),t,undefined,"41-60歲")}${comboTag(getC("VUT"),t,undefined,"60歲後")}</div>
   </div>`;
 }
 
@@ -515,18 +535,18 @@ function pk(a,b){return Math.min(a,b)+"-"+Math.max(a,b);}
 
 /* ===== 全息圖 SVG（三層同心圓） ===== */
 function chartSVG(t){
-  const W=800,H=820,cx=400,cy=400,rIn=240,rOut=312;let s="";
-  s+=`<circle cx="${cx}" cy="${cy}" r="${rOut}" fill="none" stroke="#e3c79a" stroke-width="1.4"/>`;
-  s+=`<circle cx="${cx}" cy="${cy}" r="${rIn}" fill="none" stroke="#e8d2ab" stroke-width="1.2"/>`;
+  const W=800,H=820,cx=400,cy=400,rIn=146,rOut=265;let s="";
+  s+=`<circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#f3e7cf" stroke="#cdab6f" stroke-width="1.6"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#fdf8ee" stroke="#d6b87f" stroke-width="1.5"/>`;
   const star=(x,y,r,c)=>`<path d="M${x} ${y-r} L${x+r*.22} ${y-r*.22} L${x+r} ${y} L${x+r*.22} ${y+r*.22} L${x} ${y+r} L${x-r*.22} ${y+r*.22} L${x-r} ${y} L${x-r*.22} ${y-r*.22} Z" fill="${c||'#cda86f'}" opacity=".7"/>`;
   s+=star(120,118,20)+star(690,118,26)+star(140,148,9);
   const T=(x,y,txt,fs,col,ls)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs||18}" fill="${col||'#8a6d3b'}" letter-spacing="${ls||0}">${txt}</text>`;
   s+=`<text x="${cx}" y="452" text-anchor="middle" font-size="300" font-weight="900" style="fill:#bf9a5e;opacity:.10">全</text>`;
-  s+=T(cx,52,"事業·發展",21,"#7d5f30",3)+T(46,372,"工作",20,"#7d5f30")+T(58,400,"·人際",20,"#7d5f30")+T(760,372,"家庭",20,"#7d5f30")+T(748,400,"·財富",20,"#7d5f30")+T(cx,772,"社會我",19,"#7d5f30",3);
+  s+=T(cx,52,"事業·發展",20,"#7d5f30",3)+T(44,372,"工作",19,"#7d5f30")+T(56,398,"·人際",19,"#7d5f30")+T(762,372,"家庭",19,"#7d5f30")+T(750,398,"·財富",19,"#7d5f30")+T(cx,694,"社會我",18,"#7d5f30",3);
   s+=T(cx,118,"41-60",16,"#a98a55")+T(122,394,"21",14,"#a98a55")+T(122,410,"至",11,"#a98a55")+T(122,426,"40",14,"#a98a55")+T(680,394,"61",14,"#a98a55")+T(680,412,"起",11,"#a98a55");
-  s+=T(296,690,"模式",16,"#9a7b48")+T(cx,694,"自我",18,"#7d5f30",2)+T(504,690,"行為",16,"#9a7b48");
+  s+=T(312,602,"模式",15,"#9a7b48")+T(cx,606,"自我",17,"#7d5f30",2)+T(488,602,"行為",15,"#9a7b48");
   s+=T(298,366,"動機",17,"#8a6d3b")+T(502,366,"能量",17,"#8a6d3b")+T(270,452,"人格",16,"#8a6d3b")+T(530,452,"天賦",16,"#8a6d3b");
-  s+=T(324,602,"感受",15,"#9a7b48")+T(cx,602,"本我",18,"#7d5f30",1)+T(476,602,"期望",15,"#9a7b48");
+  s+=T(352,536,"感受",14,"#9a7b48")+T(cx,536,"本我",16,"#7d5f30",1)+T(448,536,"期望",14,"#9a7b48");
   const pos={R:[cx,212],Q:[cx-46,256],P:[cx+46,256],O:[cx,302],S:[178,286],X:[230,286],Wn:[270,286],V:[530,286],U:[570,286],Tn:[622,286],M:[cx-46,360],N:[cx+46,360],I:[cx-86,432],J:[cx-32,432],K:[cx+32,432],L:[cx+86,432]};
   const ln=(a,b)=>`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#d9bd8e" stroke-width="1.4" opacity=".7"/>`;
   s+=ln(pos.I,pos.M)+ln(pos.J,pos.M)+ln(pos.K,pos.N)+ln(pos.L,pos.N)+ln(pos.M,pos.O)+ln(pos.N,pos.O)+ln(pos.M,pos.P)+ln(pos.O,pos.P)+ln(pos.N,pos.Q)+ln(pos.O,pos.Q)+ln(pos.P,pos.R)+ln(pos.Q,pos.R);
