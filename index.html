@@ -82,6 +82,21 @@
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}.chip{font-size:12px;background:#f1e6cf;color:var(--goldd);border-radius:20px;padding:3px 10px}.chip.miss{background:#fdeede;color:#b76e00}
   .note{font-size:12px;color:var(--sub);background:#faf5ea;border-left:3px solid #d9b98a;padding:8px 11px;border-radius:8px;margin-top:12px}
   .foot{text-align:center;font-size:11.5px;color:var(--sub);margin-top:20px}
+  /* 聯合密碼可點 ＋ 底部解讀面板 */
+  .ctag{cursor:pointer;transition:transform .1s,box-shadow .1s}
+  .ctag:active{transform:scale(.95)}
+  .ctag:hover{box-shadow:0 3px 10px rgba(160,120,40,.22)}
+  #cdsheet{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;background:var(--card);
+    border-top:2px solid var(--gold);border-radius:18px 18px 0 0;box-shadow:0 -8px 30px rgba(150,110,40,.22);
+    padding:14px 18px 24px;transform:translateY(125%);transition:transform .26s;z-index:50}
+  #cdsheet.on{transform:translateY(0)}
+  .cdhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .cdhead b{font-family:Arial;font-size:23px;color:var(--goldd);letter-spacing:3px}
+  .cdlab{font-size:12px;color:var(--goldd);background:#f1e6cf;border-radius:20px;padding:2px 11px;font-weight:700}
+  .cdx{margin-left:auto;border:0;background:#f3ead7;color:var(--goldd);width:32px;height:32px;border-radius:50%;font-size:19px;cursor:pointer;line-height:1}
+  .cdstruct{font-size:13px;color:var(--goldd);font-weight:700;margin-bottom:7px}
+  .cdbody{font-size:14.5px;color:var(--ink);line-height:1.75}
+  .cdwux{font-size:11.5px;color:var(--sub);margin-top:10px;border-top:1px dashed #eaddc4;padding-top:7px}
 </style>
 </head>
 <body>
@@ -121,6 +136,7 @@
 
   <div class="foot">本工具為自我探索與人際理解用途，非命定預測。重大決策請尋求專業協助。<br>&copy; 命理大師 · 天賦數全息圖</div>
 </div>
+<div id="cdsheet"></div>
 
 <script>
 /* 1-9 號原型與具體描述（原創通用內容，非書籍著作） */
@@ -170,6 +186,129 @@ const NUM={
    collab:"當精神領袖與整合者，讓大家知道為何而戰。",
    advice:"理想要搭配務實的人一起落地，也記得照顧自己、別過度付出。",
    have:"有人能看大方向與意義",gap:"缺願景者，容易見樹不見林，建議有人定期拉高度、對齊目標。"}};
+
+/* 主性格坐鎮碼深度特質（依《數字能量心理學與生命密碼全息圖》解讀指南，標註引用著作，非杜撰） */
+const WUX={1:0,2:0,3:1,4:1,5:2,6:2,7:3,8:3,9:4};
+const WUXNAME=["木","火","土","金","水"];
+const LORE={
+ 1:{w:0,pos:"自信果斷、原創力強，天生的開拓者與領導者，敢在危機中第一個往前衝。",
+    shadow:"未經修飾的本我易流於自我中心、固執己見、缺乏同理，甚至專制霸道。",
+    lesson:"傾聽與包容。真正的領導來自賦能他人、接納異議，而非單向發號施令。"},
+ 2:{w:0,pos:"如水般柔軟、極度敏感，共情與溝通天賦出眾，是最佳的輔佐者與和平使者。",
+    shadow:"對關係過度渴求，易優柔寡斷、委曲求全，依賴他人認同而失去自我底線。",
+    lesson:"建立內在心理邊界。學會在不失去自我的前提下與人連結，拒絕不等於破壞關係。"},
+ 3:{w:1,pos:"極度理想化、降生於世的藝術家，溝通與創意天份高，深受一切美的事物吸引。",
+    shadow:"對理想狂熱易做出不合邏輯的決定，理想與現實落差時陷入劇烈情緒波動。",
+    lesson:"落地與務實。把天馬行空的創意化為實質產出，管理過亢或低落的情緒張力。"},
+ 4:{w:1,pos:"天生的策劃家與執行者，重邏輯紀律、責任心高，是組織中最穩定可靠的支柱。",
+    shadow:"對安全與秩序過度渴求易僵化固執、抗拒改變，用繁瑣規則束縛自己與他人。",
+    lesson:"擁抱無常與彈性。真正的安全感來自內心應對變化的韌性，而非堅固的堡壘。"},
+ 5:{w:2,pos:"位居數列正中，熱愛冒險、適應力強、多才多藝，靈魂充滿對未知的好奇。",
+    shadow:"負面時任性、逃避承諾、缺乏專注，為反抗權威而盲目叛逆，易耗盡能量。",
+    lesson:"真正的自由建立在自律與責任之上。在廣闊探索中確立一個長遠核心目標。"},
+ 6:{w:2,pos:"天生母性與社會使命感，對品質與美學要求高，具吸引財富與資源的潛在能量。",
+    shadow:"過度責任易演變為越界控制（以『為你好』之名），完美執著帶來焦慮與吹毛求疵。",
+    lesson:"接受不完美與放手。愛的核心是包容與尊重，學會愛自己是愛別人的前提。"},
+ 7:{w:3,pos:"求知慾與洞察力極強、抽絲剝繭的分析力，自帶好運與獨特人格魅力（好人緣）。",
+    shadow:"過度發達的邏輯使人多疑冷漠、憤世嫉俗，難建立深層情感信任，常感孤獨。",
+    lesson:"信任、臣服與打開心扉。在理智無法觸及處用直覺感受，展現脆弱的一面。"},
+ 8:{w:3,pos:"能量最濃烈，核心是責任、豐足、權力與親善，一諾千金，具強大社會影響力。",
+    shadow:"伴隨巨大壓力與龐大野心，易執迷金錢權力，走向慈善家或獨裁者兩個極端。",
+    lesson:"絕對的誠實與正直德行。一旦撒謊欺騙，潛意識會啟動自我懲罰，身心不安。"},
+ 9:{w:4,pos:"含括 1 到 8 所有能量，人道主義者與夢想家，遠見高，是各種機會與資源的匯聚點。",
+    shadow:"易脫離現實、好高騖遠，什麼都想要卻流於貪心，嚴重缺乏 4 那樣的執行落實力。",
+    lesson:"專注、割捨與實踐。在眾多美好機會中做出選擇，把高遠理念降維為世俗行動。"}};
+/* 五行生剋（1與2木、3與4火、5與6土、7與8金、9水） */
+function wuxRel(a,b){const ea=WUX[a],eb=WUX[b];
+  if(ea===eb)return{t:"比和",d:"五行同屬"+WUXNAME[ea]+"，同類相旺、頻率相近，容易一拍即合，但也可能同時卡在同一個盲點。"};
+  if(eb===(ea+1)%5)return{t:"相生",d:WUXNAME[ea]+"生"+WUXNAME[eb]+"，"+a+" 能順向滋養 "+b+"，能量流動順暢、互相增強，是天然的助力組合。"};
+  if(ea===(eb+1)%5)return{t:"相生",d:WUXNAME[eb]+"生"+WUXNAME[ea]+"，"+b+" 能順向滋養 "+a+"，能量流動順暢、互相增強，是天然的助力組合。"};
+  if(eb===(ea+2)%5)return{t:"相剋",d:WUXNAME[ea]+"剋"+WUXNAME[eb]+"，內在較易產生矛盾拉扯，需要刻意溝通與分工，磨合好了反而互相砥礪。"};
+  return{t:"相剋",d:WUXNAME[eb]+"剋"+WUXNAME[ea]+"，內在較易產生矛盾拉扯，需要刻意溝通與分工，磨合好了反而互相砥礪。"};
+}
+/* 81 組聯合密碼動力學（解讀指南，結構 A＋B＝C，尾數 C 為核心導向；非杜撰） */
+const CODE81={
+"191":"一個人找機會，突破後還是一個人，成功後仍感孤獨，適合個體經營，要學習借助朋友的力量。",
+"281":"銷售高手，透過溫和溝通與承擔壓力來展現自我，但溝通過後容易變得忙碌與孤獨。",
+"371":"行動中帶有多疑與孤獨感，脾氣較差且疑心重，容易讓朋友圈變動並趕走貴人。",
+"461":"智慧與知識豐富，很會計算與做財富管理，最終實現獨立，但切忌自私。",
+"551":"雙重方向與固執造就絕對的孤立與特立獨行，若無突破容易感到壓抑，極度渴望自由。",
+"641":"知識豐富且擅長管理資源，若不願意分享財富與智慧，最終會剩下自己一個人。",
+"731":"思考後行動迅速，但有時脾氣急躁導致人緣易變動，容易與人疏遠而回歸獨立。",
+"821":"帶著強大責任去溝通，作風雷厲風行，影響力與責任心極強，具備領袖風範。",
+"911":"孤獨的行者，擁有很多機會但需要獨立去實踐，必須提醒自己切勿貪心。",
+"112":"雙重自我意識碰撞，做事容易矛盾、糾結，時常半途而廢或說一套做一套，需多讀書突破自我。",
+"292":"喜歡談論事業與投資，能說會道，但有時光說不做，適合擔任軍師角色。",
+"382":"大火小火皆從嘴出，脾氣善變極易得罪人，阻礙較多，需多做善事並修煉口業。",
+"472":"具備深層邏輯與優良的溝通協調能力，能透過嚴謹分析來建立有效的人際連結。",
+"562":"有方向且說話謹慎，管理財務厲害但容易較為吝嗇（守財奴碼），做慈善時易糾結。",
+"652":"在追求財富完美與尋找自我方向的過程中容易感到拉扯，需透過柔和的溝通來尋求平衡。",
+"742":"善於分析與策劃，能有效解決問題，並透過溝通把人脈資源與框架規則結合起來。",
+"832":"水火衝擊，能承受一定壓力與責任，但遇事不易冷靜，脾氣發作毫無預兆，極易得罪人。",
+"922":"適合出謀劃策，但往往說得多、做得少，需要提升實際執行力來維繫關係。",
+"123":"說話較不經大腦，感性且反應快，給人圓滑的感覺，行動直接果斷，適合擔任講師。",
+"213":"很能說且善於察言觀色，給人圓滑的感覺，但行動時說話直接並喜歡命令人。",
+"393":"喜歡鑽牛角尖，容易把自己轉暈，但當停下來時能展現一技之長，心靈手巧才藝極佳。",
+"483":"容易犯糊塗，有時思考過度與承擔過多壓力，反而導致行動混亂，需釐清目標。",
+"573":"高階社交密碼，具有極佳貴人運，能善用人際網絡與方向感達成實際且充滿創意的行動。",
+"663":"錢來錢往、左進右出，最喜歡花錢買東西，若不謹慎理財或在特定流年投資，極易賠錢。",
+"753":"善於利用人際網絡與自身明確的方向感來展開具體行動，能在群體中發揮渲染力。",
+"843":"也叫做知足的號碼，常為老師、打工者或家庭主婦，容易在壓力與策劃中尋找簡單的行動出口。",
+"933":"心靈手巧，但缺少耐心，應避免頻繁變動，需專注於單一目標進行實踐。",
+"134":"感性、衝動，喜歡嘗試卻又害怕，容易感到矛盾、焦躁與抱怨，最終渴望獲得安全感。",
+"224":"雖會說話但有時不知如何表達，為人被動、溫馨，適合服務業，能把雙倍的敏感轉化為穩定框架。",
+"314":"行動力強但屬於被動行動，一開始常有抵觸情緒，容易衝動且極度缺乏安全感。",
+"494":"思維縝密，能夠把遠見與無數機會轉化為極度穩定且可落實執行的系統方案。",
+"584":"有責任與明確方向，但顧慮太多想得遙遠，無法活在當下，需要學習放下身段回歸現實。",
+"674":"善於將金錢財富與人脈進行系統化的資源整合，創造出穩固的事業與收益模式。",
+"764":"貴人運帶來財富，並能透過良好的規劃將其穩固，屬於按部就班累積資源的類型。",
+"854":"有責任方向與目標，但常空有策劃想得太多，需要找尋讓自己回歸當下的方法，如站上講台分享思想。",
+"944":"思維發達，能夠透過嚴格的紀律與計畫來實踐遠大的機會，把天馬行空的理想落地。",
+"145":"方向性強但容易半途而廢，缺少突破，需要有堅強有力的領導帶領，不適合單幹。",
+"235":"脾氣來得快，說話具攻擊性且固執，但溝通與執行力強，為人有原則。",
+"325":"用腦過日子，心直口快，說話不計後果，一生經歷多但解決問題能力強，需謹記三思而後行。",
+"415":"為人實在、平易近人，希望完美但想得太多，有時容易半途而廢而更改方向。",
+"595":"不斷在眾多機會中尋找自我方向，若過於固執己見容易面臨失敗，需避免為達目的而過度功利。",
+"685":"慈善碼，帶有靈性，需不停做善事與修口業，否則容易破財，越大方越能找對賺錢方向。",
+"775":"容易陷入邏輯的迷宮中，常因過度思考、無法信任任何單一選項而導致方向不斷迷失。",
+"865":"必須積德行善、注意忌口，容易因做慈善花錢而糾結，但越大方會越有錢。",
+"955":"為人較為自私、固執，容易因為一己之私而面臨失敗，需避免踐踏他人以確立自己的方向。",
+"156":"適合到外地發展，自我意識強大且固執，能主動尋找方向並親自賺取財富。",
+"246":"靠嘴賺錢，用智慧去計劃完成任務，業務能力強，非常適合做銷售與服務業。",
+"336":"屬『火燒金』組合，容易衝動，脾氣來了福氣就走，十賭九輸，需謹慎投資並修煉脾氣。",
+"426":"靠嘴吃飯的銷售高手（同 246），能把知識與策劃透過良好的溝通轉化為財富。",
+"516":"五方來財，容易被迫離開故土或往外發展才能賺錢，需多走動才能把智慧轉化為財富。",
+"696":"投資冒險碼，敢把所有資金投入機會中，需提醒自己『不要把雞蛋放在同一個籃子裡』以免破財。",
+"786":"他人與人際網絡帶來壓力，必須主動去承擔這些任務，才能將其轉化為實質的財富。",
+"876":"任務與壓力先來，承擔後交給別人做才能賺到錢，需學會主動承擔壓力。",
+"966":"無限的資源與追求極致完美的矛盾體，需學習把豐足的財富投入於群體大愛與社會責任上。",
+"167":"擁有財富，且願意把錢花在朋友或戀人身上，花錢較大手大腳，極度愛美。",
+"257":"原則性強，固執但個性直率、自由隨和，容易吸引他人接近，人緣運作極佳。",
+"347":"努力行動與策劃，個人魅力吸引貴人，精打細算，具備帶團隊的天賦，但有時說話不夠實在。",
+"437":"精打細算，積極行動且心態良好，能夠吸引並留住強大的人脈。",
+"527":"有方向地去溝通從而迎來貴人，但若說話太硬或過於講述原則時，易趕走貴人。",
+"617":"錢來了會花在自己或喜歡的人身上，非常愛美，常買雙份物品。",
+"797":"人脈與機會不斷循環，具有極強的社會影響力潛能，但易陷入對宏大願景的過度懷疑。",
+"887":"大水火衝擊，人生起伏大，脾氣極大，一生都要不斷修煉自我與感情功課，方能擁有平穩人緣。",
+"977":"能吸引各方人脈，但容易陷入對宏大願景的過度懷疑，需要在人際交往中建立深層信任。",
+"178":"對待朋友仗義且有責任感，人緣好，具備領導氣質，很會做生意且能做大，勇於承擔重任。",
+"268":"喜歡談論事業與金錢，有攀比心，內心較累並承受著無形的壓力，但性情溫和。",
+"358":"衝動固執，一生會經歷較多艱辛與坎坷，但極能承受壓力，通常是很有故事的人。",
+"448":"雙重穩定的極致追求，帶來強大組織力與權力渴望，但也伴隨極大的現實與精神壓力。",
+"538":"有方向地去忙碌與付出，最終承擔很大壓力，看起來較老成，是有經歷的人。",
+"628":"錢來了開口反而變成壓力，非常靈活多變，能把死物說成活的，忽悠能力強。",
+"718":"容易被朋友利用而承擔不必要的責任與壓力，建議不要輕易替人做擔保。",
+"898":"付出壓力獲得成功後，依然會處於忙碌狀態，喜歡把簡單的事情複雜化，需注意身心健康。",
+"988":"一生中會為他人（特別是異性）忙個不停，喜歡為人付出，若能付出大愛便能獲得最終的成功。",
+"189":"完美主義者，有責任與壓力感，願意一個人承擔，必須肯突破與闖蕩才能創造宏大機會，屬工作狂。",
+"279":"能夠透過溫和溝通吸引貴人與人緣，為人隨和，常有較小的桃花，具備極佳的公眾魅力。",
+"369":"聰明且行動力強，願意為朋友花錢不眨眼，常燒錢買機會與打理人脈，屬於能花能賺的類型。",
+"459":"先策劃好明確方向，然後再去獲取成功的類型，執行力穩健，較能有大成就與大機會。",
+"549":"先有方向再進行策劃以取得成功，講究方法，思想多且功利性較強，達不到要求時會感到痛苦。",
+"639":"錢來了就花掉，追求理想的行動過於迅速，導致財富積累容易落空，需要學習資源留存。",
+"729":"溝通能力佳，能吸引比自己大的高級桃花，人緣極好，貴人與機會不斷。",
+"819":"責任來了由一個人獨自承擔直到成功，不易相信別人，外表風光內心苦衷，挑剔且勞碌。",
+"999":"純粹的高頻靈性與現實脫節，擁有無限機會與宏大宇宙觀，卻缺乏世俗執行力，必須強迫自己落地。"};
 
 /* 主性格兩兩配對（原創摘要：基調／互補／摩擦／建議） */
 const PAIRS={
@@ -261,11 +400,29 @@ const COMBO_DESC={inner:"三角形內，反映你的本質與天賦。IJM 動機
  y4160:"三角形外，對應 41-60 歲在事業與發展上的時運。",
  y60:"三角形外，對應 60 歲後在家庭與財富上的時運。"};
 const getC=lab=>COMBO.find(c=>c.lab===lab);
-/* 聯合密碼標籤：三碼（來源兩數＋結果） */
+/* 取得某組聯合密碼的三碼字串（來源兩數＋結果），用以查 81 組解讀 */
+function codeOf(c,t){return String(t[c.src[0]])+t[c.src[1]]+t[c.res];}
+function codeDesc(c,t){return CODE81[codeOf(c,t)]||"";}
+/* 聯合密碼標籤：三碼（來源兩數＋結果），可點開看完整解讀 */
 function comboTag(c,t,who){
+  const code=codeOf(c,t);
   const vals=c.src.map(k=>t[k]).concat(t[c.res]).join("·");
-  return `<span class="ctag ${c.lab==='MNO'?'key':''}">${who?`<span class="who">${who}</span>`:""}<b>${vals}</b><small>${c.lab}</small></span>`;
+  const safe=(CODE81[code]||"").replace(/"/g,"");
+  return `<span class="ctag ${c.lab==='MNO'?'key':''}" data-code="${code}" data-lab="${c.lab}" data-who="${who||''}" onclick="showCode(this)" title="點看完整解讀：${safe}">${who?`<span class="who">${who}</span>`:""}<b>${vals}</b><small>${c.lab}</small></span>`;
 }
+/* 點標籤彈出底部解讀面板 */
+function showCode(el){
+  const code=el.dataset.code,lab=el.dataset.lab,who=el.dataset.who||"";
+  const c=code.split("");
+  const desc=CODE81[code]||"此組合的詳細解讀待補。";
+  const sh=document.getElementById("cdsheet");
+  sh.innerHTML=`<div class="cdhead"><b>${c.join("·")}</b><span class="cdlab">${lab}${who?"·"+who:""}</span><button class="cdx" onclick="hideCode()">×</button></div>
+    <div class="cdstruct">${c[0]}（${NUM[c[0]].a}）＋ ${c[1]}（${NUM[c[1]].a}）＝ ${c[2]}（${NUM[c[2]].a}）</div>
+    <div class="cdbody">${desc}</div>
+    <div class="cdwux">尾數 ${c[2]}（${NUM[c[2]].a}）是這組的核心導向，決定最終行為的主性格特徵。資料依《生命密碼全息圖》解讀指南。</div>`;
+  sh.classList.add("on");
+}
+function hideCode(){document.getElementById("cdsheet").classList.remove("on");}
 /* 個人：12 組標籤（分組＋說明） */
 function combo12Tags(t){
   return ["inner","y2140","y4160","y60"].map(g=>{
@@ -299,7 +456,7 @@ function chartSVG(t){
   const T=(x,y,txt,fs,col,ls)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs||18}" fill="${col||'#8a6d3b'}" letter-spacing="${ls||0}">${txt}</text>`;
   s+=`<text x="${cx}" y="452" text-anchor="middle" font-size="300" font-weight="900" style="fill:#bf9a5e;opacity:.10">全</text>`;
   s+=T(cx,52,"事業·發展",21,"#7d5f30",3)+T(46,372,"工作",20,"#7d5f30")+T(58,400,"·人際",20,"#7d5f30")+T(760,372,"家庭",20,"#7d5f30")+T(748,400,"·財富",20,"#7d5f30")+T(cx,772,"社會我",19,"#7d5f30",3);
-  s+=T(cx,118,"41-60",16,"#a98a55")+T(122,394,"21",14,"#a98a55")+T(122,410,"—",11,"#a98a55")+T(122,426,"40",14,"#a98a55")+T(680,394,"61",14,"#a98a55")+T(680,412,"—",11,"#a98a55");
+  s+=T(cx,118,"41-60",16,"#a98a55")+T(122,394,"21",14,"#a98a55")+T(122,410,"至",11,"#a98a55")+T(122,426,"40",14,"#a98a55")+T(680,394,"61",14,"#a98a55")+T(680,412,"起",11,"#a98a55");
   s+=T(296,690,"模式",16,"#9a7b48")+T(cx,694,"自我",18,"#7d5f30",2)+T(504,690,"行為",16,"#9a7b48");
   s+=T(298,366,"動機",17,"#8a6d3b")+T(502,366,"能量",17,"#8a6d3b")+T(270,452,"人格",16,"#8a6d3b")+T(530,452,"天賦",16,"#8a6d3b");
   s+=T(324,602,"感受",15,"#9a7b48")+T(cx,602,"本我",18,"#7d5f30",1)+T(476,602,"期望",15,"#9a7b48");
@@ -331,23 +488,34 @@ function cc(l,v,main){return `<div class="cc ${main?'main':''}"><div class="l">$
 /* ===== 個人 ===== */
 function runSolo(){
   const dt=document.getElementById("s_dt").value;if(!dt)return;
-  const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];
+  const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];const L=LORE[t.O];
   document.getElementById("s_out").innerHTML=`
     ${nm?`<div style="text-align:center;color:#7d5f30;margin-bottom:4px">${nm} 的全息圖</div>`:""}
     <div class="chartwrap">${chartSVG(t)}</div>
     <div class="sect">核心密碼</div>
     <div class="cards">${cc("主性格 O",t.O,true)}${cc("動機 M",t.M)}${cc("能量 N",t.N)}${cc("潛意識",t.sub)}</div>
-    <div class="sect">聯合密碼（12 組標籤）</div>
-    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每組聯合密碼是「來源兩數·結果」的三碼組合（綠色 MNO 為主性格組）。全系統 81 組、你佔 12 組。</p>
-    ${combo12Tags(t)}
-    <div class="sect">天賦分析</div>
+    <div class="sect">主性格坐鎮碼深度特質</div>
     <div class="ana">
-      <p><span class="ev">主性格 ${t.O}</span>你的核心是「${O.a}」。${O.shine}</p>
+      <p><span class="ev">主性格 ${t.O} ${O.a}</span>五行屬${WUXNAME[L.w]}。坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</p>
+      <p><span class="ev">正面天賦</span>${L.pos}</p>
+      <p><span class="ev">負面陰影</span>${L.shadow}</p>
+      <p><span class="ev">人生功課</span>${L.lesson}</p>
+    </div>
+    <div class="sect">主性格聯合密碼 ${codeOf(getC('MNO'),t)}</div>
+    <p class="gdesc">由動機 M、能量 N 合成主性格 O，是你最核心、最深沈的一組（綠色標籤，可點看完整解讀）。</p>
+    <div class="ctags">${comboTag(getC('MNO'),t)}</div>
+    <p class="gdesc">${codeDesc(getC('MNO'),t)}</p>
+    <div class="sect">聯合密碼（12 組標籤）</div>
+    <p style="font-size:12.5px;color:#a08a6a;margin:2px 0 8px">每組是「來源兩數·結果」的三碼組合（綠色 MNO 為主性格組）。全系統 81 組、你佔 12 組。<b style="color:#9c7327">點任一標籤可看完整解讀。</b></p>
+    ${combo12Tags(t)}
+    <div class="sect">天賦與合作</div>
+    <div class="ana">
+      <p><span class="ev">日常展現</span>${O.shine}</p>
       <p><span class="ev">合作角色</span>${O.collab}</p>
       <p><span class="ev">提醒</span>${O.advice}</p>
       <p><span class="ev">三我</span>由內而外：本我（內圈·真實渴望）→ 自我（中圈·21-60歲對外展現）→ 社會我（外圈·事業/人際/家庭的角色）。</p>
     </div>
-    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。解讀採通用原型撰寫；正式版各號碼完整文案將以自有／授權內容呈現。</div>`;
+    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與 81 組聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
 }
 
 /* ===== 兩人配對 ===== */
@@ -361,6 +529,7 @@ function runPair(){
   const n1=document.getElementById("p_n1").value.trim()||"A",n2=document.getElementById("p_n2").value.trim()||"B";
   const a=holo(d1),b=holo(d2);const A=NUM[a.O],B=NUM[b.O];
   const P=PAIRS[pk(a.O,b.O)]||["合作組合","彼此能帶來不同視角","相處上需要磨合","保持溝通與分工"];
+  const rel=wuxRel(a.O,b.O);
   let sc=60;if(a.M!==b.M)sc+=6;if(a.N!==b.N)sc+=6;sc+=(a.O!==b.O?8:4);sc=Math.min(94,sc);
   // 聯合密碼對照
   const cmp=(lab,x,y)=>{const same=x===y;return `<div class="mrow"><b>${lab}</b>：${n1} ${x}（${NUM[x].a}）／ ${n2} ${y}（${NUM[y].a}）${same?'　→ 出發點一致，容易同頻':'　→ 取向不同，可互補但需溝通'}</div>`;};
@@ -368,16 +537,24 @@ function runPair(){
     <div class="sect">雙方主性格與聯合密碼</div>
     <div class="two"><div>${phCard(n1,a)}</div><div>${phCard(n2,b)}</div></div>
     <div class="sect">主性格聯合密碼配對</div>
-    <p class="gdesc">主性格聯合密碼（MNO）由動機 M、能量 N 合成主性格 O，是最核心、最深沈的一組。把雙方的 MNO 放在一起，再看主性格配對組合。</p>
+    <p class="gdesc">主性格聯合密碼（MNO）由動機 M、能量 N 合成主性格 O，是最核心、最深沈的一組（綠色標籤可點看完整解讀）。把雙方的 MNO 放在一起，再看主性格配對組合。</p>
     <div class="ctags">
       ${comboTag(getC('MNO'),a,n1)}${comboTag(getC('MNO'),b,n2)}
       <span class="ctag" style="border-color:#c79a4b"><b>${a.O}-${b.O}</b><small>主性格配對組合</small></span>
     </div>
+    <div class="mrow"><b>${n1}　${codeOf(getC('MNO'),a)}</b>　${codeDesc(getC('MNO'),a)}</div>
+    <div class="mrow"><b>${n2}　${codeOf(getC('MNO'),b)}</b>　${codeDesc(getC('MNO'),b)}</div>
     <p class="gdesc">配對組合 ${a.O}-${b.O}：${P[0]}。${P[1]}</p>
+    <div class="mrow"><b>五行 ${rel.t}</b>　${rel.d}</div>
     <div class="sect">聯合密碼對照（配對用）</div>
     ${cmp("主性格組 MNO",a.O,b.O)}${cmp("動機組 IJM",a.M,b.M)}${cmp("能量組 KLN",a.N,b.N)}${cmp("潛意識 OIL",a.sub,b.sub)}
     <div class="sect">各自能展現</div>
     <div class="ana"><p><span class="ev">${n1} ${a.O}</span>${A.shine}</p><p><span class="ev">${n2} ${b.O}</span>${B.shine}</p></div>
+    <div class="sect">雙方主性格功課（相處要點）</div>
+    <div class="ana">
+      <p><span class="ev">${n1} ${a.O} ${A.a}</span>陰影：${LORE[a.O].shadow}　功課：${LORE[a.O].lesson}</p>
+      <p><span class="ev">${n2} ${b.O} ${B.a}</span>陰影：${LORE[b.O].shadow}　功課：${LORE[b.O].lesson}</p>
+    </div>
     <div class="sect">合作（具體情境）</div>
     <div class="ana"><p>由 ${n1} 擔任${A.r}，${A.collab.replace(/。$/,'')}；${n2} 擔任${B.r}，${B.collab.replace(/。$/,'')}。${a.O===b.O?'兩人同為'+A.a+'，默契高但容易在同一處卡關，需有人退一步補位。':'一個負責'+A.ess.split('、')[0]+'、一個負責'+B.ess.split('、')[0]+'，正好把對方沒顧到的補起來。'}</p></div>
     <div class="sect">建議（具體）</div>
@@ -411,7 +588,7 @@ function runTeam(){
   const gaps=Object.keys(spec).filter(k=>spec[k]===0).map(Number);
   const pctRows=present.sort((a,b)=>spec[b]-spec[a]).map(n=>{const p=Math.round(spec[n]/tot*100);
     return `<div class="pct"><span class="n">${n} ${NUM[n].a}</span><span class="bar"><i style="width:${p}%"></i></span><span class="p">${spec[n]}人 ${p}%</span></div>`;}).join("");
-  const members=ms.map(m=>`<div class="mrow"><b>${m.nm}　${m.t.O} ${NUM[m.t.O].a}（${NUM[m.t.O].r}）</b><br>${NUM[m.t.O].shine}</div>`).join("");
+  const members=ms.map(m=>{const k=codeOf(getC("MNO"),m.t);return `<div class="mrow"><b>${m.nm}　${m.t.O} ${NUM[m.t.O].a}（${NUM[m.t.O].r}）·五行${WUXNAME[LORE[m.t.O].w]}</b><br>${NUM[m.t.O].shine}<br><span style="font-size:12.5px;color:#9c7327">主性格密碼 ${k}：</span><span style="font-size:12.5px;color:#a08a6a">${CODE81[k]||""}</span></div>`;}).join("");
   const haveTxt=present.map(n=>NUM[n].have).join("、");
   const gapTxt=gaps.length?gaps.map(n=>"・"+NUM[n].gap).join("<br>"):"角色涵蓋完整，沒有明顯缺口。";
   const gN=tot>=6?Math.round(tot/3):2;const sorted=[...ms].sort((a,b)=>a.t.O-b.t.O);const grp=Array.from({length:gN},()=>[]);
@@ -425,7 +602,7 @@ function runTeam(){
     <div class="sect">團隊主性格雷達（${tot}人）</div>
     <div class="radarwrap">${radarSVG(spec,tot)}<div class="pctlist">${pctRows}</div></div>
     <div class="sect">主性格聯合密碼組合（團隊）</div>
-    <p class="gdesc">每位成員的主性格聯合密碼（MNO）標籤，與全隊主性格的組合。</p>
+    <p class="gdesc">每位成員的主性格聯合密碼（MNO）標籤，與全隊主性格的組合。點任一成員標籤可看該組完整解讀。</p>
     <div class="ctags">${mnoTags}<span class="ctag" style="border-color:#c79a4b"><b>${teamCombo}</b><small>團隊組合</small></span></div>
     <p class="gdesc">${teamComboDesc}</p>
     <div class="sect">每位成員能展現的部分</div>${members}
