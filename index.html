@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>天賦數全息圖</title>
+<title>天賦數字圖</title>
 <style>
   :root{--bg1:#fbf3e7;--bg2:#f3e6d0;--ink:#4f3a1f;--ink2:#6b5230;--sub:#a08a6a;
     --gold:#c79a4b;--goldd:#9c7327;--green:#8fb22f;--greend:#6f8f1f;
@@ -16,7 +16,7 @@
   header h1{font-size:23px;letter-spacing:7px;color:var(--goldd);font-weight:800}
   header p{color:var(--sub);font-size:12px;margin-top:4px;letter-spacing:1px}
   .tabs{display:flex;gap:5px;background:#fff;border-radius:16px;padding:5px;margin:14px 0;box-shadow:0 6px 20px rgba(150,110,40,.12)}
-  .tabs button{flex:1;border:0;background:transparent;padding:11px 4px;border-radius:12px;font-size:14px;color:var(--sub);cursor:pointer;font-weight:700;font-family:inherit;transition:.2s}
+  .tabs button{flex:1;border:0;background:transparent;padding:11px 3px;border-radius:12px;font-size:13px;color:var(--sub);cursor:pointer;font-weight:700;font-family:inherit;transition:.2s;white-space:nowrap}
   .tabs button.on{background:linear-gradient(135deg,var(--gold),var(--goldd));color:#fff;box-shadow:0 4px 12px rgba(160,120,40,.3)}
   .panel{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 28px rgba(150,110,40,.1)}
   label{display:block;font-size:12.5px;color:var(--sub);margin:0 0 6px;font-weight:600}
@@ -141,15 +141,133 @@
   .cdstruct{font-size:13.5px;color:var(--goldd);font-weight:700;margin-bottom:9px;background:#faf4e8;border-radius:10px;padding:8px 12px}
   .cdbody{font-size:15px;color:var(--ink);line-height:1.8}
   .cdwux{font-size:11.5px;color:var(--sub);margin-top:11px;border-top:1px dashed var(--line);padding-top:8px;line-height:1.6}
+  /* 生日隱藏開關 */
+  .bdtoggle{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 4px}
+  .bdtoggle .bt-tx{font-size:13px;font-weight:700;color:var(--goldd)}
+  .switch{position:relative;display:inline-block;width:44px;height:25px;flex:0 0 auto}
+  .switch input{position:absolute;opacity:0;width:0;height:0;margin:0;padding:0}
+  .switch .sl{position:absolute;inset:0;background:#e3d2ab;border-radius:25px;cursor:pointer;transition:.2s}
+  .switch .sl::before{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(120,80,20,.3);transition:.2s}
+  .switch input:checked + .sl{background:linear-gradient(135deg,var(--gold),var(--goldd))}
+  .switch input:checked + .sl::before{transform:translateX(19px)}
+  /* 號碼查詢分頁 */
+  .gnav{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 4px}
+  .gchip{flex:1 1 60px;min-width:60px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:7px 3px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--goldd);font-weight:800;font-size:18px;transition:.15s}
+  .gchip small{font-size:10px;color:var(--sub);font-weight:600}
+  .gchip:hover{border-color:var(--gold);box-shadow:0 3px 10px rgba(160,120,40,.15);transform:translateY(-1px)}
+  .gcard{background:var(--card);border:1px solid #f1e7d3;border-radius:16px;margin:9px 0;box-shadow:0 4px 14px rgba(150,110,40,.07);overflow:hidden;scroll-margin-top:12px;transition:box-shadow .25s}
+  .gcard.flash{box-shadow:0 0 0 3px rgba(217,102,61,.32)}
+  .ghd{display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer}
+  .ghd .gnum{flex:0 0 auto;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#e7b86a,#c98a3c);color:#fff;font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial;box-shadow:0 4px 11px rgba(160,120,40,.28)}
+  .gti{flex:1;min-width:0}
+  .gnm{font-size:16px;font-weight:800;color:var(--ink)}
+  .garch{font-size:12px;font-weight:700;color:var(--goldd);margin-left:8px}
+  .gwx{font-size:11.5px;color:var(--sub);margin-top:1px}
+  .gwx em{font-style:normal;color:#8a6d2e;background:#fff;border:1px solid #e3c79a;border-radius:10px;padding:0 8px;font-weight:700;margin-left:2px}
+  .gess{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.5}
+  .gtog{flex:0 0 auto;color:var(--gold);font-size:14px;width:22px;text-align:center}
+  .gtog::after{content:"\25B8"}
+  .gcard.open .gtog::after{content:"\25BE"}
+  .gbd{display:none;padding:3px 15px 15px;border-top:1px dashed var(--line)}
+  .gcard.open .gbd{display:block}
+  .gintro{font-size:13.5px;color:var(--ink2);line-height:1.7;margin:11px 0 4px}
+  /* 需要尋找的合作夥伴（五行天然助力） */
+  .pcards{display:flex;flex-wrap:wrap;gap:9px}
+  .pcard{flex:1 1 150px;min-width:150px;display:flex;align-items:center;gap:10px;background:#f5f8fb;border:1px solid #d6e3ef;border-radius:13px;padding:10px 12px}
+  .pcard .pn{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#7fa9d6,#5a7ea3);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial}
+  .pcard .pi{min-width:0}
+  .pcard .pnm{font-size:13.5px;font-weight:800;color:#3f6286}
+  .pcard .pwx{font-size:10.5px;color:#5e7d18;background:#fff;border:1px solid #cfe08f;border-radius:10px;padding:0 7px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .pcard .pds{font-size:11.5px;color:#6b7d90;line-height:1.45;margin-top:2px}
+  /* 角色小天賦圖（可點擊放大） */
+  .minihCwrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .minihC{flex:1 1 150px;max-width:210px;cursor:zoom-in;background:radial-gradient(circle at 50% 40%,#fdf7ec,#f4e6cf);border-radius:14px;padding:5px 5px 2px;box-shadow:inset 0 2px 10px rgba(150,110,40,.08);transition:box-shadow .15s,transform .15s}
+  .minihC:hover{box-shadow:0 5px 16px rgba(160,120,40,.25);transform:translateY(-2px)}
+  .minihC .chart{width:100%;display:block}
+  .minihC-cap{text-align:center;font-size:12px;color:var(--goldd);font-weight:800;margin:1px 0 4px;letter-spacing:1px}
+  .minihC-cap small{display:block;font-size:10px;color:var(--sub);font-weight:600;letter-spacing:0}
+  /* 放大天賦圖彈窗 */
+  #zmask{position:fixed;inset:0;background:rgba(60,40,15,.4);opacity:0;pointer-events:none;transition:.25s;z-index:65}
+  #zmask.on{opacity:1;pointer-events:auto}
+  #zsheet{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;width:min(94vw,560px);max-height:92vh;overflow:auto;background:var(--card);border-radius:20px;border-top:3px solid var(--hl);box-shadow:0 16px 50px rgba(120,70,30,.4);padding:14px 16px 18px;z-index:70;transition:transform .25s cubic-bezier(.2,.8,.25,1),opacity .25s}
+  #zsheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+  .zhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .zhead #zttl{font-size:15px;font-weight:800;color:var(--goldd)}
+  /* 關鍵碼：主性格／動機碼／外心密碼 */
+  .kcs{display:flex;flex-direction:column;gap:8px;margin:2px 0 4px}
+  .kc{display:flex;align-items:center;gap:11px;background:#faf4e8;border:1px solid #ecdcbf;border-radius:13px;padding:9px 12px}
+  .kc .kcn{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#e7b86a,#c98a3c);color:#fff;font-size:21px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial}
+  .kc .kci{flex:1;min-width:0}
+  .kc .kcl{font-size:13px;font-weight:800;color:var(--goldd)}
+  .kc .kcp{font-size:10.5px;color:#fff;background:var(--green);border-radius:10px;padding:0 8px;margin-left:7px;font-weight:700}
+  .kc .kca{font-size:12.5px;color:var(--ink);font-weight:700;margin-top:1px}
+  .kc .kca em{font-style:normal;color:#5e7d18;background:#fff;border:1px solid #cfe08f;border-radius:10px;padding:0 7px;font-weight:700;margin-left:6px}
+  .kc .kcd{font-size:11.5px;color:var(--sub);margin-top:2px;line-height:1.45}
+  .kcs2{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:9px}
+  .kcol{flex:1 1 150px;background:#faf4e8;border:1px solid #ecdcbf;border-radius:12px;padding:9px 11px}
+  .kcol .kcoln{font-size:13px;font-weight:800;color:var(--goldd);margin-bottom:3px}
+  .kcol .kc2{font-size:12px;color:var(--ink2);line-height:1.55}
+  .rolerow{font-size:13.5px;line-height:1.7;margin:7px 0;padding-bottom:7px;border-bottom:1px dashed var(--line)}
+  .rolerow:last-child{border-bottom:0;padding-bottom:0}
+  .rolerow .rt{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;border-radius:8px;padding:2px 10px;margin-right:7px;letter-spacing:1px}
+  .rt.have{background:#7fa028}.rt.latent{background:var(--gold)}.rt.gap{background:#c45b7c}
+  /* 分數圓環儀表 */
+  .scoremeter{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,#fbf1dd,#f6e8cd);border:1px solid #ecd9b4;border-radius:16px;padding:13px 15px;margin:4px 0 2px}
+  .ring{position:relative;flex:0 0 auto;width:82px;height:82px}
+  .ring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+  .ring .rv b{font-size:25px;font-weight:800;font-family:Arial}
+  .ring .rv small{font-size:10px;color:var(--sub);margin-top:2px}
+  .sm-r{flex:1;min-width:0}
+  .sm-r .verdict{display:inline-block;font-size:12.5px;font-weight:800;color:#fff;border-radius:20px;padding:3px 13px;margin-bottom:6px;letter-spacing:1px}
+  .sm-r .sl{font-size:12px;color:var(--ink2);line-height:1.55}
+  /* 維度列＋五行關係標籤 */
+  .dimrow{padding:9px 0;border-bottom:1px dashed var(--line)}
+  .dimrow:last-child{border-bottom:0;padding-bottom:0}
+  .dh{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+  .dh b{font-size:13.5px;color:var(--ink);font-weight:800}
+  .dd{font-size:13px;color:var(--ink2);line-height:1.62}
+  .dx{font-size:12px;color:var(--sub);margin-top:2px;line-height:1.5}
+  .relchip{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;border-radius:20px;padding:2px 11px;letter-spacing:1px;white-space:nowrap}
+  /* 統計小標籤列 */
+  .statrow{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 2px}
+  .st{font-size:12px;font-weight:800;color:#fff;border-radius:20px;padding:3px 12px}
+  .relchip.sheng,.st.sheng{background:#7fa028}
+  .relchip.bihe,.st.bihe{background:#5a7ea3}
+  .relchip.ke,.st.ke{background:#d98c4a}
+  /* 行內重點標籤 */
+  .hl-warn,.hl-tip,.hl-good{display:inline-block;font-size:11px;font-weight:800;color:#fff;border-radius:7px;padding:1px 9px;margin-right:4px;letter-spacing:.5px}
+  .hl-warn{background:#d98c4a}.hl-tip{background:#7fa028}.hl-good{background:#5a9a4e}
+  /* 身分標籤按鈕（SVG）懸停 */
+  .selbtn:hover rect{fill-opacity:.92;stroke:var(--gold)}
+  .selbtn:active{opacity:.8}
+  /* 身分層解讀彈窗：三個標籤化評語 */
+  .selreads{display:flex;flex-direction:column;gap:8px;margin:6px 0 2px}
+  .selr{display:flex;gap:9px;background:#faf4e8;border:1px solid #ecdcbf;border-radius:12px;padding:9px 11px;font-size:13.5px;line-height:1.62}
+  .selr .slab{flex:0 0 auto;align-self:flex-start;font-size:11px;font-weight:800;color:#fff;border-radius:8px;padding:3px 10px;white-space:nowrap;letter-spacing:1px}
+  .selr.pos .slab{background:#7fa028}.selr.les .slab{background:#a877c0}.selr.neu .slab{background:var(--gold)}
+  .selr .stx{color:var(--ink)}
+  /* 三種樣子的你：可點卡片 */
+  .selfcards{display:flex;flex-direction:column;gap:9px}
+  .selfcard{display:flex;align-items:center;gap:12px;background:#faf4e8;border:1px solid #ecdcbf;border-radius:14px;padding:11px 13px;cursor:pointer;transition:box-shadow .15s,transform .12s}
+  .selfcard:hover{box-shadow:0 5px 15px rgba(160,120,40,.18);transform:translateY(-1px)}
+  .selfcard:active{transform:scale(.99)}
+  .selfcard .scn{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#e7b86a,#c98a3c);color:#fff;font-size:23px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:Arial;box-shadow:0 4px 11px rgba(160,120,40,.28)}
+  .selfcard .sci{flex:1;min-width:0}
+  .selfcard .scnm{font-size:15px;font-weight:800;color:var(--ink)}
+  .selfcard .scsub{font-size:11px;font-weight:700;color:var(--goldd);background:#fff;border:1px solid #e7d3a8;border-radius:10px;padding:1px 8px;margin-left:7px}
+  .selfcard .scar{font-size:12px;color:var(--greend);font-weight:700;margin-top:2px}
+  .selfcard .scd{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-top:3px}
+  .selfcard .scgo{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--goldd);align-self:center;white-space:nowrap}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header><h1>天 賦 數 全 息 圖</h1><p>用生日畫出天賦結構 · 看懂彼此的合作化學</p></header>
+  <header><h1>天 賦 數 字 圖</h1><p>用生日畫出天賦結構 · 看懂彼此的合作化學</p></header>
   <div class="tabs">
-    <button class="on" data-t="solo">個人全息圖</button>
+    <button class="on" data-t="solo">個人天賦圖</button>
     <button data-t="pair">兩人配對</button>
     <button data-t="team">團隊合作</button>
+    <button data-t="guide">號碼查詢</button>
   </div>
 
   <section id="solo">
@@ -163,7 +281,7 @@
         </div>
         <div class="bhint">直接點欄位輸入數字，例如 2000、1、1（灰字僅為範例提示）</div>
       </div>
-      <button class="btn" onclick="runSolo()">繪製全息圖</button>
+      <button class="btn" onclick="runSolo()">繪製天賦圖</button>
     </div>
     <div class="panel" id="s_out"></div>
   </section>
@@ -198,10 +316,16 @@
     <div class="panel" id="t_out"></div>
   </section>
 
-  <div class="foot">本工具為自我探索與人際理解用途，非命定預測。重大決策請尋求專業協助。<br>&copy; 命理大師 · 天賦數全息圖</div>
+  <section id="guide" style="display:none">
+    <div class="panel" id="g_out"></div>
+  </section>
+
+  <div class="foot">本工具為自我探索與人際理解用途，非命定預測。重大決策請尋求專業協助。<br>&copy; 命理大師 · 天賦數字圖</div>
 </div>
 <div id="cdmask" onclick="hideCode()"></div>
 <div id="cdsheet"></div>
+<div id="zmask" onclick="hideZoom()"></div>
+<div id="zsheet"><div class="zhead"><span id="zttl"></span><button class="cdx" style="margin-left:auto" onclick="hideZoom()">×</button></div><div id="zbody" class="chartwrap"></div></div>
 
 <script>
 /* 1-9 號原型與具體描述（原創通用內容，非書籍著作） */
@@ -252,9 +376,11 @@ const NUM={
    advice:"理想要搭配務實的人一起落地，也記得照顧自己、別過度付出。",
    have:"有人能看大方向與意義",gap:"缺願景者，容易見樹不見林，建議有人定期拉高度、對齊目標。"}};
 
-/* 主性格坐鎮碼深度特質（依《數字能量心理學與生命密碼全息圖》解讀指南，標註引用著作，非杜撰） */
-const WUX={1:0,2:0,3:1,4:1,5:2,6:2,7:3,8:3,9:4};
+/* 主性格深度特質（原創整理） */
+/* 數字對應五行（經《五行對應》《五行對應數字能量計算》兩份求證一致）：金1·6、水2·7、木4·9、火3·8、土5。
+   WUXNAME 順序即相生循環 木→火→土→金→水→木，wuxRel 依此判定相生相剋。WUX 為唯一準據。 */
 const WUXNAME=["木","火","土","金","水"];
+const WUX={1:3,2:4,3:1,4:0,5:2,6:3,7:4,8:1,9:0};
 const LORE={
  1:{w:0,pos:"自信果斷、原創力強，天生的開拓者與領導者，敢在危機中第一個往前衝。",
     shadow:"未經修飾的本我易流於自我中心、固執己見、缺乏同理，甚至專制霸道。",
@@ -283,7 +409,9 @@ const LORE={
  9:{w:4,pos:"含括 1 到 8 所有能量，人道主義者與夢想家，遠見高，是各種機會與資源的匯聚點。",
     shadow:"易脫離現實、好高騖遠，什麼都想要卻流於貪心，嚴重缺乏 4 那樣的執行落實力。",
     lesson:"專注、割捨與實踐。在眾多美好機會中做出選擇，把高遠理念降維為世俗行動。"}};
-/* 五行生剋（1與2木、3與4火、5與6土、7與8金、9水） */
+/* 五行以 WUX 為唯一準據，同步覆寫 LORE.w，避免顯示用的五行與生剋判定不一致 */
+for(const _k in LORE)LORE[_k].w=WUX[_k];
+/* 五行生剋（金1·6、水2·7、木4·9、火3·8、土5；相生循環 木→火→土→金→水） */
 function wuxRel(a,b){const ea=WUX[a],eb=WUX[b];
   if(ea===eb)return{t:"比和",d:"五行同屬"+WUXNAME[ea]+"，同類相旺、頻率相近，容易一拍即合，但也可能同時卡在同一個盲點。"};
   if(eb===(ea+1)%5)return{t:"相生",d:WUXNAME[ea]+"生"+WUXNAME[eb]+"，"+a+" 能順向滋養 "+b+"，能量流動順暢、互相增強，是天然的助力組合。"};
@@ -425,7 +553,7 @@ const PAIRS={
 
 /* 聯合密碼定義（拉出來說明） */
 const CODEDEF=[
- {k:"O",nm:"主性格",f:"M+N",d:"核心性格，主宰約六成行為，別人最常感受到的你",key:true},
+ {k:"O",nm:"主性格",f:"",d:"核心性格，別人最常感受到的你",key:true},
  {k:"M",nm:"動機",f:"I+J",d:"做事的起心動念，你為什麼出發"},
  {k:"N",nm:"能量",f:"K+L",d:"投入時自然散發的行動能量"},
  {k:"sub",nm:"潛意識",f:"O+I+L",d:"不自覺、習慣性的反應傾向"},
@@ -490,7 +618,7 @@ function showCode(el){
   const letters=(el.dataset.letters||"").split(",").filter(Boolean);
   const t=(window.__TAGT||[])[+el.dataset.ti];
   const c=code.split("");const an=k=>NUM[k]?NUM[k].a:"特殊";
-  const desc=CODE81[code]||"這組在此全息圖中含 0（出生年帶整千），暫無對應的標準解讀。";
+  const desc=CODE81[code]||"這組數字含 0（出生年帶整千），暫無對應的標準解讀。";
   document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
   el.classList.add("sel");
   const H=window.__HNODES||{};
@@ -498,10 +626,10 @@ function showCode(el){
   if(matchMain)highlightChart(letters);else clearHighlight();
   const sh=document.getElementById("cdsheet");
   sh.innerHTML=`<div class="cdhead"><span class="cdn">${c.join("·")}</span><span class="cdlab">${name}</span><button class="cdx" onclick="hideCode()">×</button></div>
-    ${t?`<div class="cdmini">${miniChart(t,letters)}</div><div class="cdminitip">橙色為這組組成的三個數字在全息圖中的位置</div>`:""}
-    <div class="cdstruct">${c[0]}（${an(c[0])}）＋ ${c[1]}（${an(c[1])}）＝ ${c[2]}（${an(c[2])}）</div>
+    ${t?`<div class="cdmini">${miniChart(t,letters)}</div><div class="cdminitip">橙色為這組的三個數字在圖中的位置</div>`:""}
+    <div class="cdstruct">${c[0]} ${an(c[0])} · ${c[1]} ${an(c[1])} · ${c[2]} ${an(c[2])}</div>
     <div class="cdbody">${desc}</div>
-    <div class="cdwux">尾數 ${c[2]} 是這組的核心導向，決定最終行為的主性格特徵。資料依《生命密碼全息圖》解讀指南。</div>`;
+    <div class="cdwux">其中 ${c[2]} ${an(c[2])} 是這組最主要的傾向，最能代表這組數字帶來的特質。</div>`;
   document.getElementById("cdmask").classList.add("on");
   sh.classList.add("on");
 }
@@ -511,6 +639,43 @@ function hideCode(){
   document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
   clearHighlight();
 }
+/* 三種樣子的你：日常我（主性格 O）、私下我（內心密碼 O+M+N）、社交的我（外心密碼 U+R+X）
+   點下去圈出對應數字，並彈出該面的優勢、功課與一段親切的分析 */
+const SELF_MAP={
+  daily:{name:"日常我",code:"主性格",key:"O",letters:["O"],
+    short:"平常生活、工作裡最常出現的你，也是身邊人最熟悉的那一面。",
+    intro:"這是你過日子的預設樣子。大多數時候，你會自然而然用這一面待人處事。"},
+  inner:{name:"私下我",code:"內心密碼",key:"ink",letters:["O","M","N"],
+    short:"一個人放鬆、卸下武裝時，心裡真正在想、真正想要的那一面。",
+    intro:"這是只有你自己，或最親近的人才看得到的內在。它藏在心底，卻常常默默左右你的選擇。"},
+  social:{name:"社交的我",code:"外心密碼",key:"ext",letters:["U","R","X"],
+    short:"認識新朋友、面對外人時，你自然端出來的第一張臉。",
+    intro:"這是你給外界的第一印象，像一層自然的防護與門面。它不一定等於真正的你，卻決定別人怎麼先認識你。"}};
+function showSelf(layer){
+  const t=window.__SELFT;if(!t)return;const o=SELF_MAP[layer];if(!o)return;
+  const n=t[o.key],N=NUM[n],L=LORE[n];
+  document.querySelectorAll(".ctag.sel").forEach(x=>x.classList.remove("sel"));
+  highlightChart(o.letters);
+  const sh=document.getElementById("cdsheet");
+  sh.innerHTML=`<div class="cdhead"><span class="cdn">${n}</span><span class="cdlab">${o.name}</span><button class="cdx" onclick="hideCode()">×</button></div>
+    <div class="cdstruct">${o.name}（${o.code}）＝ ${n} ${N.a}　五行${WUXNAME[WUX[n]]}</div>
+    <div class="cdbody" style="margin:2px 0 10px">${o.intro}</div>
+    <div class="selreads">
+      <div class="selr pos"><span class="slab">優勢特點</span><span class="stx">${L.pos}</span></div>
+      <div class="selr les"><span class="slab">人生功課</span><span class="stx">${L.lesson}</span></div>
+      <div class="selr neu"><span class="slab">日常展現</span><span class="stx">${N.shine}</span></div>
+    </div>
+    <div class="cdwux">這一面帶著「${N.a}」的特質：${N.ess}。橙色圈起來的，就是算出這一面的數字在圖中的位置。</div>`;
+  document.getElementById("cdmask").classList.add("on");
+  sh.classList.add("on");
+}
+/* 三種樣子的你：三張可點卡片，點下去圈數字＋彈出分析（與主圖按鈕同一套） */
+function selfCards(t){
+  const card=layer=>{const o=SELF_MAP[layer],n=t[o.key],N=NUM[n];
+    return `<div class="selfcard" onclick="showSelf('${layer}')"><div class="scn">${n}</div><div class="sci"><div class="scnm">${o.name}<span class="scsub">${o.code}</span></div><div class="scar">${N.a}・五行${WUXNAME[WUX[n]]}</div><div class="scd">${o.short}</div></div><div class="scgo">看分析 ›</div></div>`;};
+  return `<div class="selfcards">${card("daily")}${card("inner")}${card("social")}</div>
+    <p class="gdesc" style="margin-top:8px">點任一張（或主圖上的三個標籤），會在圖上圈出對應數字，並展開這一面的優勢、功課與分析。</p>`;
+}
 /* 在主圖把組成的數字用大圈包圍並變色 */
 function highlightChart(letters){
   const hl=document.getElementById("hl");if(!hl||!window.__HNODES)return;
@@ -519,7 +684,7 @@ function highlightChart(letters){
   const cx=pts.reduce((a,p)=>a+p.x,0)/pts.length,cy=pts.reduce((a,p)=>a+p.y,0)/pts.length;
   let R=0;pts.forEach(p=>{const d=Math.hypot(p.x-cx,p.y-cy)+p.r;if(d>R)R=d;});R+=14;
   let g=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(217,102,61,.08)" stroke="#d9663d" stroke-width="3" stroke-dasharray="7 5"><animate attributeName="r" from="${R+18}" to="${R}" dur="0.4s" fill="freeze"/><animate attributeName="opacity" from="0" to="1" dur="0.3s" fill="freeze"/></circle>`;
-  pts.forEach(p=>{g+=`<circle cx="${p.x}" cy="${p.y}" r="${p.r}" fill="url(#hlgr)" stroke="#fff" stroke-width="2.5"/><text x="${p.x}" y="${p.y+(p.r>22?6:5)}" text-anchor="middle" font-size="${p.r>22?22:18}" font-weight="800" fill="#fff" font-family="Arial">${p.v}</text>`;});
+  pts.forEach(p=>{g+=`<circle cx="${p.x}" cy="${p.y}" r="${p.r}" fill="url(#${window.__HLID||'hlgr'})" stroke="#fff" stroke-width="2.5"/><text x="${p.x}" y="${p.y+(p.r>22?6:5)}" text-anchor="middle" font-size="${p.r>22?22:18}" font-weight="800" fill="#fff" font-family="Arial">${p.v}</text>`;});
   hl.innerHTML=g;
 }
 function clearHighlight(){const hl=document.getElementById("hl");if(hl)hl.innerHTML="";}
@@ -552,7 +717,7 @@ function threeSelf(t){
   </div>
   <div class="layer l2">
     <div class="lh"><b>自我</b><span class="lr">中圈 · 真實的你</span></div>
-    <div class="lm">動機與能量整合成的核心性格，主宰約六成行為，是別人最常感受到的你。</div>
+    <div class="lm">動機與能量整合成的核心性格，是別人最常感受到的你。</div>
     <div class="ctags">${comboTag(getC("MNO"),t)}</div>
   </div>
   <div class="layer l3">
@@ -573,44 +738,50 @@ function holo(dateStr){
   const W=r9(J+M),X=r9(I+M),S=r9(X+W);
   const V=r9(K+N),U=r9(L+N),Tt=r9(V+U);
   return{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T:Tt,U,V,W,X,
-    sub:r9(O+I+L),inn:r9(N+O+Q),out:r9(M+O+P),dir:r9(S+R+Tt),digits:s};
+    sub:r9(O+I+L),inn:r9(N+O+Q),out:r9(M+O+P),dir:r9(S+R+Tt),
+    ink:r9(O+M+N),ext:r9(U+R+X),digits:s};
 }
 function pk(a,b){return Math.min(a,b)+"-"+Math.max(a,b);}
 
-/* ===== 全息圖 SVG（三層同心圓） ===== */
-function chartSVG(t,main){main=main!==false;
-  const W=800,H=820,cx=400,cy=400,rIn=146,rOut=265;let s="";
-  s+=`<circle cx="${cx}" cy="${cy}" r="${rOut}" fill="#f3e7cf" stroke="#cdab6f" stroke-width="1.6"/>`;
-  s+=`<circle cx="${cx}" cy="${cy}" r="${rIn}" fill="#fdf8ee" stroke="#d6b87f" stroke-width="1.5"/>`;
+/* ===== 結構圖 SVG（幾何輪廓：菱形＋三角形＋兩翼） ===== */
+function chartSVG(t,main,hideBday){main=main!==false;if(hideBday===undefined)hideBday=!!window.__HIDEBDAY;
+  const W=800,H=820,cx=400;let s="";
+  /* 每張圖用唯一漸層 id，避免多張小圖並存時 url(#gr) 互相干擾，導致主性格 O 的綠底不渲染、白字消失 */
+  const uid=(window.__GID=(window.__GID||0)+1),grId="gr"+uid,hlId="hlgr"+uid;
   const star=(x,y,r,c)=>`<path d="M${x} ${y-r} L${x+r*.22} ${y-r*.22} L${x+r} ${y} L${x+r*.22} ${y+r*.22} L${x} ${y+r} L${x-r*.22} ${y+r*.22} L${x-r} ${y} L${x-r*.22} ${y-r*.22} Z" fill="${c||'#cda86f'}" opacity=".7"/>`;
+  /* 結構輪廓：上方虛線菱形 ＋ 中下方實線三角形 ＋ 左右兩翼，取代原本的雙圈與浮水印 */
+  s+=`<polygon points="400,184 484,256 400,330 316,256" fill="#fdf8ee" fill-opacity=".5" stroke="#c79a4b" stroke-width="2.2" stroke-dasharray="7 5" stroke-linejoin="round"/>`;
+  s+=`<polygon points="400,296 624,520 176,520" fill="#f4e7cf" fill-opacity=".4" stroke="#cdab6f" stroke-width="2.6" stroke-linejoin="round"/>`;
+  s+=`<line x1="150" y1="286" x2="300" y2="286" stroke="#cdab6f" stroke-width="2.4" stroke-linecap="round"/><line x1="500" y1="286" x2="650" y2="286" stroke="#cdab6f" stroke-width="2.4" stroke-linecap="round"/>`;
   s+=star(120,118,20)+star(690,118,26)+star(140,148,9);
   const T=(x,y,txt,fs,col,ls)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs||18}" fill="${col||'#8a6d3b'}" letter-spacing="${ls||0}">${txt}</text>`;
-  s+=`<text x="${cx}" y="452" text-anchor="middle" font-size="300" font-weight="900" style="fill:#bf9a5e;opacity:.10">全</text>`;
-  s+=T(cx,52,"事業·發展",20,"#7d5f30",3)+T(44,372,"工作",19,"#7d5f30")+T(56,398,"·人際",19,"#7d5f30")+T(762,372,"家庭",19,"#7d5f30")+T(750,398,"·財富",19,"#7d5f30")+T(cx,694,"社會我",18,"#7d5f30",3);
-  s+=T(cx,118,"41-60",16,"#a98a55")+T(122,394,"21",14,"#a98a55")+T(122,410,"至",11,"#a98a55")+T(122,426,"40",14,"#a98a55")+T(680,394,"61",14,"#a98a55")+T(680,412,"起",11,"#a98a55");
-  s+=T(312,602,"模式",15,"#9a7b48")+T(cx,606,"自我",17,"#7d5f30",2)+T(488,602,"行為",15,"#9a7b48");
-  s+=T(298,366,"動機",17,"#8a6d3b")+T(502,366,"能量",17,"#8a6d3b")+T(270,452,"人格",16,"#8a6d3b")+T(530,452,"天賦",16,"#8a6d3b");
-  s+=T(352,536,"感受",14,"#9a7b48")+T(cx,536,"本我",16,"#7d5f30",1)+T(448,536,"期望",14,"#9a7b48");
+  /* 口語標籤：半透明圓角底，放在節點之間的空隙，不遮擋數字 */
+  const tag=(x,y,txt,fs)=>{fs=fs||13.5;const w=[...txt].length*fs*0.72+18,h=fs+11;return `<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="${h/2}" fill="#fbf2e0" fill-opacity=".66" stroke="#e7d3a8" stroke-width="1" stroke-opacity=".7"/><text x="${x}" y="${y+fs*0.35}" text-anchor="middle" font-size="${fs}" fill="#7d5f30" font-weight="700">${txt}</text>`;};
+  s+=tag(400,150,"事業 · 發展")+tag(96,256,"工作 · 人際")+tag(704,256,"家庭 · 財富");
+  /* 主圖時，三個身分標籤是可點擊按鈕：圈出對應數字並彈出該層的優勢與功課 */
+  const selBtn=(x,txt,layer)=>main?`<g class="selbtn" style="cursor:pointer" onclick="showSelf('${layer}')">${tag(x,576,txt,12.5)}</g>`:tag(x,576,txt,12.5);
+  s+=selBtn(232,"私下我","inner")+selBtn(400,"日常我","daily")+selBtn(568,"社交的我","social");
+  if(main)s+=T(400,602,"▲ 點上面三種樣子看分析",10.5,"#b09063");
   const pos={R:[cx,212],Q:[cx-46,256],P:[cx+46,256],O:[cx,302],S:[178,286],X:[230,286],Wn:[270,286],V:[530,286],U:[570,286],Tn:[622,286],M:[cx-46,360],N:[cx+46,360],I:[cx-86,432],J:[cx-32,432],K:[cx+32,432],L:[cx+86,432]};
   const ln=(a,b)=>`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#d9bd8e" stroke-width="1.4" opacity=".7"/>`;
   s+=ln(pos.I,pos.M)+ln(pos.J,pos.M)+ln(pos.K,pos.N)+ln(pos.L,pos.N)+ln(pos.M,pos.O)+ln(pos.N,pos.O)+ln(pos.M,pos.P)+ln(pos.O,pos.P)+ln(pos.N,pos.Q)+ln(pos.O,pos.Q)+ln(pos.P,pos.R)+ln(pos.Q,pos.R);
-  const circ=(x,y,val,k,id)=>{let r=21,fill="#fffdf8",tc="#8a6d3b",fs=19;if(k==="o"){r=24;fill="url(#gr)";tc="#fff";fs=22;}if(k==="ext"){r=18;fs=16;}return `<circle id="hc-${id}" cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${k==='o'?'none':'#d3ab63'}" stroke-width="1.6"/><text x="${x}" y="${y+(k==='o'?5:6)}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${tc}" font-family="Arial,sans-serif">${val}</text>`;};
-  const eq=(x,y)=>`<text x="${x}" y="${y+6}" text-anchor="middle" font-size="20" fill="#b59257">=</text>`;
+  const circ=(x,y,val,k,id)=>{let r=21,fill="#fffdf8",tc="#8a6d3b",fs=19;if(k==="o"){r=24;fill="url(#"+grId+")";tc="#fff";fs=22;}if(k==="ext"){r=18;fs=16;}return `<circle id="hc-${id}" cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${k==='o'?'none':'#d3ab63'}" stroke-width="1.6"/><text x="${x}" y="${y+(k==='o'?5:6)}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${tc}" font-family="Arial,sans-serif">${val}</text>`;};
   s+=circ(...pos.R,t.R,"ext","R")+circ(...pos.Q,t.Q,"ext","Q")+circ(...pos.P,t.P,"ext","P");
-  s+=circ(...pos.S,t.S,"ext","S")+eq(204,pos.S[1])+circ(...pos.X,t.X,"ext","X")+circ(...pos.Wn,t.W,"ext","W");
-  s+=circ(...pos.V,t.V,"ext","V")+circ(...pos.U,t.U,"ext","U")+eq(596,pos.U[1])+circ(...pos.Tn,t.T,"ext","T");
-  s+=star(cx,272,8,"#d98c4a")+circ(...pos.O,t.O,"o","O")+T(cx,340,"主性格",13,"#7d5f30",1);
+  s+=circ(...pos.S,t.S,"ext","S")+circ(...pos.X,t.X,"ext","X")+circ(...pos.Wn,t.W,"ext","W");
+  s+=circ(...pos.V,t.V,"ext","V")+circ(...pos.U,t.U,"ext","U")+circ(...pos.Tn,t.T,"ext","T");
+  s+=star(cx,272,8,"#d98c4a")+circ(...pos.O,t.O,"o","O");
   s+=circ(...pos.M,t.M,"","M")+circ(...pos.N,t.N,"","N")+circ(...pos.I,t.I,"","I")+circ(...pos.J,t.J,"","J")+circ(...pos.K,t.K,"","K")+circ(...pos.L,t.L,"","L");
   const dg=t.digits.split("");const bx=[cx-100,cx-72,cx-44,cx-16,cx+24,cx+52,cx+80,cx+108];
-  for(let i=0;i<8;i++)s+=T(bx[i],490,dg[i],22,"#7d5f30");
+  for(let i=0;i<8;i++)s+=T(bx[i],490,hideBday?"•":dg[i],22,hideBday?"#c4ac7d":"#7d5f30");
   s+=T(cx-86,512,"日期",12,"#a98a55")+T(cx-30,512,"月份",12,"#a98a55")+T(cx+66,512,"年份",12,"#a98a55");
   /* 只有主圖（本命）儲存節點座標並提供高亮層；流年圖等副圖不覆寫 */
   if(main){
     const L2P={I:pos.I,J:pos.J,K:pos.K,L:pos.L,M:pos.M,N:pos.N,O:pos.O,P:pos.P,Q:pos.Q,R:pos.R,S:pos.S,T:pos.Tn,U:pos.U,V:pos.V,W:pos.Wn,X:pos.X};
     const RAD={O:24};window.__HNODES={};
     for(const kk in L2P){window.__HNODES[kk]={x:L2P[kk][0],y:L2P[kk][1],r:RAD[kk]||(["M","N","I","J","K","L"].includes(kk)?21:18),v:t[kk]};}
+    window.__HLID=hlId;window.__SELFT=t;
   }
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="gr"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient><radialGradient id="hlgr"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}${main?'<g id="hl"></g>':''}</svg>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="${grId}"><stop offset="0" stop-color="#b6d65a"/><stop offset="1" stop-color="#8fb22f"/></radialGradient><radialGradient id="${hlId}"><stop offset="0" stop-color="#f0a86a"/><stop offset="1" stop-color="#d9663d"/></radialGradient></defs>${s}${main?'<g id="hl"></g>':''}</svg>`;
 }
 
 /* 聯合密碼列表 HTML */
@@ -630,7 +801,7 @@ function readBday(p){
   if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900||y>2100)return null;
   return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
 }
-/* 流年圖：固定生日的月日，把年份換成查詢年，重排整張全息圖 */
+/* 流年圖：固定生日的月日，把年份換成查詢年，重排整張天賦圖 */
 /* 流年期間每年 10/1 到隔年 9/30，10 月起即換下一個流年 */
 function curFlowYear(){const d=new Date();let y=d.getFullYear();if(d.getMonth()+1>=10)y+=1;return y;}
 function fortuneUI(){
@@ -671,9 +842,9 @@ function runFortune(){
 
 /* ===== 個人 ===== */
 function runSolo(){
-  const dt=readBday("s_");if(!dt){document.getElementById("s_out").innerHTML='<div class="empty">在上方輸入你的西元生日（年、月、日），按「繪製全息圖」，即可看見你的天賦結構與流年運勢。</div>';return;}
+  const dt=readBday("s_");if(!dt){document.getElementById("s_out").innerHTML='<div class="empty">在上方輸入你的西元生日（年、月、日），按「繪製天賦圖」，即可看見你的天賦結構與流年運勢。</div>';return;}
   const nm=document.getElementById("s_nm").value.trim();const t=holo(dt);const O=NUM[t.O];const L=LORE[t.O];
-  const hero=`<div class="hero"><div class="num">${t.O}</div><div class="ht"><div><span class="arch">${O.a}</span><span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="ess">坐鎮全息圖頂端，主宰約六成的日常行為與核心價值。</div></div></div>`;
+  const hero=`<div class="hero"><div class="num">${t.O}</div><div class="ht"><div><span class="arch">${O.a}</span><span class="wux">五行 ${WUXNAME[L.w]}</span></div><div class="ess">是你個性的主軸，最常被別人感受到，也最影響你的核心價值。</div></div></div>`;
   const traits=`<div style="margin-top:13px">
     <div class="trait"><span class="tg pos">正面天賦</span><span class="tt">${L.pos}</span></div>
     <div class="trait"><span class="tg sh">負面陰影</span><span class="tt">${L.shadow}</span></div>
@@ -682,46 +853,71 @@ function runSolo(){
     <div class="trait"><span class="tg gold">日常展現</span><span class="tt">${O.shine}</span></div>
     <div class="trait"><span class="tg gold">合作角色</span><span class="tt">${O.collab}</span></div>
     <div class="trait"><span class="tg gold">提醒</span><span class="tt">${O.advice}</span></div></div>`;
+  const partners=partnersFor(t.O);
+  const partList=partners.length?`<div class="pcards">${partners.map(p=>
+    `<div class="pcard"><div class="pn">${p.n}</div><div class="pi"><div class="pnm">${p.arch}<span class="pwx">五行${p.wux}</span></div><div class="pds">${p.role}</div></div></div>`).join("")}</div>
+    <div class="trait" style="margin-top:11px"><span class="tg job">合作方式</span><span class="tt">和這些天然助力夥伴搭配時，${partners.map(p=>p.arch+"（"+p.way+"）").join("、")}。互補的主性格能補上你較弱的環節，五行也順向相生、能量流動順暢。</span></div>`
+  :`<p class="gdesc">你的主性格與各號的五行多為比和或相剋，沒有單一最順的天然助力，反而適合廣納不同特質的夥伴，靠刻意溝通與分工，把摩擦磨成砥礪。</p>`;
+  const pbody=keyCodesHTML(t)
+    +`<div style="font-size:13px;font-weight:800;color:var(--goldd);margin:10px 0 7px">天然助力夥伴（主性格五行相生）</div>`+partList
+    +`<p class="gdesc" style="margin-top:10px">找夥伴可看三層：①主性格五行相生，是天賦互補的天然助力；②對方動機碼與你相近，出發點就合拍，你的動機碼是 <b>${t.I} ${NUM[t.I].a}</b>；③外心密碼五行順，日常互動磨合少，你的外心密碼是 <b>${t.ext} ${NUM[t.ext].a}</b>。三者兼顧，搭配會更貼合。</p>`;
   document.getElementById("s_out").innerHTML=`
-    ${nm?`<div style="text-align:center;color:var(--goldd);font-weight:700;margin:2px 0 8px;letter-spacing:1px">${nm} 的全息圖</div>`:""}
+    ${nm?`<div style="text-align:center;color:var(--goldd);font-weight:700;margin:2px 0 8px;letter-spacing:1px">${nm} 的天賦圖</div>`:""}
+    <div class="bdtoggle">
+      <span class="bt-tx">分享時隱藏生日數字</span>
+      <label class="switch"><input type="checkbox" id="hideBdayChk" ${window.__HIDEBDAY?"checked":""} onchange="toggleBday(this)"><span class="sl"></span></label>
+    </div>
+    <p class="tip">截圖分享前可開啟，隱藏圖底部的出生年月日以保護隱私（其餘數字為加總後的天賦碼，不會洩漏生日）</p>
     <div class="chartwrap">${chartSVG(t)}</div>
     <p class="tip">點下方任一聯合密碼標籤，主圖會圈出組成的三個數字</p>
     ${block("主性格",hero+traits,`${t.O}　${O.a}`)}
-    ${block("三我 · 你的三層自我",threeSelf(t),"由內而外 · 點標籤看每組解讀")}
+    ${block("三種樣子的你",selfCards(t),"日常我 · 私下我 · 社交的我")}
     ${block("天賦與合作",coop)}
-    ${block("流年圖",fortuneUI(),"查看某一年的流年全息圖")}
-    <div class="note">事實層由引擎依生日層層相加算出（已驗證）。主性格特質與聯合密碼解讀引用《數字能量心理學與生命密碼全息圖》解讀指南，非杜撰。</div>`;
+    ${block("需要尋找的合作夥伴",pbody,"五行相生 · 天然助力")}
+    ${block("流年圖",fortuneUI(),"查看某一年的流年運勢")}
+    <div class="note">各數字由生日層層相加算出。主性格特質與密碼解讀為本工具原創整理，僅供自我探索與人際理解，非命定預測。</div>`;
   runFortune();
+  prefillSelf();
 }
 
 /* ===== 兩人配對 ===== */
 function runPair(){
   const d1=readBday("p1_"),d2=readBday("p2_");if(!d1||!d2){document.getElementById("p_out").innerHTML='<div class="hint">請填寫雙方完整的西元生日（年、月、日）。</div>';return;}
   const n1=document.getElementById("p_n1").value.trim()||"A",n2=document.getElementById("p_n2").value.trim()||"B";
-  const a=holo(d1),b=holo(d2);const A=NUM[a.O],B=NUM[b.O];
+  const a=holo(d1),b=holo(d2);const A=NUM[a.O],B=NUM[b.O];window.__CHARTS=[];
   const P=PAIRS[pk(a.O,b.O)]||["合作組合","彼此能帶來不同視角","相處上需要磨合","保持溝通與分工"];
-  const rel=wuxRel(a.O,b.O);
-  let sc=60;if(a.M!==b.M)sc+=6;if(a.N!==b.N)sc+=6;sc+=(a.O!==b.O?8:4);sc=Math.min(94,sc);
+  const rel=wuxRel(a.O,b.O);const pm=pairModel(a,b);
   const badges=`<div class="badges">${soulBadge(n1,a)}${soulBadge(n2,b)}</div>`;
   const mnoBody=`<p class="gdesc">主性格聯合密碼（綠色）由動機與能量合成核心性格，是最深沈的一組。點標籤看完整解讀。</p>
     <div class="ctags">${comboTag(getC('MNO'),a,n1)}${comboTag(getC('MNO'),b,n2)}</div>
     <div class="mrow"><b>${n1}（${codeOf(getC('MNO'),a)}）</b>${codeDesc(getC('MNO'),a)}</div>
     <div class="mrow"><b>${n2}（${codeOf(getC('MNO'),b)}）</b>${codeDesc(getC('MNO'),b)}</div>
-    <div class="mrow"><b>配對組合</b>${P[0]}。${P[1]}。摩擦：${P[2]}（建議：${P[3]}）</div>
-    <div class="mrow"><b>五行${rel.t}</b>${rel.d}</div>`;
+    <div class="mrow"><b>配對組合</b>${P[0]}，${P[1]}。<br><span class="hl-warn">摩擦</span>${P[2]}　<span class="hl-tip">建議</span>${P[3]}</div>
+    <div class="mrow"><b>五行關係</b><span class="relchip ${relClass(rel.t)}">${rel.t}</span> ${rel.d}</div>`;
   const shine=`<div class="ana"><div class="trait"><span class="tg pos">${n1}</span><span class="tt">${A.shine}</span></div><div class="trait"><span class="tg pos">${n2}</span><span class="tt">${B.shine}</span></div></div>`;
   const coop=`<div class="ana"><p>由 ${n1} 擔任${A.r}，${A.collab.replace(/。$/,'')}；${n2} 擔任${B.r}，${B.collab.replace(/。$/,'')}。${a.O===b.O?'兩人同為'+A.a+'，默契高但容易在同一處卡關，需有人退一步補位。':'一個負責'+A.ess.split('、')[0]+'、一個負責'+B.ess.split('、')[0]+'，正好把對方沒顧到的補起來。'}</p></div>`;
   const lessons=`<div class="ana"><div class="trait"><span class="tg les">${n1} 功課</span><span class="tt">${LORE[a.O].lesson}</span></div><div class="trait"><span class="tg les">${n2} 功課</span><span class="tt">${LORE[b.O].lesson}</span></div></div>`;
-  const adv=`<div class="ana"><div class="trait"><span class="tg gold">給 ${n1}</span><span class="tt">${A.advice}</span></div><div class="trait"><span class="tg gold">給 ${n2}</span><span class="tt">${B.advice}</span></div></div>
-    <div class="score"><div class="sv">${sc}</div><div class="sl"><b style="color:var(--goldd)">合作化學 / 100</b><br>透明公式：基礎 60 ＋ 主性格、動機、能量差異互補加分，非命定評斷。</div></div>`;
+  const adv=`<div class="ana"><div class="trait"><span class="tg gold">給 ${n1}</span><span class="tt">${A.advice}</span></div><div class="trait"><span class="tg gold">給 ${n2}</span><span class="tt">${B.advice}</span></div></div>`;
+  const dim=(lab,r,extra)=>`<div class="dimrow"><div class="dh"><b>${lab}</b><span class="relchip ${relClass(r.t)}">五行${r.t}</span></div><div class="dd">${r.d}</div>${extra?`<div class="dx">${extra}</div>`:''}</div>`;
+  const modelBody=scoreMeter(pm.score,"合作契合度","綜合主性格、動機與日常互動三個面向，分數越高越契合。僅供參考、非命定評斷。")
+    +`<div style="font-size:12.5px;font-weight:800;color:var(--goldd);margin:13px 0 4px">三個面向怎麼搭</div>`
+    +dim("主性格搭配",pm.main,"看大方向上的搭配與互補")
+    +dim("動機合拍度",pm.motive,"看出發點是否一致、做事是否同調")
+    +dim("互動磨合度",pm.outer,"看日常相處的順暢度與磨合成本")
+    +`<div class="kcs2" style="margin-top:12px">
+      <div class="kcol"><div class="kcoln">${n1}</div><div class="kc2">主性格 ${a.O} ${A.a}<br>動機碼 ${a.I} ${NUM[a.I].a}・外心碼 ${a.ext} ${NUM[a.ext].a}</div></div>
+      <div class="kcol"><div class="kcoln">${n2}</div><div class="kc2">主性格 ${b.O} ${B.a}<br>動機碼 ${b.I} ${NUM[b.I].a}・外心碼 ${b.ext} ${NUM[b.ext].a}</div></div>
+    </div>`;
   document.getElementById("p_out").innerHTML=`
     ${block("雙方主性格",badges,n1+" × "+n2)}
+    ${block("雙方天賦圖",`<div class="minihCwrap">${personChart(a,n1)}${personChart(b,n2)}</div>`,"點任一張放大看完整天賦圖")}
     ${block("主性格聯合密碼配對",mnoBody,"點標籤看解讀")}
     ${block("各自能展現",shine)}
     ${block("合作情境",coop)}
     ${block("相處要點（雙方功課）",lessons)}
     ${block("給彼此的建議",adv)}
-    <div class="note">以雙方主性格與聯合密碼對照，幫助找合作夥伴前先了解彼此天賦、互補與摩擦。</div>`;
+    ${block("合作搭配分析",modelBody,"綜合三個面向")}
+    <div class="note">以雙方主性格、動機碼與外心碼對照，幫助找合作夥伴前先了解彼此天賦、互補與互動磨合。</div>`;
 }
 
 /* ===== 團隊 ===== */
@@ -743,7 +939,7 @@ function radarSVG(spec,total){
   let g="";[0.34,0.67,1].forEach(f=>{const p=[];for(let i=0;i<N;i++)p.push(pt(i,R*f).join(","));g+=`<polygon points="${p.join(" ")}" fill="none" stroke="#e7d6b6" stroke-width="1"/>`;});
   let ax="",lb="";for(let i=0;i<N;i++){const[x,y]=pt(i,R);ax+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#efe1c8" stroke-width="1"/>`;
     const[lx,ly]=pt(i,R+16);const c=spec[i+1],pct=Math.round(c/total*100);
-    lb+=`<text x="${lx}" y="${ly+4}" text-anchor="middle" font-size="11" fill="#9c7327" font-weight="${c?700:400}">${i+1}${c?(' '+pct+'%'):''}</text>`;}
+    lb+=`<text x="${lx}" y="${ly+4}" text-anchor="middle" font-size="11" fill="#9c7327" font-weight="${c?700:400}">${i+1}${c?(' '+c+'人'):''}</text>`;}
   const poly=[];for(let i=0;i<N;i++)poly.push(pt(i,R*Math.max(0.04,spec[i+1]/max)).join(","));
   return `<svg class="radar" viewBox="0 0 ${size} ${size}">${g}${ax}<polygon points="${poly.join(" ")}" fill="rgba(156,191,63,.28)" stroke="#8fb22f" stroke-width="2"/>${lb}</svg>`;
 }
@@ -754,11 +950,12 @@ function runTeam(){
     if(!y||!m||!d||m<1||m>12||d<1||d>31||y<1900)return null;
     return {nm,t:holo(y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"))};}).filter(Boolean);
   if(ms.length<3){document.getElementById("t_out").innerHTML='<div class="hint">請至少輸入 3 位成員的完整生日（年、月、日）。</div>';return;}
+  window.__CHARTS=[];
   const tot=ms.length;const spec={};for(let i=1;i<=9;i++)spec[i]=0;ms.forEach(m=>spec[m.t.O]++);
   const present=Object.keys(spec).filter(k=>spec[k]>0).map(Number);
   const gaps=Object.keys(spec).filter(k=>spec[k]===0).map(Number);
   const pctRows=present.sort((a,b)=>spec[b]-spec[a]).map(n=>{const p=Math.round(spec[n]/tot*100);
-    return `<div class="pct"><span class="n">${n} ${NUM[n].a}</span><span class="bar"><i style="width:${p}%"></i></span><span class="p">${spec[n]}人 ${p}%</span></div>`;}).join("");
+    return `<div class="pct"><span class="n">${n} ${NUM[n].a}</span><span class="bar"><i style="width:${p}%"></i></span><span class="p">${spec[n]} 人</span></div>`;}).join("");
   const badges=`<div class="badges">${ms.map(m=>soulBadge(m.nm,m.t)).join("")}</div>`;
   const memberReads=ms.map(m=>{const k=codeOf(getC("MNO"),m.t);return `<div class="mrow"><b>${m.nm}（${m.t.O} ${NUM[m.t.O].a}）</b>${NUM[m.t.O].shine}<br><span style="color:var(--goldd);font-size:12.5px">主性格密碼 ${k}：</span><span style="font-size:12.5px;color:var(--sub)">${CODE81[k]||"含 0，暫無標準解讀"}</span></div>`;}).join("");
   const haveTxt=present.map(n=>NUM[n].have).join("、");
@@ -769,18 +966,154 @@ function runTeam(){
   const mnoTags=`<div class="ctags">${ms.map(m=>comboTag(getC("MNO"),m.t,m.nm)).join("")}</div>`;
   const teamCombo=ms.map(m=>m.t.O).join("·");
   const topO=present.slice().sort((x,y)=>spec[y]-spec[x])[0];
-  const coopTxt=`你們已具備：${haveTxt}。整體適合${present.includes(1)||present.includes(8)?'有人帶頭、':''}${present.includes(4)?'把事落地、':''}${present.includes(3)||present.includes(5)?'對外開拓、':''}${present.includes(2)||present.includes(6)?'凝聚彼此、':''}${present.includes(7)||present.includes(9)?'看清方向':'分工推進'}的合作模式。`;
+  const coopTxt=`<p><span class="hl-tip">已具備</span> ${haveTxt}。</p><p style="margin-top:6px"><span class="hl-good">整體適合</span> ${present.includes(1)||present.includes(8)?'有人帶頭、':''}${present.includes(4)?'把事落地、':''}${present.includes(3)||present.includes(5)?'對外開拓、':''}${present.includes(2)||present.includes(6)?'凝聚彼此、':''}${present.includes(7)||present.includes(9)?'看清方向':'分工推進'}的合作模式。</p>`;
+  /* 角色覆蓋：以主性格坐鎮三碼 M·N·O 一起看，分強項／潛在／缺口（這三個數字都重要） */
+  const mainSet=new Set(ms.map(m=>m.t.O));
+  const compSet=new Set();ms.forEach(m=>[m.t.M,m.t.N,m.t.O].forEach(x=>compSet.add(x)));
+  const latent=[...compSet].filter(x=>!mainSet.has(x)).sort((a,b)=>a-b);
+  const gap2=[];for(let i=1;i<=9;i++)if(!compSet.has(i))gap2.push(i);
+  const latentTxt=latent.length?latent.map(n=>n+" "+NUM[n].a).join("、"):"無，強項已涵蓋坐鎮三碼。";
+  const gapTxt2=gap2.length?gap2.map(n=>"・"+NUM[n].gap).join("<br>"):"以主性格坐鎮三碼來看，九種角色能量都有人帶到，沒有明顯缺口。";
+  /* 動機碼（I）分佈：團隊的共同出發點，+10% */
+  const motiveSpec={};for(let i=1;i<=9;i++)motiveSpec[i]=0;ms.forEach(m=>motiveSpec[m.t.I]++);
+  const motivePresent=Object.keys(motiveSpec).filter(k=>motiveSpec[k]>0).map(Number).sort((a,b)=>motiveSpec[b]-motiveSpec[a]);
+  const motiveTxt=motivePresent.map(n=>NUM[n].a+"（"+motiveSpec[n]+"人）").join("、");const topI=motivePresent[0];
+  /* 外心密碼（U+R+X）兩兩互動磨合，+10% */
+  let pSheng=0,pBihe=0,pKe=0,pPrs=0,pSum=0;
+  for(let i=0;i<ms.length;i++)for(let j=i+1;j<ms.length;j++){pPrs++;const rt=wuxRel(ms[i].t.ext,ms[j].t.ext).t;pSum+=wuxScore(rt);if(rt==="相生")pSheng++;else if(rt==="比和")pBihe++;else pKe++;}
+  const harmony=pPrs?Math.round(pSum/pPrs):0;
   document.getElementById("t_out").innerHTML=`
     ${block("團隊主性格雷達",`<div class="radarwrap">${radarSVG(spec,tot)}<div class="pctlist">${pctRows}</div></div>`,tot+" 人")}
     ${block("成員主性格（含五行）",badges)}
+    ${block("成員天賦圖",`<div class="minihCwrap">${ms.map(m=>personChart(m.t,m.nm)).join("")}</div>`,"點任一張放大看完整天賦圖")}
     ${block("主性格聯合密碼",mnoTags+`<p class="gdesc">點任一成員標籤看該組完整解讀。團隊主性格組合 ${teamCombo}，以 ${topO} ${NUM[topO].a} 為主（${spec[topO]} 人），整體適合發揮這項優勢，並留意盲點補足。</p>`+memberReads,"每位成員 ＋ 全隊")}
-    ${block("合作現有優勢",`<div class="ana"><p>${coopTxt}</p></div>`)}
-    ${block("補強盲點",`<div class="ana"><p>${gapTxt}</p></div>`)}
+    ${block("團隊真正有的角色（主性格＋坐鎮三碼）",
+      `<div class="rolerow"><span class="rt have">強項</span>${haveTxt}</div>
+       <div class="rolerow"><span class="rt latent">潛在</span>有人在動機／能量碼帶有：${latentTxt}。雖非主性格，但可培養或在缺人時輪值補位。</div>
+       <div class="ana" style="margin-top:8px">${coopTxt}</div>`,"主性格與相關數字一起看")}
+    ${block("團隊缺口（建議補強）",`<div class="rolerow"><span class="rt gap">缺口</span>以坐鎮三碼來看，整個團隊都沒有人帶到的角色：</div><div class="ana"><p>${gapTxt2}</p></div>`)}
+    ${block("團隊動機與互動磨合",
+      `<div class="mrow"><b>共同動機</b>分佈：${motiveTxt}，以 <span class="hl-good">${NUM[topI].a}</span> 為主要出發點。動機相近的人出發點合拍；落差大時，先一起對齊「為什麼而做」再分工。</div>
+       ${scoreMeter(harmony,"互動順暢度","依成員之間的對外互動風格估算，越高代表相處越省力。",["很順暢","還算順","偶有摩擦","磨合較多"])}
+       <div class="statrow"><span class="st sheng">${pSheng} 對相生</span><span class="st bihe">${pBihe} 對比和</span><span class="st ke">${pKe} 對需磨合</span></div>
+       <p class="gdesc" style="margin-top:6px">${pKe>pSheng?'磨合對數偏多，建議明訂溝通規則與分工界線，把摩擦轉成砥礪。':'互動大致順暢，維持現有默契並保留磨合空間即可。'}</p>`,"動機與互動兩個面向")}
     ${block("互補分組建議",grpHtml)}
-    <div class="note">雷達圖呈現團隊主性格分佈與占比；分組讓各組主性格盡量多元，可直接用於團建。</div>`;
+    <div class="note">分析綜合主性格、相關數字、動機與對外互動等面向。雷達圖為主性格分佈；分組讓各組主性格盡量多元，可直接用於團建。非命定預測。</div>`;
 }
 
-document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");["solo","pair","team"].forEach(t=>document.getElementById(t).style.display=t===b.dataset.t?"block":"none");});
+/* 生日隱藏開關：切換後重繪個人天賦圖（含流年圖） */
+function toggleBday(el){window.__HIDEBDAY=el.checked;runSolo();}
+
+/* 需要尋找的合作夥伴：五行相生為天然助力（含五行標籤） */
+function partnersFor(O){const list=[];
+  for(let p=1;p<=9;p++){if(p===O)continue;const rel=wuxRel(O,p);
+    if(rel.t==="相生"){const pr=PAIRS[pk(O,p)]||["","","","互相補位"];
+      list.push({n:p,arch:NUM[p].a,role:NUM[p].collab,way:pr[3],tone:pr[0],wux:WUXNAME[WUX[p]]});}}
+  return list;}
+
+/* ===== 合作精準模型：主性格 60% ＋ 動機碼(I) 10% ＋ 外心密碼(U+R+X) 10% ＝ 約 80% ===== */
+const wuxOf=n=>WUXNAME[WUX[n]];
+/* 五行關係轉分數：相生順、比和合、相剋需磨合 */
+function wuxScore(relT){return relT==="相生"?92:relT==="比和"?78:62;}
+/* 五行關係對應顏色類別（標籤用） */
+const relClass=rt=>rt==="相生"?"sheng":rt==="比和"?"bihe":"ke";
+/* 分數等級：依分數回傳顏色與等級索引（0 高 → 3 低） */
+function scoreLevel(s){if(s>=82)return{i:0,c:"#6f8f1f",bg:"#7fa028"};if(s>=70)return{i:1,c:"#9c7327",bg:"#c79a4b"};if(s>=58)return{i:2,c:"#b9772e",bg:"#d98c4a"};return{i:3,c:"#bf5b5b",bg:"#c45b7c"};}
+/* 分數圓環儀表：大數字 X/100 ＋ 等級評語，重點一眼看見 */
+function scoreMeter(score,label,sub,verdicts){
+  verdicts=verdicts||["很契合","還不錯","需要磨合","差異較大"];
+  const L=scoreLevel(score),C=226.19,off=(C*(1-Math.max(0,Math.min(100,score))/100)).toFixed(1);
+  return `<div class="scoremeter"><div class="ring"><svg viewBox="0 0 82 82" width="82" height="82"><circle cx="41" cy="41" r="36" fill="none" stroke="#ecdcbf" stroke-width="9"/><circle cx="41" cy="41" r="36" fill="none" stroke="${L.bg}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 41 41)"/></svg><div class="rv"><b style="color:${L.c}">${score}</b><small>/ 100</small></div></div><div class="sm-r"><span class="verdict" style="background:${L.bg}">${label}：${verdicts[L.i]}</span><div class="sl">${sub}</div></div></div>`;
+}
+/* 個人關鍵碼卡：主性格 O（坐鎮三碼 M·N·O）、動機碼 I、外心密碼 ext */
+function keyCodesHTML(t){
+  const chip=(lab,n,desc)=>`<div class="kc"><div class="kcn">${n}</div><div class="kci"><div class="kcl">${lab}</div><div class="kca">${NUM[n].a}<em>五行${wuxOf(n)}</em></div><div class="kcd">${desc}</div></div></div>`;
+  return `<div class="kcs">
+    ${chip("主性格碼",t.O,"你個性的主軸，看大方向的角色")}
+    ${chip("動機碼",t.I,"做事的起心動念與出發點，看是否同調")}
+    ${chip("外心碼",t.ext,"對外互動與磨合風格，看合作順不順")}
+  </div>
+  <p class="gdesc">主性格由你的動機（${t.M} ${NUM[t.M].a}）與能量（${t.N} ${NUM[t.N].a}）一起合成，這幾個數字都是看天賦與分工的關鍵。</p>`;
+}
+/* 兩人三維度合作評估：主性格／動機碼／外心密碼，各以五行相生相剋判定 */
+function pairModel(a,b){
+  const main=wuxRel(a.O,b.O),motive=wuxRel(a.I,b.I),outer=wuxRel(a.ext,b.ext);
+  const score=Math.round(wuxScore(main.t)*0.75+wuxScore(motive.t)*0.125+wuxScore(outer.t)*0.125);
+  return {main,motive,outer,score};
+}
+
+/* 角色小天賦圖（可點擊放大）。pair/team 以 false,false 呼叫：不覆寫主圖節點、不受生日隱藏開關影響 */
+function personChart(t,name){const ci=(window.__CHARTS=window.__CHARTS||[]).push({t,name})-1;
+  return `<div class="minihC" data-ci="${ci}" onclick="zoomChart(this)" title="點擊放大看完整天賦圖">${chartSVG(t,false,false)}<div class="minihC-cap">${name}<small>點擊放大</small></div></div>`;}
+function zoomChart(el){const o=(window.__CHARTS||[])[+el.dataset.ci];if(!o)return;
+  document.getElementById("zttl").textContent=(o.name?o.name+" 的 ":"")+"天賦圖";
+  document.getElementById("zbody").innerHTML=chartSVG(o.t,false,false);
+  document.getElementById("zmask").classList.add("on");document.getElementById("zsheet").classList.add("on");}
+function hideZoom(){document.getElementById("zmask").classList.remove("on");document.getElementById("zsheet").classList.remove("on");}
+
+/* 個人生日填好後，預填到配對 A 方與團隊第一位成員（僅在對方欄位為空時填入，不覆寫已輸入內容） */
+function prefillSelf(){
+  const y=document.getElementById("s_y").value,m=document.getElementById("s_m").value,d=document.getElementById("s_d").value;
+  if(!y||!m||!d)return;
+  const nm=document.getElementById("s_nm").value.trim();
+  const setIf=(id,v)=>{const el=document.getElementById(id);if(el&&!el.value)el.value=v;};
+  setIf("p1_y",y);setIf("p1_m",m);setIf("p1_d",d);if(nm)setIf("p_n1",nm);
+  const fm=document.querySelector("#t_mem .member");
+  if(fm){const q=(c,v)=>{const el=fm.querySelector(c);if(el&&!el.value)el.value=v;};
+    q(".mby",y);q(".mbm",m);q(".mbd",d);if(nm)q(".mnm",nm);}
+}
+
+/* ===== 號碼查詢（1-9 號特質對照） ===== */
+/* 簡明特質與課題（取自《1-9 號特質分析》整理，給第一次使用的人快速對照） */
+const INTRO={
+ 1:{name:"開創數",desc:"天生具備獨立、領導與創新能力。1 號人像領頭羊，勇於面對挑戰，適合擔任主管或創業者。",task:"需避免過於自我中心或強勢，學習與他人協調與合作。"},
+ 2:{name:"協調數",desc:"擁有極高的同理心與細膩的感知力。2 號人善於聆聽、配合度高，是優秀的協調者與藝術愛好者。",task:"容易受他人情緒影響或缺乏主見，需學會獨立思考及勇敢表達真實想法。"},
+ 3:{name:"創意數",desc:"充滿熱情、樂觀幽默，且擅長表達與社交。3 號人創意豐富，通常是團體中的開心果，適合公關或行銷領域。",task:"興趣廣泛但容易虎頭蛇尾，需培養耐心與責任感，才能將創意轉化為長期的專長。"},
+ 4:{name:"務實數",desc:"腳踏實地、條理分明，對管控風險與細節極為在行。4 號人重視規律與安全感，是團隊中最可靠的執行者。",task:"容易缺乏彈性與安全感，需試著放下對完美的執著，接受生活中不可預測的變化。"},
+ 5:{name:"自由數",desc:"崇尚自由、熱愛冒險，適應力與說服力極強。5 號人討厭枯燥，腦筋動得快，適合需要變動與創新的工作。",task:"容易顯得衝動、善變或害怕承諾，需學習在自由中建立紀律與專注力。"},
+ 6:{name:"智慧奉獻數",desc:"具備強烈的責任感與包容力，天生懂得照顧人。6 號人重視家庭與關係，富有治癒他人的溫暖特質。",task:"容易因過度付出而產生得失心，需學會適時放手，避免給伴侶或家人過大壓力。"},
+ 7:{name:"探究數",desc:"邏輯清晰、分析能力強，對事物充滿好奇心與追求真理的精神。7 號人適合擔任策略規劃或需要深度研究的工作。",task:"有時會顯得不夠圓融或過度鑽牛角尖，需學會將專注力轉移，並敞開心胸與他人分享情感。"},
+ 8:{name:"權勢數",desc:"具備敏銳的商業頭腦、野心與執行力。8 號人在職場上通常能展現領袖魅力，追求物質與成就的實現。",task:"容易過度追求金錢與權力而忽略人情味，需學習同理他人並給予伴侶適當的空間。"},
+ 9:{name:"博愛數",desc:"具備無私奉獻、靈性與大愛特質。9 號人是理想主義者，樂於幫助弱小，適合從事啟發人心或公益相關行業。",task:"理想與現實容易產生拉扯，幫助他人時需尊重對方的選擇，避免過度干涉而引起反彈。"}};
+function gotoTab(t){const b=[...document.querySelectorAll(".tabs button")].find(x=>x.dataset.t===t);if(b)b.click();window.scrollTo({top:0,behavior:"smooth"});}
+function toggleGuide(n){document.getElementById("gc-"+n).classList.toggle("open");}
+function jumpGuide(n){const c=document.getElementById("gc-"+n);if(!c)return;c.classList.add("open");c.scrollIntoView({behavior:"smooth",block:"start"});c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1200);}
+function guideCard(n){const I=INTRO[n],D=NUM[n],L=LORE[n];
+  return `<div class="gcard${n===1?' open':''}" id="gc-${n}">
+    <div class="ghd" onclick="toggleGuide(${n})">
+      <div class="gnum">${n}</div>
+      <div class="gti">
+        <div class="gnm">${I.name}<span class="garch">${D.a}·${D.r}</span></div>
+        <div class="gwx">五行<em>${WUXNAME[L.w]}</em></div>
+        <div class="gess">${D.ess}</div>
+      </div>
+      <div class="gtog"></div>
+    </div>
+    <div class="gbd">
+      <p class="gintro">${I.desc}</p>
+      <div class="trait"><span class="tg pos">正面天賦</span><span class="tt">${L.pos}</span></div>
+      <div class="trait"><span class="tg sh">負面陰影</span><span class="tt">${L.shadow}</span></div>
+      <div class="trait"><span class="tg les">人生功課</span><span class="tt">${L.lesson}</span></div>
+      <div class="trait"><span class="tg les">課題提醒</span><span class="tt">${I.task}</span></div>
+      <div class="trait"><span class="tg gold">日常展現</span><span class="tt">${D.shine}</span></div>
+      <div class="trait"><span class="tg job">合作角色</span><span class="tt">${D.collab}</span></div>
+      <div class="trait"><span class="tg gold">小提醒</span><span class="tt">${D.advice}</span></div>
+    </div>
+  </div>`;}
+function renderGuide(){
+  const nav=`<div class="gnav">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="gchip" onclick="jumpGuide(${n})">${n}<small>${INTRO[n].name}</small></button>`).join("")}</div>`;
+  const cards=[1,2,3,4,5,6,7,8,9].map(guideCard).join("");
+  document.getElementById("g_out").innerHTML=`
+    ${block("先讀我",`<p class="gintro" style="margin-top:4px">每個人的生日都藏著 1 到 9 九種天賦能量。生日數字一層層算下來，最頂端那個就是你的「主性格」，最能代表你的個性。下面整理了 1 到 9 每個數字的個性、天賦、陰影與人生功課，先認識自己，也能看懂家人與夥伴。</p>
+      <p class="gdesc">還不知道自己是幾號？切到「個人天賦圖」輸入生日就會算出來，再回來這裡對照。</p>
+      <button class="btn sec" onclick="gotoTab('solo')">去算我的主性格 ›</button>`,"第一次使用看這裡")}
+    ${block("快速跳到號碼",nav+`<p class="gdesc" style="margin:6px 0 0">點數字直接跳到該號說明，點每張卡片可展開或收合。</p>`)}
+    ${cards}
+    <div class="note">本頁特質與人生功課為本工具原創整理，為自我探索與人際理解用途，非命定預測。</div>`;
+}
+
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");["solo","pair","team","guide"].forEach(t=>document.getElementById(t).style.display=t===b.dataset.t?"block":"none");if(b.dataset.t==="pair"||b.dataset.t==="team")prefillSelf();});
+renderGuide();
 runSolo();
 addMem();addMem();addMem();
 </script>
