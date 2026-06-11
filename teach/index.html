@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天賦數字｜教學講義 ﹒ 7G 奇雞命相館</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#120a2e; --bg1:#1d1248; --bg2:#2a1a5e;
+  --purple:#7c5fc0; --purple-d:#5a3fa0; --purple-l:#b49ae6;
+  --gold:#e8c36b; --gold-d:#c79a3f; --gold-l:#f6e3a8;
+  --ice:#f3eeff; --ice-d:#cabfe6;
+  --blue:#54c8ec; --blue-d:#2f9fc8;
+  --red:#e2583e;
+  --serif:"Noto Serif TC",serif;
+  --sans:"Noto Sans TC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#08051a;font-family:var(--sans);color:var(--ice)}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.deck{
+  position:relative;width:100vw;height:56.25vw;max-height:100vh;max-width:177.78vh;
+  background:radial-gradient(ellipse at 50% 18%,var(--bg2),var(--bg1) 55%,var(--bg0) 100%);
+  overflow:hidden;box-shadow:0 0 120px rgba(0,0,0,.6);
+}
+canvas#stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+.slide{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:3vh 6vw;opacity:0;visibility:hidden;
+  transition:opacity .55s ease, transform .55s ease;transform:translateY(18px) scale(.99);
+  pointer-events:none;
+}
+.slide.on{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.slide.prev{transform:translateY(-18px) scale(.99)}
+.eyebrow{font-size:2.6vh;letter-spacing:.45em;color:var(--gold);font-weight:700;text-indent:.5em;
+  display:flex;align-items:center;gap:1.1vw;opacity:.92}
+.eyebrow::before{content:"";width:2.4vw;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.eyebrow .no{font-family:var(--serif);color:var(--purple-l);letter-spacing:0}
+h1{font-family:var(--serif);font-weight:900;line-height:1.06;color:#fff}
+h2{font-family:var(--serif);font-weight:900;line-height:1.12;color:#fff}
+.gold{color:var(--gold)}
+.glow-gold{color:var(--gold);text-shadow:0 0 22px rgba(232,195,107,.45)}
+.muted{color:var(--ice-d)}
+.slide.on .up{animation:up .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.r1{animation-delay:.08s!important}.r2{animation-delay:.2s!important}.r3{animation-delay:.34s!important}
+.r4{animation-delay:.48s!important}.r5{animation-delay:.62s!important}.r6{animation-delay:.76s!important}
+
+/* ====== 奇雞導覽員 ====== */
+#guide{position:absolute;right:1.4vw;bottom:1.2vh;z-index:30;display:flex;align-items:flex-end;gap:.5vw;pointer-events:none}
+#bubble{pointer-events:auto;max-width:24vw;background:rgba(245,240,255,.97);color:#2a1a5e;
+  font-family:var(--serif);font-weight:700;font-size:2.5vh;line-height:1.5;
+  padding:1.5vh 1.4vw;border-radius:1.6vh 1.6vh .3vh 1.6vh;
+  box-shadow:0 .8vh 2.4vh rgba(0,0,0,.45);position:relative;border:1px solid rgba(232,195,107,.6);
+  transition:opacity .3s, transform .3s}
+#bubble::after{content:"";position:absolute;right:-0.7vw;bottom:1.4vh;border:.9vh solid transparent;
+  border-left-color:rgba(245,240,255,.97);border-right:0}
+#bubble .tap{display:block;margin-top:.6vh;font-family:var(--sans);font-weight:500;font-size:1.7vh;color:#7c5fc0;letter-spacing:.04em}
+#qiji{pointer-events:auto;cursor:pointer;height:21vh;width:auto;flex:0 0 auto;display:block;
+  filter:drop-shadow(0 1.2vh 1.6vh rgba(0,0,0,.5)) drop-shadow(0 0 1.8vh rgba(124,95,192,.5));
+  transition:transform .2s}
+#qiji:hover{transform:translateY(-.7vh) scale(1.05)}
+.qiji-ring{position:relative;display:flex;align-items:flex-end}
+.qiji-ring::before{content:"";position:absolute;left:50%;bottom:4%;transform:translateX(-50%);
+  width:11vh;height:2.4vh;background:radial-gradient(ellipse,rgba(124,95,192,.55),transparent 70%);
+  filter:blur(2px);z-index:-1}
+@media (max-width:760px){#bubble{max-width:46vw;font-size:3.2vw}#qiji{height:28vw}}
+
+/* ====== 導航 ====== */
+#progress{position:absolute;top:0;left:0;height:.5vh;background:linear-gradient(90deg,var(--gold),var(--purple-l));
+  z-index:40;transition:width .4s ease;box-shadow:0 0 1vh rgba(232,195,107,.6)}
+#dots{position:absolute;bottom:1.6vh;left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:1.1vh}
+#dots b{width:1.1vh;height:1.1vh;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:.25s}
+#dots b.on{background:var(--gold);box-shadow:0 0 1vh var(--gold);transform:scale(1.25)}
+.navbtn{position:absolute;top:50%;transform:translateY(-50%);z-index:45;width:5.8vh;height:5.8vh;border-radius:50%;
+  border:1px solid rgba(232,195,107,.4);background:rgba(20,12,48,.55);color:var(--gold-l);
+  font-size:3.6vh;line-height:1;cursor:pointer;backdrop-filter:blur(3px);transition:.2s;font-family:var(--serif);padding-bottom:.4vh}
+.navbtn:hover{background:rgba(124,95,192,.6);transform:translateY(-50%) scale(1.08)}
+.navbtn.prev{left:1.2vw}.navbtn.next{right:1.2vw}
+#corner{position:absolute;top:1.8vh;left:2vw;z-index:40;display:flex;align-items:center;gap:.7vw;opacity:.9}
+#corner img{height:4.6vh;filter:drop-shadow(0 0 .6vh rgba(0,0,0,.5))}
+#corner span{font-family:var(--serif);font-size:2.2vh;letter-spacing:.16em;color:var(--gold-l)}
+#hintkey{position:absolute;bottom:1.6vh;right:1.4vw;z-index:35;font-size:1.9vh;color:var(--ice-d);opacity:.55;letter-spacing:.08em}
+
+/* ====== 通用元件 ====== */
+.chip{display:inline-flex;align-items:center;gap:.5vw;font-size:2.7vh;font-weight:700;
+  padding:1vh 1.7vh;border-radius:5vh;background:rgba(124,95,192,.18);border:1px solid rgba(180,154,230,.4);color:var(--purple-l)}
+.cards{display:flex;gap:1.4vw;margin-top:2.4vh}
+.card{flex:1;background:linear-gradient(160deg,rgba(124,95,192,.18),rgba(20,12,48,.4));
+  border:1px solid rgba(180,154,230,.28);border-radius:1.8vh;padding:2.6vh 1.5vw;position:relative;overflow:hidden}
+.card .ic{font-size:5.4vh;line-height:1;margin-bottom:1.2vh;display:block}
+.card h3{font-family:var(--serif);font-size:3.6vh;color:var(--gold-l);margin-bottom:1vh;font-weight:700}
+.card p{font-size:2.8vh;line-height:1.55;color:var(--ice)}
+.card .num-bg{position:absolute;right:-1vh;bottom:-2.5vh;font-family:var(--serif);font-size:12vh;font-weight:900;
+  color:rgba(232,195,107,.08);line-height:1}
+
+/* ====== 起源三流 ====== */
+.flow{display:flex;align-items:stretch;gap:1vw;margin-top:2vh}
+.flow .src{flex:1;text-align:center;background:rgba(20,12,48,.4);border:1px solid rgba(180,154,230,.25);
+  border-radius:1.6vh;padding:2vh 1vw}
+.flow .src .srcimg{position:relative;width:100%;height:12vh;margin-bottom:1vh;display:flex;align-items:center;justify-content:center}
+.flow .src .srcimg .fallback{position:absolute;font-size:5.4vh;line-height:1;opacity:.85}
+.flow .src .srcimg img{position:relative;max-height:12vh;max-width:94%;object-fit:contain;
+  filter:drop-shadow(0 .6vh 1.2vh rgba(0,0,0,.45)) drop-shadow(0 0 1.8vh rgba(124,95,192,.5))}
+.flow .src .t{font-family:var(--serif);font-size:3.2vh;color:#fff;font-weight:700}
+.flow .src .s{font-size:2.3vh;color:var(--purple-l);margin-top:.3vh;letter-spacing:.05em}
+.flow .src .d{font-size:2.5vh;color:var(--ice-d);margin-top:.9vh;line-height:1.45}
+.flow .plus{display:flex;align-items:center;font-size:4vh;color:var(--gold);font-weight:300}
+.merge{margin-top:2vh;text-align:center;font-family:var(--serif);font-size:3vh;color:var(--gold-l)}
+.merge b{color:#fff;font-weight:900}
+
+/* ====== 歸約計算機 ====== */
+.calc{display:flex;gap:2vw;margin-top:2.2vh;align-items:center}
+.calc .inp{flex:0 0 auto}
+.calc label{display:block;font-size:2.3vh;color:var(--purple-l);margin-bottom:.8vh;letter-spacing:.1em}
+.calc input{font-family:var(--serif);font-size:3.8vh;font-weight:700;background:rgba(20,12,48,.6);
+  border:1.5px solid rgba(180,154,230,.4);border-radius:1.2vh;color:#fff;padding:1vh 1.4vw;width:17vw;text-align:center;letter-spacing:.08em}
+.calc input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 .4vh rgba(232,195,107,.18)}
+.calc .arrow{font-size:3.8vh;color:var(--gold);opacity:.7}
+.steps{flex:1;font-family:var(--serif);font-size:3vh;line-height:1.5;color:var(--ice-d)}
+.steps .ln{opacity:0;transform:translateX(-10px);transition:.4s}
+.steps .ln.show{opacity:1;transform:none}
+.steps .ln b{color:var(--gold-l)}
+.result{flex:0 0 auto;text-align:center}
+.result .ball{width:15vh;height:15vh;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:8.2vh;font-weight:900;color:#fff;
+  background:radial-gradient(circle at 38% 30%,var(--purple-l),var(--purple-d));
+  box-shadow:0 0 4vh rgba(124,95,192,.6),inset 0 -1vh 2vh rgba(0,0,0,.3);
+  border:2px solid rgba(232,195,107,.5);transition:transform .4s}
+.result .ball.pop{animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.result .lab{font-size:2.4vh;color:var(--gold-l);margin-top:1vh;letter-spacing:.2em}
+
+/* ====== 全息圖三角 ====== */
+.holo{display:flex;gap:2.4vw;margin-top:1.4vh;align-items:center}
+.holo svg{width:35vw;flex:0 0 auto}
+.holo .legend{flex:1;display:flex;flex-direction:column;gap:2vh}
+.holo .lg{display:flex;align-items:center;gap:1vw;font-size:2.7vh}
+.holo .lg b{font-family:var(--serif);width:4.8vh;height:4.8vh;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#1d1248;flex:0 0 auto;font-size:2.6vh}
+.holo .lg .nm{color:#fff;font-weight:700}.holo .lg .ds{color:var(--ice-d);font-size:2.4vh;line-height:1.45;margin-top:.2vh}
+
+/* ====== 九原型 ====== */
+.grid9{display:grid;grid-template-columns:repeat(9,1fr);gap:1vw;margin-top:2vh}
+.g9{aspect-ratio:1;border-radius:1.4vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;background:rgba(20,12,48,.5);border:1.5px solid rgba(180,154,230,.25);transition:.2s;position:relative}
+.g9:hover,.g9.sel{transform:translateY(-.6vh);border-color:var(--gold);box-shadow:0 .8vh 2vh rgba(0,0,0,.4)}
+.g9 .n{font-family:var(--serif);font-size:4.8vh;font-weight:900;line-height:1}
+.g9 .a{font-size:2.1vh;margin-top:.5vh;color:var(--ice-d);text-align:center;font-weight:500}
+.wx-mu{color:#8fd14f}.wx-huo{color:#ff7a5c}.wx-tu{color:#e8c36b}.wx-jin{color:#dfe6f0}.wx-shui{color:#54c8ec}
+.detail{margin-top:2vh;min-height:11vh;background:linear-gradient(120deg,rgba(124,95,192,.16),rgba(20,12,48,.3));
+  border:1px solid rgba(180,154,230,.3);border-radius:1.6vh;padding:2vh 1.8vw;display:flex;align-items:center;gap:1.6vw;transition:.3s}
+.detail .big{font-family:var(--serif);font-size:7.8vh;font-weight:900;flex:0 0 auto;line-height:1}
+.detail .tx h3{font-family:var(--serif);font-size:3.7vh;color:#fff;margin-bottom:.7vh}
+.detail .tx h3 small{font-size:2.4vh;color:var(--gold-l);font-weight:500;margin-left:.6vw}
+.detail .tx .kw{display:flex;gap:.7vw;flex-wrap:wrap;margin-top:.5vh}
+.detail .tx .kw span{font-size:2.3vh;background:rgba(124,95,192,.3);color:var(--purple-l);padding:.5vh 1.4vh;border-radius:4vh}
+
+/* ====== 解盤三步 ====== */
+.steps3{display:flex;gap:1.4vw;margin-top:3vh;align-items:stretch}
+.st{flex:1;background:linear-gradient(170deg,rgba(124,95,192,.16),rgba(20,12,48,.4));
+  border:1px solid rgba(180,154,230,.28);border-radius:1.8vh;padding:2.6vh 1.5vw;position:relative}
+.st .no{position:absolute;top:-2.8vh;left:1.5vw;font-family:var(--serif);font-size:6.4vh;font-weight:900;
+  color:var(--gold);opacity:.85;text-shadow:0 0 2vh rgba(232,195,107,.4)}
+.st h3{font-family:var(--serif);font-size:3.4vh;color:#fff;margin:3.2vh 0 1vh;font-weight:700}
+.st p{font-size:2.7vh;color:var(--ice-d);line-height:1.55}
+.st .pct{margin-top:1.4vh;font-size:2.3vh;color:var(--gold-l)}
+
+/* ====== 心法三段 ====== */
+.philo{display:flex;gap:1.2vw;margin-top:3vh;align-items:center}
+.philo .p{flex:1;text-align:center}
+.philo .p .ic{font-size:5.4vh}
+.philo .p .t{font-family:var(--serif);font-size:3.1vh;color:#fff;font-weight:700;margin-top:1vh}
+.philo .p .d{font-size:2.5vh;color:var(--ice-d);margin-top:.6vh;line-height:1.45}
+.philo .ar{font-size:4vh;color:var(--gold);opacity:.6}
+
+/* ====== 封面 ====== */
+#s1{align-items:center;text-align:center}
+.cover-badge{width:23vh;filter:drop-shadow(0 1.6vh 3vh rgba(0,0,0,.5));animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.4vh)}}
+#s1 h1{font-size:10.5vh;letter-spacing:.06em;margin:1vh 0 .4vh}
+#s1 h1 .glow-gold{background:linear-gradient(180deg,#f6e3a8,#c79a3f);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+#s1 .sub{font-family:var(--serif);font-size:3.8vh;color:var(--ice);letter-spacing:.12em}
+#s1 .tag{margin-top:1.8vh;font-size:2.6vh;color:var(--gold-l);letter-spacing:.3em}
+
+/* ====== 結尾 ====== */
+#s10{align-items:center;text-align:center}
+#s10 img.logo{width:42vw;max-width:64vh;filter:drop-shadow(0 1.4vh 3vh rgba(0,0,0,.55))}
+#s10 .slogan{font-family:var(--serif);font-size:4.4vh;font-weight:900;color:#fff;margin-top:2vh;letter-spacing:.06em}
+#s10 .slogan .gold{background:linear-gradient(180deg,#f6e3a8,#c79a3f);-webkit-background-clip:text;background-clip:text;color:transparent}
+#s10 .sub{font-size:2.9vh;color:var(--ice-d);margin-top:1.4vh;letter-spacing:.2em}
+.restart{margin-top:2.6vh;font-family:var(--sans);font-weight:700;font-size:2.5vh;color:#1d1248;
+  background:linear-gradient(135deg,var(--gold-l),var(--gold-d));border:0;border-radius:5vh;
+  padding:1.5vh 3vw;cursor:pointer;letter-spacing:.1em;box-shadow:0 .8vh 2vh rgba(232,195,107,.3)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="deck" id="deck">
+    <canvas id="stars"></canvas>
+    <div id="progress"></div>
+    <div id="corner"><img src="assets/logo.png" alt="7G 奇雞命相館"><span>天賦數字 ﹒ 教學講義</span></div>
+
+    <!-- ===== S1 封面 ===== -->
+    <section class="slide" id="s1" data-face="smile" data-say="哈囉，我是奇雞先生﹗今天由我帶你認識「天賦數字」。按右下角 › 或 → 開始。">
+      <img class="cover-badge up r1" src="assets/badge.png" alt="7G 奇雞命相館徽章">
+      <h1 class="up r2"><span class="glow-gold">天賦數字</span></h1>
+      <div class="sub up r3">用生日，看見你的天賦地圖</div>
+      <div class="tag up r4">命理　×　星象　×　契機</div>
+    </section>
+
+    <!-- ===== S2 精神 ===== -->
+    <section class="slide" id="s2" data-face="think" data-say="先說最重要的一句：它不是用來嚇你的，是用來懂你的。">
+      <div class="eyebrow up r1"><span class="no">01</span>　它的精神</div>
+      <h1 class="up r2" style="font-size:7.4vh;margin-top:1.8vh">這不是算命，<br>是一份<span class="glow-gold">讀懂自己</span>的說明書。</h1>
+      <div class="up r3" style="margin-top:2.8vh;display:flex;align-items:center;gap:1.8vw;font-family:var(--serif)">
+        <span class="chip"><span style="font-size:3.4vh">🧠</span> 理性</span>
+        <span style="color:var(--gold);font-size:3.8vh">✕</span>
+        <span class="chip" style="background:rgba(232,195,107,.15);border-color:rgba(232,195,107,.4);color:var(--gold-l)"><span style="font-size:3.4vh">✨</span> 靈性</span>
+        <span class="muted" style="font-size:2.8vh">在數字裡交會</span>
+      </div>
+      <p class="up r4 muted" style="margin-top:2.4vh;font-size:3vh;max-width:60vw;line-height:1.65">
+        每個結論都附「為什麼這樣說」的計算依據。不預言吉凶、不販賣焦慮，只陪你把自己看得更清楚。</p>
+    </section>
+
+    <!-- ===== S3 起源 ===== -->
+    <section class="slide" id="s3" data-face="myst" data-say="它的血統很硬：三條千年源流，匯成一張圖。">
+      <div class="eyebrow up r1"><span class="no">02</span>　它的起源</div>
+      <h2 class="up r2" style="font-size:5.4vh;margin-top:1vh">三股源流，匯成一張<span class="gold">天賦地圖</span></h2>
+      <div class="flow">
+        <div class="src up r3"><div class="srcimg"><span class="fallback">☀️</span><img src="assets/origin-pythagoras.png" alt="畢達哥拉斯" onerror="this.style.display='none'"></div><div class="t">畢達哥拉斯</div><div class="s">西方數理</div><div class="d">萬物皆數，<br>用數字讀懂本質。</div></div>
+        <div class="plus up r3">＋</div>
+        <div class="src up r4"><div class="srcimg"><span class="fallback">☯️</span><img src="assets/origin-bagua.png" alt="易經八卦" onerror="this.style.display='none'"></div><div class="t">易經八卦</div><div class="s">東方哲學</div><div class="d">8 是圓滿，<br>數字承載能量。</div></div>
+        <div class="plus up r4">＋</div>
+        <div class="src up r5"><div class="srcimg"><span class="fallback">🧠</span><img src="assets/origin-psychology.png" alt="現代心理學" onerror="this.style.display='none'"></div><div class="t">現代心理學</div><div class="s">行為科學</div><div class="d">潛意識與原型，<br>讓解讀有依據。</div></div>
+      </div>
+      <div class="merge up r6">＝　<b>天賦數全息圖</b>：把生日，譯成一個人的能量輪廓</div>
+    </section>
+
+    <!-- ===== S4 核心價值 ===== -->
+    <section class="slide" id="s4" data-face="smile" data-say="這四點，就是天賦數字最值得你信任的地方。">
+      <div class="eyebrow up r1"><span class="no">03</span>　它的核心價值</div>
+      <h2 class="up r2" style="font-size:5.4vh;margin-top:.8vh">天賦數字的<span class="gold">四大價值</span></h2>
+      <p class="up r2 muted" style="font-size:2.6vh;margin-top:.5vh">和市面玄學最不一樣的地方，就在這四點。</p>
+      <div class="cards">
+        <div class="card up r3"><span class="ic">🔬</span><h3>科學化</h3><p>每個結論都看得到算式，不是憑感覺。</p><span class="num-bg">壹</span></div>
+        <div class="card up r4"><span class="ic">📊</span><h3>數據化</h3><p>同一個生日，永遠算出同一個結果。</p><span class="num-bg">貳</span></div>
+        <div class="card up r5"><span class="ic">🎲</span><h3>親民好玩</h3><p>像一個懂你的朋友，輕鬆好上手。</p><span class="num-bg">參</span></div>
+        <div class="card up r6"><span class="ic">🤝</span><h3>陪伴賦能</h3><p>給你選擇與行動，不替你定終身。</p><span class="num-bg">肆</span></div>
+      </div>
+    </section>
+
+    <!-- ===== S5 歸約計算機 ===== -->
+    <section class="slide" id="s5" data-face="think" data-say="來，輸入一個生日，看數字怎麼一層層回到本質。改改看日期﹗">
+      <div class="eyebrow up r1"><span class="no">04</span>　核心原理 ﹒ 歸約</div>
+      <h2 class="up r2" style="font-size:5.2vh;margin-top:.8vh">從複雜，<span class="gold">回歸本質</span></h2>
+      <p class="up r2 muted" style="font-size:2.8vh;margin-top:.5vh">把生日所有數字相加，反覆化簡，直到剩下 1 至 9 的核心。</p>
+      <div class="calc up r3">
+        <div class="inp">
+          <label>輸入西元生日</label>
+          <input id="bdate" type="text" value="1990.06.11" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="arrow">➜</div>
+        <div class="steps" id="csteps"></div>
+        <div class="result">
+          <div class="ball" id="cball">？</div>
+          <div class="lab">主命數</div>
+        </div>
+      </div>
+      <p class="up r5 muted" style="margin-top:2.2vh;font-size:2.6vh">這就是引擎：確定性、可驗證、不玄。AI 只負責把它翻成有溫度的話。</p>
+    </section>
+
+    <!-- ===== S6 全息圖結構 ===== -->
+    <section class="slide" id="s6" data-face="myst" data-say="一個人的能量，疊成一座金字塔。最頂端那顆，主宰你六成的行為。">
+      <div class="eyebrow up r1"><span class="no">05</span>　它長什麼樣 ﹒ 全息圖</div>
+      <h2 class="up r2" style="font-size:5.2vh;margin-top:.8vh">一張圖，看見你的<span class="gold">能量全貌</span></h2>
+      <div class="holo">
+        <svg class="up r3" viewBox="0 0 420 322">
+          <defs>
+            <linearGradient id="gl" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#5a3fa0"/><stop offset="1" stop-color="#b49ae6"/>
+            </linearGradient>
+          </defs>
+          <g stroke="rgba(180,154,230,.35)" stroke-width="1.5">
+            <line x1="60" y1="250" x2="360" y2="250"/>
+            <line x1="60" y1="250" x2="210" y2="60"/>
+            <line x1="360" y1="250" x2="210" y2="60"/>
+            <line x1="135" y1="155" x2="285" y2="155"/>
+          </g>
+          <circle cx="210" cy="60" r="32" fill="url(#gl)" stroke="#e8c36b" stroke-width="2.5"/>
+          <text x="210" y="72" font-size="34" text-anchor="middle" fill="#1d1248" font-weight="900" font-family="Noto Serif TC">O</text>
+          <text x="210" y="22" font-size="19" text-anchor="middle" fill="#e8c36b" font-family="Noto Serif TC">主性格 ﹒ 坐鎮碼</text>
+          <circle cx="135" cy="155" r="25" fill="rgba(124,95,192,.5)" stroke="#b49ae6" stroke-width="1.6"/>
+          <circle cx="285" cy="155" r="25" fill="rgba(124,95,192,.5)" stroke="#b49ae6" stroke-width="1.6"/>
+          <circle cx="60" cy="250" r="23" fill="rgba(84,200,236,.35)" stroke="#54c8ec" stroke-width="1.6"/>
+          <circle cx="135" cy="250" r="23" fill="rgba(84,200,236,.35)" stroke="#54c8ec" stroke-width="1.6"/>
+          <circle cx="285" cy="250" r="23" fill="rgba(226,88,62,.35)" stroke="#e2583e" stroke-width="1.6"/>
+          <circle cx="360" cy="250" r="23" fill="rgba(226,88,62,.35)" stroke="#e2583e" stroke-width="1.6"/>
+          <text x="97" y="291" font-size="19" text-anchor="middle" fill="#fff" font-weight="700" font-family="Noto Serif TC">父系基因</text>
+          <text x="97" y="312" font-size="17" text-anchor="middle" fill="#e8c36b" font-family="Noto Serif TC">事業 ﹒ 工作</text>
+          <text x="322" y="291" font-size="19" text-anchor="middle" fill="#fff" font-weight="700" font-family="Noto Serif TC">母系基因</text>
+          <text x="322" y="312" font-size="17" text-anchor="middle" fill="#e8c36b" font-family="Noto Serif TC">能量 ﹒ 家庭</text>
+        </svg>
+        <div class="legend">
+          <div class="lg up r4"><b style="background:var(--gold)">O</b><div><div class="nm">主性格坐鎮碼</div><div class="ds">頂端核心，主宰約 60% 的日常行為與決策。</div></div></div>
+          <div class="lg up r5"><b style="background:var(--purple-l)">中</b><div><div class="nm">潛意識 ﹒ 外心密碼</div><div class="ds">壓力下的本能，與對外展現的社交面具。</div></div></div>
+          <div class="lg up r6"><b style="background:var(--blue)">底</b><div><div class="nm">父系（左） ﹒ 母系（右）</div><div class="ds">父系連結事業與工作，母系連結能量與家庭。</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== S7 九原型 ===== -->
+    <section class="slide" id="s7" data-face="smile" data-say="1 到 9，九種天賦原型。點任何一個，我告訴你它的關鍵詞﹗">
+      <div class="eyebrow up r1"><span class="no">06</span>　九個原型</div>
+      <h2 class="up r2" style="font-size:5.2vh;margin-top:.6vh">每個數字，<span class="gold">一種天賦原型</span></h2>
+      <div class="grid9 up r3" id="grid9"></div>
+      <div class="detail up r4" id="g9detail">
+        <div class="big gold">？</div>
+        <div class="tx"><h3>點上方數字，看它的天賦</h3><div class="kw"><span>關鍵詞會出現在這裡</span></div></div>
+      </div>
+    </section>
+
+    <!-- ===== S8 解盤方向 ===== -->
+    <section class="slide" id="s8" data-face="think" data-say="解盤不貪多，記住三步就能上手。">
+      <div class="eyebrow up r1"><span class="no">07</span>　解盤方向</div>
+      <h2 class="up r2" style="font-size:5.2vh;margin-top:.6vh">大方向，只要<span class="gold">三步</span></h2>
+      <div class="steps3">
+        <div class="st up r3"><span class="no">壹</span><h3>看主性格</h3><p>先抓頂端那顆坐鎮碼，定下一個人的核心基調。</p><div class="pct">約佔行為 60%</div></div>
+        <div class="st up r4"><span class="no">貳</span><h3>看內外落差</h3><p>人前的樣子，和獨處時的自己，往往是兩個數字。</p><div class="pct">公眾面具 ﹒ 內在動力</div></div>
+        <div class="st up r5"><span class="no">參</span><h3>看聯合密碼</h3><p>數字兩兩相加的化學反應，畫出真實的行為路徑。</p><div class="pct">A ＋ B ＝ C</div></div>
+      </div>
+      <p class="up r6 muted" style="margin-top:2.4vh;font-size:2.6vh">記住結果數 C 最關鍵：它決定一組行為最終的走向。</p>
+    </section>
+
+    <!-- ===== S9 心法 ===== -->
+    <section class="slide" id="s9" data-face="myst" data-say="這是整套工具的靈魂，也是我最想你記住的一句。">
+      <div class="eyebrow up r1"><span class="no">08</span>　核心心法</div>
+      <h1 class="up r2" style="font-size:6.6vh;margin-top:1.2vh">我們不宣判命運，<br>我們<span class="glow-gold">點亮覺察</span>。</h1>
+      <div class="philo">
+        <div class="p up r3"><div class="ic">🔍</div><div class="t">覺察盲點</div><div class="d">看見潛意識裡<br>重複的慣性</div></div>
+        <div class="ar up r3">➜</div>
+        <div class="p up r4"><div class="ic">🌱</div><div class="t">承擔功課</div><div class="d">面對屬於自己的<br>人生課題</div></div>
+        <div class="ar up r4">➜</div>
+        <div class="p up r5"><div class="ic">⭐</div><div class="t">引導正向</div><div class="d">把能量導向<br>高頻的天賦</div></div>
+      </div>
+      <p class="up r6 muted" style="margin-top:2.4vh;font-size:2.8vh;text-align:center">數字不是命運的判決書，而是一面照見自己的鏡子。</p>
+    </section>
+
+    <!-- ===== S10 結尾 ===== -->
+    <section class="slide" id="s10" data-face="smile" data-say="今天就到這﹗願你在數字裡，遇見更好的自己。">
+      <img class="logo up r1" src="assets/logo.png" alt="7G 奇雞命相館">
+      <div class="slogan up r2">以 AI 賦能，以<span class="gold">科學</span>重塑宿命</div>
+      <div class="sub up r3">命理　×　星象　×　契機　｜　7G 奇雞命相館</div>
+      <button class="restart up r4" id="restart">↺ 回到開始</button>
+    </section>
+
+    <!-- 導覽員 -->
+    <div id="guide">
+      <div id="bubble">哈囉<span class="tap">點我換句話 ﹒ 按 → 翻頁</span></div>
+      <div class="qiji-ring"><img id="qiji" src="assets/qiji-4.png" alt="奇雞先生"></div>
+    </div>
+
+    <!-- 導航 -->
+    <button class="navbtn prev" id="navL">‹</button>
+    <button class="navbtn next" id="navR">›</button>
+    <div id="dots"></div>
+    <div id="hintkey">← → 翻頁　﹒　點奇雞先生互動</div>
+  </div>
+</div>
+
+<script>
+const NUM = {
+  1:{a:'開創者',wx:'wx-mu',el:'木',kw:['獨立','領導','行動力']},
+  2:{a:'協調者',wx:'wx-mu',el:'木',kw:['溝通','和諧','同理心']},
+  3:{a:'表達者',wx:'wx-huo',el:'火',kw:['創意','社交','樂觀']},
+  4:{a:'建構者',wx:'wx-huo',el:'火',kw:['務實','秩序','可靠']},
+  5:{a:'自由者',wx:'wx-tu',el:'土',kw:['冒險','應變','多元']},
+  6:{a:'照顧者',wx:'wx-tu',el:'土',kw:['責任','愛','美感']},
+  7:{a:'分析者',wx:'wx-jin',el:'金',kw:['洞察','智慧','內省']},
+  8:{a:'成就者',wx:'wx-jin',el:'金',kw:['權力','財富','執行']},
+  9:{a:'人道者',wx:'wx-shui',el:'水',kw:['大愛','遠見','慈悲']},
+};
+const FACE={smile:'assets/qiji-4.png',think:'assets/qiji-6.png',wow:'assets/qiji-7.png',myst:'assets/qiji-8.png'};
+const CYCLE=['assets/qiji-1.png','assets/qiji-5.png','assets/qiji-3.png','assets/qiji-6.png','assets/qiji-7.png','assets/qiji-2.png','assets/qiji-8.png','assets/qiji-4.png'];
+
+const slides=[...document.querySelectorAll('.slide')];
+const dotsBox=document.getElementById('dots');
+const prog=document.getElementById('progress');
+const qiji=document.getElementById('qiji');
+const bubble=document.getElementById('bubble');
+let cur=0;
+
+slides.forEach((s,i)=>{const b=document.createElement('b');b.onclick=()=>go(i);dotsBox.appendChild(b);});
+const dots=[...dotsBox.children];
+
+function setBubble(text){
+  bubble.innerHTML = text + '<span class="tap">點我換句話 ﹒ 按 → 翻頁</span>';
+  bubble.style.transform='scale(.96)';bubble.style.opacity='.4';
+  requestAnimationFrame(()=>{bubble.style.transform='';bubble.style.opacity='';});
+}
+function setFace(f){qiji.src=FACE[f]||FACE.smile;}
+
+function go(n){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  slides[cur].classList.remove('on');
+  slides[cur].classList.toggle('prev',n>cur);
+  cur=n;
+  slides[cur].classList.add('on');
+  slides[cur].classList.remove('prev');
+  dots.forEach((d,i)=>d.classList.toggle('on',i===cur));
+  prog.style.width=((cur)/(slides.length-1)*100)+'%';
+  const sl=slides[cur];
+  setFace(sl.dataset.face);
+  setBubble(sl.dataset.say||'');
+  if(sl.id==='s5') runCalc();
+  if(sl.id==='s7') ensureGrid();
+}
+function next(){go(cur+1);} function prev(){go(cur-1);}
+
+document.getElementById('navR').onclick=next;
+document.getElementById('navL').onclick=prev;
+document.getElementById('restart').onclick=()=>go(0);
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+  else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+});
+const quips=['數字不騙人，但它不替你做決定。','看見自己，就是改變的開始。','別怕你的陰影，那是天賦的另一面。','每個數字，都有它的光與課題。','準備好了嗎？換我聽你的故事。'];
+let qi=0, ci=0;
+qiji.onclick=()=>{
+  qiji.src=CYCLE[ci%CYCLE.length]; ci++;
+  bubble.innerHTML=quips[qi%quips.length]+'<span class="tap">點我換句話 ﹒ 按 → 翻頁</span>';
+  bubble.style.transform='scale(.94)';bubble.style.opacity='.3';
+  requestAnimationFrame(()=>{bubble.style.transform='';bubble.style.opacity='';});
+  qi++;
+};
+
+const MASTER={11:1,22:1,33:1};
+function reduceOnce(n){return String(n).split('').reduce((a,d)=>a+ +d,0);}
+function runCalc(){
+  const raw=(document.getElementById('bdate').value.match(/\d/g)||[]).join('');
+  const stepsBox=document.getElementById('csteps');
+  const ball=document.getElementById('cball');
+  if(raw.length<6){stepsBox.innerHTML='<div class="ln show">請輸入完整生日<br>例：1990.06.11</div>';ball.textContent='？';return;}
+  let digits=raw.split('');
+  let sum=digits.reduce((a,d)=>a+ +d,0);
+  let lines=[];
+  lines.push('拆解相加：'+digits.join(' ＋ ')+' ＝ <b>'+sum+'</b>');
+  let isMaster=false;
+  while(sum>9){
+    if(MASTER[sum]){isMaster=true;break;}
+    let ns=reduceOnce(sum);
+    lines.push('再化簡：'+String(sum).split('').join(' ＋ ')+' ＝ <b>'+ns+'</b>');
+    sum=ns;
+  }
+  stepsBox.innerHTML=lines.map(l=>'<div class="ln">'+l+'</div>').join('');
+  const lns=[...stepsBox.querySelectorAll('.ln')];
+  lns.forEach((l,i)=>setTimeout(()=>l.classList.add('show'),120+i*260));
+  ball.classList.remove('pop');
+  setTimeout(()=>{ball.textContent=isMaster?sum+'★':sum;ball.classList.add('pop');},120+lns.length*260);
+}
+document.getElementById('bdate').addEventListener('input',()=>{clearTimeout(window._ct);window._ct=setTimeout(runCalc,500);});
+
+let gridBuilt=false;
+function ensureGrid(){
+  if(gridBuilt)return; gridBuilt=true;
+  const g=document.getElementById('grid9');
+  for(let i=1;i<=9;i++){
+    const d=NUM[i];
+    const el=document.createElement('div');
+    el.className='g9';
+    el.innerHTML='<span class="n '+d.wx+'">'+i+'</span><span class="a">'+d.a+'</span>';
+    el.onclick=()=>showNum(i,el);
+    g.appendChild(el);
+  }
+}
+function showNum(i,el){
+  [...document.querySelectorAll('.g9')].forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  const d=NUM[i];
+  const box=document.getElementById('g9detail');
+  box.innerHTML='<div class="big '+d.wx+'">'+i+'</div><div class="tx"><h3>'+d.a+' <small>五行屬'+d.el+'</small></h3><div class="kw">'+d.kw.map(k=>'<span>'+k+'</span>').join('')+'</div></div>';
+  bubble.innerHTML=i+' 號是「'+d.a+'」，天賦在 '+d.kw.join('、')+'。<span class="tap">點別的數字試試 ﹒ 按 → 翻頁</span>';
+  qiji.src=FACE.think;
+}
+
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');
+let stars=[],W,H;
+function resize(){const d=document.getElementById('deck').getBoundingClientRect();W=cv.width=d.width;H=cv.height=d.height;
+  stars=[];const n=Math.round(W*H/9000);
+  for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,a:Math.random(),s:Math.random()*.02+.004,vx:(Math.random()-.5)*.06,vy:(Math.random()-.5)*.06});
+}
+function draw(){cx.clearRect(0,0,W,H);
+  for(const s of stars){s.a+=s.s;let al=.3+Math.abs(Math.sin(s.a))*.7;s.x+=s.vx;s.y+=s.vy;
+    if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+    cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle='rgba(232,221,255,'+al+')';cx.fill();
+    if(s.r>1.1){cx.beginPath();cx.arc(s.x,s.y,s.r*2.4,0,7);cx.fillStyle='rgba(232,195,107,'+(al*.12)+')';cx.fill();}
+  }
+  requestAnimationFrame(draw);
+}
+window.addEventListener('resize',resize);resize();draw();
+go(0);
+</script>
+</body>
+</html>
